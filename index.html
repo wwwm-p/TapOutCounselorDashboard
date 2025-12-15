@@ -1,103 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TapOut! - Student Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Additional small header layout adjustments */
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        #studentSearchHeader {
+            width: 350px;
+            padding: 10px;
+            font-size: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Students Panel */
+        .students-panel {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: white;
+            width: 350px;
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Student Detail */
+        .student-detail {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 460px;
+            background: white;
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .small-btn {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .notes-panel {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            width: 350px;
+            background: white;
+            border: 2px solid #ddd;
+            padding: 20px;
+            border-radius: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
-<header class="main-header">
-    <h1>TapOut! - Student Dashboard</h1>
+    <!-- HEADER -->
+    <header class="main-header">
+        <h1>TapOut! - Student Dashboard</h1>
 
-    <input 
-        type="text" 
-        id="studentSearchHeader" 
-        placeholder="Search students..."
-    >
+        <div class="header-center">
+            <input type="text" id="studentSearchHeader" placeholder="Search students..." />
+        </div>
 
-    <div class="header-actions">
-        <button class="btn" onclick="openCalendar()">Open Calendar</button>
-        <button class="btn" onclick="toggleStudentsPanel()">Students</button>
-        <button class="btn" onclick="toggleNotesPanel()">Notes</button>
-        <button class="btn">Sign In</button>
-    </div>
-</header>
+        <div class="header-right">
+            <button class="btn" onclick="openCalendar()">Open Calendar</button>
+            <button class="btn" onclick="toggleStudentsPanel()">Students</button>
+            <button class="btn" onclick="toggleNotesPanel()">Notes</button>
+            <button class="btn">Sign In</button>
+        </div>
+    </header>
 
-<!-- STUDENTS PANEL -->
-<div id="studentsPanel" class="panel hidden">
-    <h2>Assigned Students</h2>
+    <!-- STUDENTS PANEL -->
+    <div id="studentsPanel" class="students-panel hidden">
+        <h2>Assigned Students</h2>
 
-    <div class="panel-controls">
         <label>Sort:</label>
         <select id="sortOption" onchange="renderStudentList()">
             <option value="alpha">Alphabetical</option>
             <option value="grade">Grade Level</option>
         </select>
+
+        <ul id="studentList"></ul>
     </div>
 
-    <ul id="studentList"></ul>
-</div>
+    <!-- NOTES PANEL -->
+    <div id="notesPanel" class="notes-panel hidden">
+        <h2>Notes</h2>
+        <textarea id="newNote" placeholder="Write a note..." style="width:100%; height:120px;"></textarea>
+        <button class="btn" onclick="saveNote()">Save Note</button>
 
-<!-- STUDENT DETAIL PANEL -->
-<div id="studentDetailPanel" class="panel hidden center-panel">
-    <button class="btn small" onclick="closeStudentDetail()">Back</button>
+        <h3>Saved Notes</h3>
+        <ul id="notesHistory"></ul>
+    </div>
 
-    <h2 id="studentName"></h2>
-    <p id="studentEmail"></p>
+    <!-- STUDENT DETAIL PANEL -->
+    <div id="studentDetailPanel" class="student-detail hidden">
+        <button class="btn small-btn" onclick="closeStudentDetail()">Back</button>
 
-    <h3>Appointment History</h3>
-    <ul>
-        <li>No appointments recorded.</li>
-    </ul>
-</div>
+        <h2 id="studentName"></h2>
+        <p id="studentEmail"></p>
 
-<!-- NOTES PANEL -->
-<div id="notesPanel" class="panel hidden">
-    <h2>Notes</h2>
+        <h3>Appointment History</h3>
+        <ul id="appointmentHistory">
+            <li>No appointments recorded.</li>
+        </ul>
+    </div>
 
-    <textarea id="newNote" placeholder="Write a note..."></textarea>
-    <button class="btn" onclick="saveNote()">Save Note</button>
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+        <div class="urgency-row">
+            <div class="face red-face"><div class="eyes"></div><div class="mouth"></div></div>
+        </div>
 
-    <h3>Saved Notes</h3>
-    <ul id="notesHistory"></ul>
-</div>
+        <div class="urgency-row">
+            <div class="face orange-face"><div class="eyes"></div><div class="mouth"></div></div>
+        </div>
 
-<!-- DASHBOARD -->
-<main class="dashboard">
+        <div class="urgency-row">
+            <div class="face yellow-face"><div class="eyes"></div><div class="mouth"></div></div>
+        </div>
 
-    <div class="urgency-row">
-        <div class="face red-face">
-            <div class="eyes"></div>
-            <div class="mouth"></div>
+        <div class="urgency-row">
+            <div class="face green-face"><div class="eyes"></div><div class="mouth"></div></div>
         </div>
     </div>
 
-    <div class="urgency-row">
-        <div class="face orange-face">
-            <div class="eyes"></div>
-            <div class="mouth"></div>
-        </div>
-    </div>
+    <script src="app.js"></script>
 
-    <div class="urgency-row">
-        <div class="face yellow-face">
-            <div class="eyes"></div>
-            <div class="mouth"></div>
-        </div>
-    </div>
-
-    <div class="urgency-row">
-        <div class="face green-face">
-            <div class="eyes"></div>
-            <div class="mouth"></div>
-        </div>
-    </div>
-
-</main>
-
-<script src="app.js"></script>
 </body>
 </html>
