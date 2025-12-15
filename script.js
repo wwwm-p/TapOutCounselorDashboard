@@ -5,20 +5,14 @@ let students = [
     { name: "Sofia Martinez", grade: 9, email: "sofia.martinez@school.org" }
 ];
 
+let notes = JSON.parse(localStorage.getItem("notesData") || "[]");
 let selectedStudent = null;
 
-// Load notes
-let notes = JSON.parse(localStorage.getItem("notesData") || "[]");
-
+// STUDENTS PANEL
 function toggleStudentsPanel() {
+    closeAllPanels();
     document.getElementById("studentsPanel").classList.toggle("hidden");
-    document.getElementById("notesPanel").classList.add("hidden");
     renderStudentList();
-}
-
-function toggleNotesPanel() {
-    document.getElementById("notesPanel").classList.toggle("hidden");
-    loadNotes();
 }
 
 function renderStudentList() {
@@ -26,13 +20,17 @@ function renderStudentList() {
     let sort = document.getElementById("sortOption").value;
     let query = document.getElementById("studentSearchHeader").value.toLowerCase();
 
-    let filtered = students.filter(s => s.name.toLowerCase().includes(query));
+    let filtered = students.filter(s =>
+        s.name.toLowerCase().includes(query)
+    );
 
-    if (sort === "alpha") filtered.sort((a, b) => a.name.localeCompare(b.name));
-    else filtered.sort((a, b) => a.grade - b.grade);
+    if (sort === "alpha") {
+        filtered.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+        filtered.sort((a, b) => a.grade - b.grade);
+    }
 
     list.innerHTML = "";
-
     filtered.forEach(stu => {
         let li = document.createElement("li");
         li.textContent = `${stu.name} (Grade ${stu.grade})`;
@@ -41,17 +39,17 @@ function renderStudentList() {
     });
 }
 
-document.getElementById("studentSearchHeader").addEventListener("input", renderStudentList);
+document.getElementById("studentSearchHeader")
+    .addEventListener("input", renderStudentList);
 
+// STUDENT DETAIL
 function openStudentDetail(student) {
+    closeAllPanels();
     selectedStudent = student;
-
-    document.getElementById("studentDetailPanel").classList.remove("hidden");
-    document.getElementById("studentsPanel").classList.add("hidden");
-    document.getElementById("notesPanel").classList.add("hidden");
 
     document.getElementById("studentName").textContent = student.name;
     document.getElementById("studentEmail").textContent = student.email;
+    document.getElementById("studentDetailPanel").classList.remove("hidden");
 }
 
 function closeStudentDetail() {
@@ -59,14 +57,19 @@ function closeStudentDetail() {
 }
 
 // NOTES
+function toggleNotesPanel() {
+    closeAllPanels();
+    document.getElementById("notesPanel").classList.toggle("hidden");
+    loadNotes();
+}
+
 function saveNote() {
     let text = document.getElementById("newNote").value.trim();
     if (!text) return;
 
     notes.push(text);
-    document.getElementById("newNote").value = "";
-
     localStorage.setItem("notesData", JSON.stringify(notes));
+    document.getElementById("newNote").value = "";
     loadNotes();
 }
 
@@ -75,17 +78,24 @@ function loadNotes() {
     list.innerHTML = "";
 
     if (notes.length === 0) {
-        list.innerHTML = "<li>No notes yet.</li>";
+        list.innerHTML = "<li>No notes saved.</li>";
         return;
     }
 
-    notes.forEach(n => {
+    notes.forEach(note => {
         let li = document.createElement("li");
-        li.textContent = n;
+        li.textContent = note;
         list.appendChild(li);
     });
 }
 
+// UTIL
+function closeAllPanels() {
+    document.getElementById("studentsPanel").classList.add("hidden");
+    document.getElementById("studentDetailPanel").classList.add("hidden");
+    document.getElementById("notesPanel").classList.add("hidden");
+}
+
 function openCalendar() {
-    alert("Calendar will open here.");
+    alert("Calendar feature goes here.");
 }
