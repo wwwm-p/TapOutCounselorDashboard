@@ -1,167 +1,176 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Inter", sans-serif;
 }
 
 body {
-    background: #f4f4f4;
+  background: #fffcf5;
+  color: #1f2937;
 }
 
 /* HEADER */
-.main-header {
-    width: 100%;
-    background: #ffffff;
-    padding: 18px 30px;
-    border-bottom: 2px solid #dddddd;
+.header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  padding: 16px 32px;
+  border-bottom: 1px solid #e5e7eb;
+  background: #e9f3ff;
 }
 
-.main-header h1 {
-    font-size: 24px;
+.header h1 {
+  font-size: 22px;
+  font-weight: 600;
 }
 
-/* LAYOUT */
-.container {
-    display: flex;
-    height: calc(100vh - 72px);
+.header-center {
+  display: flex;
+  justify-content: center;
 }
 
-/* SIDEBAR */
-.sidebar {
-    width: 260px;
-    background: #fff;
-    padding: 20px;
-    border-right: 2px solid #ddd;
+.header-center input {
+  width: 420px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
 }
 
-.top-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.header-right {
+  display: flex;
+  gap: 10px;
 }
 
+/* BUTTONS */
 .btn {
-    background: #d0d0d0;
-    padding: 12px;
-    border: none;
-    cursor: pointer;
-    font-size: 15px;
-    border-radius: 5px;
+  border-radius: 8px;
+  border: none;
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-.btn:hover {
-    background: #bcbcbc;
+.btn.primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn.secondary {
+  background: white;
+  border: 1px solid #d1d5db;
+}
+
+.btn.text {
+  background: none;
+  color: #2563eb;
+}
+
+.btn.full {
+  width: 100%;
+}
+
+/* PANELS */
+.panel {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  width: 340px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+  z-index: 20;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.panel ul {
+  list-style: none;
+}
+
+.panel li {
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.panel li:hover {
+  background: #f3f4f6;
+}
+
+.hidden {
+  display: none;
+}
+
+/* DETAIL */
+.detail {
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 480px;
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.12);
+}
+
+.muted {
+  color: #6b7280;
+  font-size: 14px;
 }
 
 /* DASHBOARD */
 .dashboard {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(to bottom, #fafafa, #e8e8e8);
+  padding: 40px;
 }
 
-/* ROWS */
 .urgency-row {
-    display: flex;
-    align-items: center;
-    padding: 25px 0;
-    border-bottom: 3px dotted black;
-}
-
-.urgency-row:last-child {
-    border-bottom: none;
+  padding: 30px 0;
+  border-bottom: 2px dotted #111;
 }
 
 /* FACES */
 .face {
-    width: 110px;
-    height: 110px;
-    border-radius: 50%;
-    position: relative;
-    margin-left: 20px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  position: relative;
 }
 
-/* COLORS */
-.red-face {
-    background-color: #e45a47;
-}
+.red-face { background: #e45a47; }
+.orange-face { background: #eca443; }
+.yellow-face { background: #f0e64c; }
+.green-face { background: #9ed36a; }
 
-.orange-face {
-    background-color: #eca443;
-}
-
-.yellow-face {
-    background-color: #f0e64c;
-}
-
-.green-face {
-    background-color: #9ed36a;
-}
-
-/* EYES */
 .eyes {
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    width: 55%;
-    display: flex;
-    justify-content: space-between;
-    transform: translateX(-50%);
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  transform: translateX(-50%);
 }
 
 .eyes::before,
 .eyes::after {
-    content: "";
-    width: 12px;
-    height: 12px;
-    background: #333;
-    border-radius: 50%;
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: #333;
+  border-radius: 50%;
 }
 
-/* MOUTHS */
 .mouth {
-    position: absolute;
-    bottom: 25%;
-    left: 50%;
-    width: 45px;
-    height: 22px;
-    border-radius: 50%;
-    border: 5px solid #333;
-    transform: translateX(-50%);
-}
-
-/* Red: filled frown */
-.red-face .mouth {
-    border-top: none;
-    background-color: #333;
-}
-
-/* Orange: simple frown (upside-down smile) */
-.orange-face .mouth {
-    border-bottom: none;
-    border-top: 5px solid #333;
-    background: transparent;
-}
-
-/* Yellow: neutral (flat) */
-.yellow-face .mouth {
-    width: 40px;
-    height: 6px;
-    border-radius: 0;
-    border: none;
-    background: #333;
-}
-
-/* Green: simple smile (:) style) */
-.green-face .mouth {
-    width: 40px;
-    height: 6px;
-    border-radius: 0;
-    border: none;
-    background: #333;
-    border-top: none;
-    border-bottom: 5px solid #333;
-    background: transparent;
+  position: absolute;
+  bottom: 25%;
+  left: 50%;
+  transform: translateX(-50%);
 }
