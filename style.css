@@ -11,105 +11,67 @@ body {
 
 /* HEADER */
 .main-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    padding: 18px 30px;
+    width: 100%;
     background: #ffffff;
-    border-bottom: 2px solid #ddd;
+    padding: 18px 30px;
+    border-bottom: 2px solid #dddddd;
 }
 
 .main-header h1 {
-    white-space: nowrap;
+    font-size: 24px;
 }
 
-#studentSearchHeader {
-    flex: 1;
-    max-width: 420px;
-    padding: 10px;
-    font-size: 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-}
-
-.header-actions {
+/* LAYOUT */
+.container {
     display: flex;
-    gap: 10px;
+    height: calc(100vh - 72px);
 }
 
-/* BUTTONS */
+/* SIDEBAR */
+.sidebar {
+    width: 260px;
+    background: #fff;
+    padding: 20px;
+    border-right: 2px solid #ddd;
+}
+
+.top-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .btn {
     background: #d0d0d0;
+    padding: 12px;
     border: none;
-    padding: 10px 14px;
-    border-radius: 5px;
     cursor: pointer;
+    font-size: 15px;
+    border-radius: 5px;
 }
 
 .btn:hover {
     background: #bcbcbc;
 }
 
-.btn.small {
-    padding: 6px 10px;
-    font-size: 13px;
-}
-
-/* PANELS */
-.panel {
-    position: absolute;
-    top: 90px;
-    right: 20px;
-    width: 360px;
-    background: #ffffff;
-    padding: 20px;
-    border: 2px solid #ddd;
-    border-radius: 10px;
-    z-index: 10;
-}
-
-.center-panel {
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-}
-
-.panel-controls {
-    margin: 10px 0;
-}
-
-.panel ul {
-    list-style: none;
-    margin-top: 10px;
-}
-
-.panel li {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
-}
-
-.panel li:hover {
-    background: #f0f0f0;
-}
-
-textarea {
-    width: 100%;
-    height: 100px;
-    margin: 10px 0;
-    padding: 8px;
-}
-
 /* DASHBOARD */
 .dashboard {
-    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     background: linear-gradient(to bottom, #fafafa, #e8e8e8);
-    min-height: calc(100vh - 90px);
 }
 
+/* ROWS */
 .urgency-row {
+    display: flex;
+    align-items: center;
     padding: 25px 0;
     border-bottom: 3px dotted black;
+}
+
+.urgency-row:last-child {
+    border-bottom: none;
 }
 
 /* FACES */
@@ -121,10 +83,22 @@ textarea {
     margin-left: 20px;
 }
 
-.red-face { background: #e45a47; }
-.orange-face { background: #eca443; }
-.yellow-face { background: #f0e64c; }
-.green-face { background: #9ed36a; }
+/* COLORS */
+.red-face {
+    background-color: #e45a47;
+}
+
+.orange-face {
+    background-color: #eca443;
+}
+
+.yellow-face {
+    background-color: #f0e64c;
+}
+
+.green-face {
+    background-color: #9ed36a;
+}
 
 /* EYES */
 .eyes {
@@ -158,31 +132,36 @@ textarea {
     transform: translateX(-50%);
 }
 
+/* Red: filled frown */
 .red-face .mouth {
     border-top: none;
-    background: #333;
+    background-color: #333;
 }
 
+/* Orange: simple frown (upside-down smile) */
 .orange-face .mouth {
     border-bottom: none;
     border-top: 5px solid #333;
+    background: transparent;
 }
 
+/* Yellow: neutral (flat) */
 .yellow-face .mouth {
     width: 40px;
     height: 6px;
+    border-radius: 0;
     border: none;
     background: #333;
 }
 
+/* Green: simple smile (:) style) */
 .green-face .mouth {
     width: 40px;
     height: 6px;
+    border-radius: 0;
     border: none;
+    background: #333;
+    border-top: none;
     border-bottom: 5px solid #333;
-}
-
-/* UTILITY */
-.hidden {
-    display: none;
+    background: transparent;
 }
