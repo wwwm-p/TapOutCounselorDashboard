@@ -1,4 +1,4 @@
-{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -15,10 +15,38 @@ body {
     background: #ffffff;
     padding: 18px 30px;
     border-bottom: 2px solid #dddddd;
+
+    /* NEW */
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .main-header h1 {
     font-size: 24px;
+    margin-right: 10px; /* pulls content closer */
+}
+
+/* CENTER SEARCH BAR */
+.header-center {
+    flex: 0 0 auto;
+}
+
+/* Make search bar larger but controlled */
+#studentSearchHeader {
+    width: 360px;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+/* RIGHT BUTTON GROUP */
+.header-right {
+    margin-left: auto;
+    margin-right: 60px; /* 🔑 moves buttons LEFT toward title */
+    display: flex;
+    gap: 10px;
 }
 
 /* LAYOUT */
@@ -27,7 +55,7 @@ body {
     height: calc(100vh - 72px);
 }
 
-/* SIDEBAR */
+/* SIDEBAR (kept for compatibility even if unused) */
 .sidebar {
     width: 260px;
     background: #fff;
@@ -84,21 +112,10 @@ body {
 }
 
 /* COLORS */
-.red-face {
-    background-color: #e45a47;
-}
-
-.orange-face {
-    background-color: #eca443;
-}
-
-.yellow-face {
-    background-color: #f0e64c;
-}
-
-.green-face {
-    background-color: #9ed36a;
-}
+.red-face { background-color: #e45a47; }
+.orange-face { background-color: #eca443; }
+.yellow-face { background-color: #f0e64c; }
+.green-face { background-color: #9ed36a; }
 
 /* EYES */
 .eyes {
@@ -138,14 +155,14 @@ body {
     background-color: #333;
 }
 
-/* Orange: simple frown (upside-down smile) */
+/* Orange: simple frown */
 .orange-face .mouth {
     border-bottom: none;
     border-top: 5px solid #333;
     background: transparent;
 }
 
-/* Yellow: neutral (flat) */
+/* Yellow: neutral */
 .yellow-face .mouth {
     width: 40px;
     height: 6px;
@@ -154,14 +171,12 @@ body {
     background: #333;
 }
 
-/* Green: simple smile (:) style) */
+/* Green: simple smile */
 .green-face .mouth {
     width: 40px;
     height: 6px;
     border-radius: 0;
     border: none;
-    background: #333;
-    border-top: none;
     border-bottom: 5px solid #333;
     background: transparent;
 }
