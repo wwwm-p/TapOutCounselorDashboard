@@ -44,7 +44,7 @@ body {
 /* RIGHT BUTTON GROUP */
 .header-right {
     margin-left: auto;
-    margin-right: 20px; /* 🔑 moves buttons LEFT toward title */
+    margin-right: 25px; /* 🔑 moves buttons LEFT toward title */
     display: flex;
     gap: 10px;
 }
