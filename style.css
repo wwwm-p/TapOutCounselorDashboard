@@ -144,11 +144,11 @@ body {
 
 /* 🟠 Orange: curved frown */
 .orange-face .mouth {
-    bottom: 28%;
+   bottom: 28%;
     width: 44px;
     height: 20px;
-    border-top: 4px solid #333;
-    border-radius: 50px 50px 0 0;
+    border-bottom: 4px solid #333;
+    border-radius: 0 0 50px 50px;
     background: transparent;
 }
 
@@ -164,10 +164,10 @@ body {
 
 /* 🟢 Green: simple smile */
 .green-face .mouth {
-    bottom: 28%;
+  bottom: 28%;
     width: 44px;
     height: 20px;
-    border-bottom: 4px solid #333;
-    border-radius: 0 0 50px 50px;
+    border-top: 4px solid #333;
+    border-radius: 50px 50px 0 0;
     background: transparent;
 }
