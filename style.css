@@ -147,17 +147,19 @@ body {
     bottom: 28%;
     width: 44px;
     height: 20px;
-    border-bottom: 4px solid #333;
-    border-radius: 0 0 50px 50px;
+    border-top: 4px solid #333;
+    border-radius: 50px 50px 0 0;
     background: transparent;
 }
 
 /* 🟡 Yellow: neutra l flat */
 .yellow-face .mouth {
-    bottom: 30%;
-    width: 36px;
-    height: 6px;
-    background: #333;
+   bottom: 28%;
+    width: 44px;
+    height: 20px;
+    border-top: 4px solid #333;
+    border-radius: 50px 50px 0 0;
+    background: transparent;
 }
 
 /* 🟢 Green: simple smile */
@@ -165,7 +167,7 @@ body {
     bottom: 28%;
     width: 44px;
     height: 20px;
-    border-top: 4px solid #333;
-    border-radius: 50px 50px 0 0;
+    border-bottom: 4px solid #333;
+    border-radius: 0 0 50px 50px;
     background: transparent;
 }
