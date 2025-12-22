@@ -1,4 +1,4 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -15,8 +15,6 @@ body {
     background: #87CEFA;
     padding: 18px 30px;
     border-bottom: 2px solid #dddddd;
-
-    /* NEW */
     display: flex;
     align-items: center;
     gap: 20px;
@@ -24,7 +22,7 @@ body {
 
 .main-header h1 {
     font-size: 24px;
-    margin-right: 10px; /* pulls content closer */
+    margin-right: 10px;
 }
 
 /* CENTER SEARCH BAR */
@@ -32,7 +30,6 @@ body {
     flex: 0 0 auto;
 }
 
-/* Make search bar larger but controlled */
 #studentSearchHeader {
     width: 360px;
     padding: 10px;
@@ -44,34 +41,15 @@ body {
 /* RIGHT BUTTON GROUP */
 .header-right {
     margin-left: auto;
-    margin-right: 30px; /* 🔑 moves buttons LEFT toward title */
+    margin-right: 30px;
     display: flex;
     gap: 10px;
 }
 
-/* LAYOUT */
-.container {
-    display: flex;
-    height: calc(100vh - 72px);
-}
-
-/* SIDEBAR (kept for compatibility even if unused) */
-.sidebar {
-    width: 260px;
-    background: #fff;
-    padding: 20px;
-    border-right: 2px solid #ddd;
-}
-
-.top-bar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
+/* BUTTONS */
 .btn {
     background: #d0d0d0;
-    padding: 12px;
+    padding: 12px 14px;
     border: none;
     cursor: pointer;
     font-size: 15px;
@@ -94,7 +72,7 @@ body {
 .urgency-row {
     display: flex;
     align-items: center;
-    padding: 25px 0;
+    padding: 30px 0;
     border-bottom: 3px dotted black;
 }
 
@@ -104,25 +82,36 @@ body {
 
 /* FACES */
 .face {
-    width: 110px;
-    height: 110px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     position: relative;
     margin-left: 20px;
 }
 
-/* COLORS */
-.red-face { background-color: #e45a47; }
-.orange-face { background-color: #eca443; }
-.yellow-face { background-color: #f0e64c; }
-.green-face { background-color: #9ed36a; }
+/* COLORS (flat, softer tones) */
+.red-face {
+    background-color: #f36c5b;
+}
+
+.orange-face {
+    background-color: #f5b04c;
+}
+
+.yellow-face {
+    background-color: #f7e85c;
+}
+
+.green-face {
+    background-color: #b9d96f;
+}
 
 /* EYES */
 .eyes {
     position: absolute;
-    top: 35%;
+    top: 38%;
     left: 50%;
-    width: 55%;
+    width: 45%;
     display: flex;
     justify-content: space-between;
     transform: translateX(-50%);
@@ -131,52 +120,52 @@ body {
 .eyes::before,
 .eyes::after {
     content: "";
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     background: #333;
     border-radius: 50%;
 }
 
-/* MOUTHS */
+/* BASE MOUTH RESET */
 .mouth {
     position: absolute;
-    bottom: 25%;
     left: 50%;
-    width: 45px;
-    height: 22px;
-    border-radius: 50%;
-    border: 5px solid #333;
     transform: translateX(-50%);
 }
 
-/* Red: filled frown */
+/* 🔴 Red: filled frown */
 .red-face .mouth {
-    border-top: none;
-    background-color: #333;
+    bottom: 28%;
+    width: 42px;
+    height: 20px;
+    background: #333;
+    border-radius: 0 0 50px 50px;
 }
 
-/* Orange: simple frown */
+/* 🟠 Orange: curved frown */
 .orange-face .mouth {
-    border-bottom: none;
-    border-top: 5px solid #333;
+    bottom: 28%;
+    width: 44px;
+    height: 20px;
+    border-bottom: 4px solid #333;
+    border-radius: 0 0 50px 50px;
     background: transparent;
 }
 
-/* Yellow: neutral */
+/* 🟡 Yellow: neutral flat */
 .yellow-face .mouth {
-    width: 40px;
+    bottom: 30%;
+    width: 36px;
     height: 6px;
-    border-radius: 0;
-    border: none;
     background: #333;
 }
 
-/* Green: simple smile */
+/* 🟢 Green: simple smile */
 .green-face .mouth {
-    width: 40px;
-    height: 6px;
-    border-radius: 0;
-    border: none;
-    border-bottom: 5px solid #333;
+    bottom: 28%;
+    width: 44px;
+    height: 20px;
+    border-top: 4px solid #333;
+    border-radius: 50px 50px 0 0;
     background: transparent;
 }
