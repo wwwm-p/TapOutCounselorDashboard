@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    /* Header layout */
     .main-header {
       display: flex;
       justify-content: space-between;
@@ -33,7 +32,6 @@
       gap: 10px;
     }
 
-    /* Panels */
     .students-panel, .notes-panel, .student-detail {
       position: absolute;
       top: 80px;
@@ -55,34 +53,12 @@
     }
 
     .hidden { display: none; }
+    .small-btn { padding: 8px 12px; font-size: 13px; }
 
-    .small-btn {
-      padding: 8px 12px;
-      font-size: 13px;
-    }
-
-    /* Dashboard urgency rows */
-    .dashboard {
-      margin-top: 150px;
-      padding: 20px;
-    }
-
-    .urgency-row {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 20px;
-    }
-
-    .face {
-      width: 50px;
-      height: 50px;
-      margin-right: 10px;
-    }
-
-    .request-list {
-      flex: 1;
-    }
-
+    .dashboard { margin-top: 150px; padding: 20px; }
+    .urgency-row { display: flex; align-items: flex-start; margin-bottom: 20px; }
+    .face { width: 50px; height: 50px; margin-right: 10px; }
+    .request-list { flex: 1; }
     .request-card {
       background: #fff;
       border: 2px solid #ddd;
@@ -96,78 +72,74 @@
 
 <body>
 
-  <!-- HEADER -->
-  <header class="main-header">
-    <h1>TapOut! - Counselor Dashboard</h1>
+<header class="main-header">
+  <h1>TapOut! - Counselor Dashboard</h1>
 
-    <div class="header-center">
-      <input type="text" id="studentSearchHeader" placeholder="Search students..." />
-    </div>
-
-    <div class="header-right">
-      <button class="btn" onclick="openCalendar()">Open Calendar</button>
-      <button class="btn" onclick="toggleStudentsPanel()">Students</button>
-      <button class="btn" onclick="toggleNotesPanel()">Notes</button>
-      <button class="btn">Sign Out</button>
-    </div>
-  </header>
-
-  <!-- STUDENTS PANEL -->
-  <div id="studentsPanel" class="students-panel hidden">
-    <h2>Assigned Students</h2>
-    <label>Sort:</label>
-    <select id="sortOption" onchange="renderStudentList()">
-      <option value="alpha">Alphabetical</option>
-      <option value="grade">Grade Level</option>
-    </select>
-    <ul id="studentList"></ul>
+  <div class="header-center">
+    <input type="text" id="studentSearchHeader" placeholder="Search students..." />
   </div>
 
-  <!-- NOTES PANEL -->
-  <div id="notesPanel" class="notes-panel hidden">
-    <h2>Notes</h2>
-    <textarea id="newNote" placeholder="Write a note..." style="width:100%; height:120px;"></textarea>
-    <button class="btn" onclick="saveNote()">Save Note</button>
+  <div class="header-right">
+    <button class="btn" onclick="openCalendar()">Open Calendar</button>
+    <button class="btn" onclick="toggleStudentsPanel()">Students</button>
+    <button class="btn" onclick="toggleNotesPanel()">Notes</button>
+    <button class="btn">Sign Out</button>
+  </div>
+</header>
 
-    <h3>Saved Notes</h3>
-    <ul id="notesHistory"></ul>
+<!-- STUDENTS PANEL -->
+<div id="studentsPanel" class="students-panel hidden">
+  <h2>Assigned Students</h2>
+  <label>Sort:</label>
+  <select id="sortOption" onchange="renderStudentList()">
+    <option value="alpha">Alphabetical</option>
+    <option value="grade">Grade Level</option>
+  </select>
+  <ul id="studentList"></ul>
+</div>
+
+<!-- NOTES PANEL -->
+<div id="notesPanel" class="notes-panel hidden">
+  <h2>Notes</h2>
+  <textarea id="newNote" placeholder="Write a note..." style="width:100%; height:120px;"></textarea>
+  <button class="btn" onclick="saveNote()">Save Note</button>
+  <h3>Saved Notes</h3>
+  <ul id="notesHistory"></ul>
+</div>
+
+<!-- STUDENT DETAIL PANEL -->
+<div id="studentDetailPanel" class="student-detail hidden">
+  <button class="btn small-btn" onclick="closeStudentDetail()">Back</button>
+  <h2 id="studentName"></h2>
+  <p id="studentEmail"></p>
+  <h3>Appointment History</h3>
+  <ul id="appointmentHistory">
+    <li>No appointments recorded.</li>
+  </ul>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard">
+  <!-- CRISIS -->
+  <div class="urgency-row">
+    <div class="face red-face"></div>
+    <div class="request-list" id="crisisList"></div>
   </div>
 
-  <!-- STUDENT DETAIL PANEL -->
-  <div id="studentDetailPanel" class="student-detail hidden">
-    <button class="btn small-btn" onclick="closeStudentDetail()">Back</button>
-    <h2 id="studentName"></h2>
-    <p id="studentEmail"></p>
-
-    <h3>Appointment History</h3>
-    <ul id="appointmentHistory">
-      <li>No appointments recorded.</li>
-    </ul>
+  <!-- URGENT -->
+  <div class="urgency-row">
+    <div class="face orange-face"></div>
+    <div class="request-list" id="urgentList"></div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div class="dashboard">
-    <!-- CRISIS -->
-    <div class="urgency-row">
-      <div class="face red-face"></div>
-      <div class="request-list" id="crisisList"></div>
-    </div>
-
-    <!-- URGENT -->
-    <div class="urgency-row">
-      <div class="face orange-face"></div>
-      <div class="request-list" id="urgentList"></div>
-    </div>
-
-    <!-- NORMAL -->
-    <div class="urgency-row">
-      <div class="face yellow-face"></div>
-      <div class="request-list" id="normalList"></div>
-    </div>
+  <!-- NORMAL -->
+  <div class="urgency-row">
+    <div class="face yellow-face"></div>
+    <div class="request-list" id="normalList"></div>
   </div>
+</div>
 
-  <script src="app.js"></script>
+<script src="app.js"></script>
 
 </body>
 </html>
-
