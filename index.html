@@ -2,39 +2,60 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Counselor Dashboard</title>
+  <title>TapOut! - Counselor Dashboard</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
 
+<!-- HEADER -->
 <header class="main-header">
-  <h1>TapOut! Counselor Dashboard</h1>
+  <h1>TapOut! - Counselor Dashboard</h1>
+
+  <div class="header-center">
+    <input type="text" id="studentSearchHeader" placeholder="Search students..." />
+  </div>
+
   <div class="header-right">
     <button class="btn" onclick="openCalendar()">Open Calendar</button>
     <button class="btn" onclick="toggleStudentsPanel()">Students</button>
     <button class="btn" onclick="toggleNotesPanel()">Notes</button>
+    <button class="btn">Sign Out</button>
   </div>
 </header>
 
+<!-- DASHBOARD -->
 <div class="dashboard">
 
   <div class="urgency-row" id="red-row">
-    <div class="face red-face"></div>
+    <div class="face red-face">
+      <div class="eyes"></div>
+      <div class="mouth"></div>
+    </div>
     <ul class="requests"></ul>
   </div>
 
   <div class="urgency-row" id="orange-row">
-    <div class="face orange-face"></div>
+    <div class="face orange-face">
+      <div class="eyes"></div>
+      <div class="mouth"></div>
+    </div>
     <ul class="requests"></ul>
   </div>
 
   <div class="urgency-row" id="yellow-row">
-    <div class="face yellow-face"></div>
+    <div class="face yellow-face">
+      <div class="eyes"></div>
+      <div class="mouth"></div>
+    </div>
     <ul class="requests"></ul>
   </div>
 
   <div class="urgency-row" id="green-row">
-    <div class="face green-face"></div>
+    <div class="face green-face">
+      <div class="eyes"></div>
+      <div class="mouth"></div>
+    </div>
     <ul class="requests"></ul>
   </div>
 
@@ -43,4 +64,3 @@
 <script src="dashboard.js"></script>
 </body>
 </html>
-
