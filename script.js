@@ -1,5 +1,5 @@
 const counselorEmail = "miap2k10@gmail.com"; 
-// Change this for each counselor
+// Change this per counselor
 
 function loadRequests() {
   const requests = JSON.parse(localStorage.getItem("requests") || "[]");
@@ -32,5 +32,16 @@ function loadRequests() {
     });
 }
 
-loadRequests();
+function openCalendar() {
+  alert("Calendar will open here.");
+}
 
+function toggleStudentsPanel() {
+  alert("Students panel placeholder.");
+}
+
+function toggleNotesPanel() {
+  alert("Notes panel placeholder.");
+}
+
+loadRequests();
