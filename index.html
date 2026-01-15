@@ -2,42 +2,50 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TapOut! - Counselor Dashboard</title>
+  <title>TapOut Dashboard</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
+
 <body>
-  <!-- HEADER -->
-  <header class="main-header">
-    <h1>TapOut! - Counselor Dashboard</h1>
-  </header>
 
-  <!-- DASHBOARD: URGENCY ROWS -->
-  <div class="dashboard">
-    <div class="urgency-row" id="red-row">
-      <div class="face red-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests-list"></ul>
-    </div>
+<header class="main-header">
+  <h1>TapOut! - Counselor Dashboard</h1>
 
-    <div class="urgency-row" id="orange-row">
-      <div class="face orange-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests-list"></ul>
-    </div>
-
-    <div class="urgency-row" id="yellow-row">
-      <div class="face yellow-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests-list"></ul>
-    </div>
-
-    <div class="urgency-row" id="green-row">
-      <div class="face green-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests-list"></ul>
-    </div>
+  <div class="header-center">
+    <input type="text" id="searchBar" placeholder="Search students..." />
   </div>
 
-  <script src="dashboard.js"></script>
+  <div class="header-right">
+    <button onclick="openCalendar()">Open Calendar</button>
+    <button onclick="toggleNotes()">Notes</button>
+    <button>Sign Out</button>
+  </div>
+</header>
+
+<div class="dashboard">
+
+  <div class="urgency-row" id="red-row">
+    <div class="face red-face"></div>
+    <ul></ul>
+  </div>
+
+  <div class="urgency-row" id="orange-row">
+    <div class="face orange-face"></div>
+    <ul></ul>
+  </div>
+
+  <div class="urgency-row" id="yellow-row">
+    <div class="face yellow-face"></div>
+    <ul></ul>
+  </div>
+
+  <div class="urgency-row" id="green-row">
+    <div class="face green-face"></div>
+    <ul></ul>
+  </div>
+
+</div>
+
+<script src="dashboard.js"></script>
 </body>
 </html>
-
