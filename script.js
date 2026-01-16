@@ -1,35 +1,40 @@
-// Check login on load
-window.onload = () => {
-  const savedEmail = localStorage.getItem("counselorEmail");
-  if (savedEmail) showDashboard();
+// Example counselor accounts
+const counselors = {
+  "miap2k10": { password: "1234", email: "miap2k10@gmail.com" },
+  "kmcconnell": { password: "1234", email: "kmcconnell@smpanthers.org" },
+  "gsorbi": { password: "1234", email: "gsorbi@smpanthers.org" }
 };
 
-// LOGIN
+// Auto-login if already signed in
+window.onload = () => {
+  const saved = localStorage.getItem("counselorEmail");
+  if (saved) showDashboard();
+};
+
 function login() {
-  const email = document.getElementById("loginEmail").value.trim();
-  if (!email) {
-    alert("Enter your counselor email.");
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
+
+  if (!counselors[user] || counselors[user].password !== pass) {
+    alert("Invalid username or password");
     return;
   }
 
-  localStorage.setItem("counselorEmail", email);
+  localStorage.setItem("counselorEmail", counselors[user].email);
   showDashboard();
 }
 
-// LOGOUT
 function logout() {
   localStorage.removeItem("counselorEmail");
   location.reload();
 }
 
-// SHOW DASHBOARD
 function showDashboard() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("dashboardScreen").style.display = "block";
   loadRequests();
 }
 
-// LOAD REQUESTS
 function loadRequests() {
   const counselorEmail = localStorage.getItem("counselorEmail");
   const requests = JSON.parse(localStorage.getItem("requests") || "[]");
@@ -39,6 +44,7 @@ function loadRequests() {
   requests
     .filter(r => r.counselor === counselorEmail)
     .forEach(r => {
+
       const li = document.createElement("li");
       li.innerHTML = `
         <strong>${r.name} (Grade ${r.grade})</strong><br>
@@ -58,14 +64,8 @@ function loadRequests() {
     });
 }
 
-// PLACEHOLDER BUTTONS
 function openCalendar() {
-  alert("Calendar feature coming soon.");
+  alert("Calendar coming soon.");
 }
-function toggleStudentsPanel() {
-  alert("Students panel coming soon.");
-}
-function toggleNotesPanel() {
-  alert("Notes panel coming soon.");
-}
+
 
