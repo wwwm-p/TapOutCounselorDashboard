@@ -2,24 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Counselor Login</title>
+  <title>Counselor Sign In</title>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* Centered login box like your screenshot */
+    .login-container {
+      width: 700px;
+      margin: 150px auto;
+      text-align: left;
+    }
+
+    .login-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .login-row label {
+      width: 150px;
+      font-size: 22px;
+      font-weight: bold;
+      background: #f2f2f2;
+      padding: 15px;
+    }
+
+    .login-row input {
+      flex: 1;
+      padding: 15px;
+      font-size: 20px;
+      border: 2px solid #ccc;
+    }
+
+    .login-footer {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .login-footer a {
+      color: #0070c9;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .login-footer button {
+      float: right;
+      padding: 12px 25px;
+      font-size: 18px;
+      background: #0070c9;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #dashboardScreen {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
 
 <!-- LOGIN SCREEN -->
-<div id="loginScreen" style="text-align:center; margin-top:100px;">
-  <h2>Counselor Sign In</h2>
-  <input type="email" id="loginEmail" placeholder="Enter your school email" />
-  <br><br>
-  <button class="btn" onclick="login()">Sign In</button>
+<div id="loginScreen" class="login-container">
+
+  <div class="login-row">
+    <label>Username</label>
+    <input type="text" id="username" />
+  </div>
+
+  <div class="login-row">
+    <label>Password</label>
+    <input type="password" id="password" />
+  </div>
+
+  <div class="login-footer">
+    <a href="#">Forgot Username or Password?</a>
+    <button onclick="login()">Sign In</button>
+  </div>
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboardScreen" style="display:none;">
+<div id="dashboardScreen">
 
-  <!-- HEADER -->
   <header class="main-header">
     <h1>TapOut! - Counselor Dashboard</h1>
 
@@ -29,13 +95,12 @@
 
     <div class="header-right">
       <button class="btn" onclick="openCalendar()">Open Calendar</button>
-      <button class="btn" onclick="toggleStudentsPanel()">Students</button>
-      <button class="btn" onclick="toggleNotesPanel()">Notes</button>
+      <button class="btn">Students</button>
+      <button class="btn">Notes</button>
       <button class="btn" onclick="logout()">Sign Out</button>
     </div>
   </header>
 
-  <!-- DASHBOARD ROWS -->
   <div class="dashboard">
 
     <div class="urgency-row" id="red-row">
@@ -59,10 +124,8 @@
     </div>
 
   </div>
-
 </div>
 
 <script src="counselor.js"></script>
 </body>
 </html>
-
