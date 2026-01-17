@@ -1,72 +1,82 @@
-// Example counselor accounts
+/* COUNSELOR ACCOUNTS */
 const counselors = {
-  "miap2k10": { password: "1234", email: "miap2k10@gmail.com" },
-  "kmcconnell": { password: "1234", email: "kmcconnell@smpanthers.org" },
-  "gsorbi": { password: "1234", email: "gsorbi@smpanthers.org" }
+  "miap2k10": "1234",
+  "kmcconnell": "1234",
+  "gsorbi": "1234",
+  "apanlilio": "1234",
+  "aturner": "1234",
+  "cfilson": "1234"
 };
 
-// Auto-login if already signed in
-window.onload = () => {
-  const saved = localStorage.getItem("counselorEmail");
-  if (saved) showDashboard();
-};
+/* LOGIN */
+document.getElementById("loginForm").addEventListener("submit", e => {
+  e.preventDefault();
 
-function login() {
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
+  const u = username.value.trim();
+  const p = password.value.trim();
 
-  if (!counselors[user] || counselors[user].password !== pass) {
-    alert("Invalid username or password");
-    return;
+  if (counselors[u] === p) {
+    localStorage.setItem("loggedInCounselor", u);
+    loginScreen.style.display = "none";
+    loadMessages();
+  } else {
+    alert("Invalid login");
   }
+});
 
-  localStorage.setItem("counselorEmail", counselors[user].email);
-  showDashboard();
-}
-
+/* LOGOUT */
 function logout() {
-  localStorage.removeItem("counselorEmail");
+  localStorage.removeItem("loggedInCounselor");
   location.reload();
 }
 
-function showDashboard() {
-  document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("dashboardScreen").style.display = "block";
-  loadRequests();
+/* LOAD STUDENT MESSAGES */
+function loadMessages() {
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+
+  redRow.innerHTML = "";
+  orangeRow.innerHTML = "";
+  yellowRow.innerHTML = "";
+  greenRow.innerHTML = "";
+
+  messages.forEach(m => {
+    if (m.counselor !== counselor) return;
+
+    const card = document.createElement("div");
+    card.style.background = "#fff";
+    card.style.padding = "10px";
+    card.style.margin = "10px";
+    card.style.border = "1px solid #ccc";
+    card.style.borderRadius = "8px";
+
+    card.innerHTML = `
+      <strong>${m.name} (Grade ${m.grade})</strong><br>
+      ${m.reason}<br>
+      <em>${m.urgency}</em><br>
+      <small>${m.time}</small>
+    `;
+
+    if (m.urgency === "I’m in Crisis") redRow.appendChild(card);
+    else if (m.urgency === "I’m Not Coping Well") orangeRow.appendChild(card);
+    else if (m.urgency === "Feeling a Little Off") yellowRow.appendChild(card);
+    else greenRow.appendChild(card);
+  });
 }
 
-function loadRequests() {
-  const counselorEmail = localStorage.getItem("counselorEmail");
-  const requests = JSON.parse(localStorage.getItem("requests") || "[]");
-
-  document.querySelectorAll(".requests").forEach(list => list.innerHTML = "");
-
-  requests
-    .filter(r => r.counselor === counselorEmail)
-    .forEach(r => {
-
-      const li = document.createElement("li");
-      li.innerHTML = `
-        <strong>${r.name} (Grade ${r.grade})</strong><br>
-        Reason: ${r.reason}<br>
-        Urgency: ${r.urgency}<br>
-        Time: ${r.time}
-      `;
-
-      if (r.urgency === "I’m in Crisis")
-        document.querySelector("#red-row .requests").appendChild(li);
-      else if (r.urgency === "I’m Not Coping Well")
-        document.querySelector("#orange-row .requests").appendChild(li);
-      else if (r.urgency === "Feeling a Little Off")
-        document.querySelector("#yellow-row .requests").appendChild(li);
-      else
-        document.querySelector("#green-row .requests").appendChild(li);
-    });
+/* AUTO LOGIN */
+if (localStorage.getItem("loggedInCounselor")) {
+  loginScreen.style.display = "none";
+  loadMessages();
 }
 
-function openCalendar() {
-  alert("Calendar coming soon.");
-}
+/* STUB FUNCTIONS (KEEP BUTTONS WORKING) */
+function openCalendar() { alert("Calendar coming soon"); }
+function toggleStudentsPanel() { studentsPanel.classList.toggle("hidden"); }
+function toggleNotesPanel() { notesPanel.classList.toggle("hidden"); }
+function saveNote() {}
+function closeStudentDetail() {}
+
 
 
 
