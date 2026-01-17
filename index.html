@@ -2,130 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Counselor Sign In</title>
+  <title>Counselor Login</title>
   <link rel="stylesheet" href="style.css" />
-
-  <style>
-    /* Centered login box like your screenshot */
-    .login-container {
-      width: 700px;
-      margin: 150px auto;
-      text-align: left;
-    }
-
-    .login-row {
-      display: flex;
-      align-items: center;
-      margin-bottom: 25px;
-    }
-
-    .login-row label {
-      width: 150px;
-      font-size: 22px;
-      font-weight: bold;
-      background: #f2f2f2;
-      padding: 15px;
-    }
-
-    .login-row input {
-      flex: 1;
-      padding: 15px;
-      font-size: 20px;
-      border: 2px solid #ccc;
-    }
-
-    .login-footer {
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .login-footer a {
-      color: #0070c9;
-      text-decoration: none;
-      font-size: 18px;
-    }
-
-    .login-footer button {
-      float: right;
-      padding: 12px 25px;
-      font-size: 18px;
-      background: #0070c9;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    #dashboardScreen {
-      display: none;
-    }
-  </style>
 </head>
 
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="loginScreen" class="login-container">
+  <div class="login-wrapper">
+    <form id="loginForm" class="login-box">
+      
+      <label>Username</label>
+      <input type="text" id="username" required />
 
-  <div class="login-row">
-    <label>Username</label>
-    <input type="text" id="username" />
+      <label>Password</label>
+      <input type="password" id="password" required />
+
+      <a href="#">Forgot Username or Password?</a>
+
+      <button type="submit">Sign In</button>
+    </form>
   </div>
 
-  <div class="login-row">
-    <label>Password</label>
-    <input type="password" id="password" />
-  </div>
-
-  <div class="login-footer">
-    <a href="#">Forgot Username or Password?</a>
-    <button onclick="login()">Sign In</button>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboardScreen">
-
-  <header class="main-header">
-    <h1>TapOut! - Counselor Dashboard</h1>
-
-    <div class="header-center">
-      <input type="text" id="studentSearchHeader" placeholder="Search students..." />
-    </div>
-
-    <div class="header-right">
-      <button class="btn" onclick="openCalendar()">Open Calendar</button>
-      <button class="btn">Students</button>
-      <button class="btn">Notes</button>
-      <button class="btn" onclick="logout()">Sign Out</button>
-    </div>
-  </header>
-
-  <div class="dashboard">
-
-    <div class="urgency-row" id="red-row">
-      <div class="face red-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests"></ul>
-    </div>
-
-    <div class="urgency-row" id="orange-row">
-      <div class="face orange-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests"></ul>
-    </div>
-
-    <div class="urgency-row" id="yellow-row">
-      <div class="face yellow-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests"></ul>
-    </div>
-
-    <div class="urgency-row" id="green-row">
-      <div class="face green-face"><div class="eyes"></div><div class="mouth"></div></div>
-      <ul class="requests"></ul>
-    </div>
-
-  </div>
-</div>
-
-<script src="counselor.js"></script>
+  <script src="login.js"></script>
 </body>
 </html>
+
