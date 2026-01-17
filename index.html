@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Counselor Dashboard</title>
-  <link rel="stylesheet" href="style.css" /> <!-- KEEP YOUR ORIGINAL CSS -->
+  <title>TapOut! - Counselor Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<!-- LOGIN SCREEN -->
+<!-- LOGIN SCREEN (CENTERED, DOES NOT AFFECT CSS) -->
 <div id="loginScreen" style="
+  position:fixed;
+  inset:0;
+  background:#fff;
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
+  z-index:9999;
 ">
   <form id="loginForm" style="width:600px;">
     <div>
@@ -32,99 +35,67 @@
   </form>
 </div>
 
-<!-- DASHBOARD (YOUR ORIGINAL LAYOUT GOES HERE) -->
-<div id="dashboardScreen" style="display:none;">
+<!-- YOUR ORIGINAL DASHBOARD (UNCHANGED) -->
+<header class="main-header">
+  <h1>TapOut! - Counselor Dashboard</h1>
 
-  <!-- KEEP YOUR ORIGINAL HEADER -->
-  <header class="main-header">
-    <input id="searchBar" placeholder="Search students..." />
-    <button onclick="logout()">Sign Out</button>
-  </header>
+  <div class="header-center">
+    <input type="text" id="studentSearchHeader" placeholder="Search students..." />
+  </div>
 
-  <!-- YOUR ORIGINAL FACE ROWS -->
-  <div id="redRow" class="urgency-row"></div>
-  <div id="orangeRow" class="urgency-row"></div>
-  <div id="yellowRow" class="urgency-row"></div>
-  <div id="greenRow" class="urgency-row"></div>
+  <div class="header-right">
+    <button class="btn" onclick="openCalendar()">Open Calendar</button>
+    <button class="btn" onclick="toggleStudentsPanel()">Students</button>
+    <button class="btn" onclick="toggleNotesPanel()">Notes</button>
+    <button class="btn" onclick="logout()">Sign Out</button>
+  </div>
+</header>
 
+<div id="studentsPanel" class="students-panel hidden">
+  <h2>Assigned Students</h2>
+  <select id="sortOption">
+    <option value="alpha">Alphabetical</option>
+    <option value="grade">Grade Level</option>
+  </select>
+  <ul id="studentList"></ul>
 </div>
 
-<script>
-/* ACCOUNTS */
-const counselors = {
-  "miap2k10": "1234",
-  "kmcconnell": "1234",
-  "gsorbi": "1234",
-  "apanlilio": "1234",
-  "aturner": "1234",
-  "cfilson": "1234"
-};
+<div id="notesPanel" class="notes-panel hidden">
+  <h2>Notes</h2>
+  <textarea id="newNote" style="width:100%;height:120px;"></textarea>
+  <button class="btn" onclick="saveNote()">Save Note</button>
+  <ul id="notesHistory"></ul>
+</div>
 
-/* LOGIN */
-document.getElementById("loginForm").addEventListener("submit", e => {
-  e.preventDefault();
+<div id="studentDetailPanel" class="student-detail hidden">
+  <button class="btn small-btn" onclick="closeStudentDetail()">Back</button>
+  <h2 id="studentName"></h2>
+  <p id="studentEmail"></p>
+</div>
 
-  const u = username.value.trim();
-  const p = password.value.trim();
+<!-- DASHBOARD ROWS -->
+<div class="dashboard">
+  <div id="redRow" class="urgency-row">
+    <div class="face red-face"><div class="eyes"></div><div class="mouth"></div></div>
+  </div>
 
-  if (counselors[u] === p) {
-    localStorage.setItem("loggedInCounselor", u);
-    showDashboard();
-  } else {
-    alert("Invalid login");
-  }
-});
+  <div id="orangeRow" class="urgency-row">
+    <div class="face orange-face"><div class="eyes"></div><div class="mouth"></div></div>
+  </div>
 
-/* SHOW DASHBOARD */
-function showDashboard() {
-  loginScreen.style.display = "none";
-  dashboardScreen.style.display = "block";
-  loadMessages();
-}
+  <div id="yellowRow" class="urgency-row">
+    <div class="face yellow-face"><div class="eyes"></div><div class="mouth"></div></div>
+  </div>
 
-/* LOGOUT */
-function logout() {
-  localStorage.removeItem("loggedInCounselor");
-  location.reload();
-}
+  <div id="greenRow" class="urgency-row">
+    <div class="face green-face"><div class="eyes"></div><div class="mouth"></div></div>
+  </div>
+</div>
 
-/* LOAD STUDENT DATA */
-function loadMessages() {
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-
-  redRow.innerHTML = "";
-  orangeRow.innerHTML = "";
-  yellowRow.innerHTML = "";
-  greenRow.innerHTML = "";
-
-  messages.forEach(m => {
-    if (m.counselor !== counselor) return;
-
-    const card = document.createElement("div");
-    card.className = "message-card";
-    card.innerHTML = `
-      <strong>${m.name} (Grade ${m.grade})</strong><br>
-      ${m.reason}<br>
-      <em>${m.urgency}</em><br>
-      ${m.time}
-    `;
-
-    if (m.urgency === "I’m in Crisis") redRow.appendChild(card);
-    else if (m.urgency === "I’m Not Coping Well") orangeRow.appendChild(card);
-    else if (m.urgency === "Feeling a Little Off") yellowRow.appendChild(card);
-    else greenRow.appendChild(card);
-  });
-}
-
-/* AUTO LOGIN */
-if (localStorage.getItem("loggedInCounselor")) {
-  showDashboard();
-}
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
+
 
 
 
