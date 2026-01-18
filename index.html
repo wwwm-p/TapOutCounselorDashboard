@@ -2,24 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>TapOut! - Counselor Dashboard</title>
+  <title>Counselor Login</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="loginScreen" style="
+<div style="
   position:fixed;
   inset:0;
   background:#fff;
   display:flex;
   justify-content:center;
   align-items:center;
-  z-index:9999;
 ">
 
-  <!-- IMPORTANT: type='button' so it does NOT refresh -->
   <div style="width:600px;">
     <label style="font-size:20px;font-weight:bold;">Username</label>
     <input id="username" type="text" style="width:100%;height:40px;">
@@ -39,61 +36,7 @@
   </div>
 </div>
 
-<!-- ORIGINAL DASHBOARD -->
-<header class="main-header">
-  <h1>TapOut! - Counselor Dashboard</h1>
-
-  <div class="header-center">
-    <input type="text" id="studentSearchHeader" placeholder="Search students..." />
-  </div>
-
-  <div class="header-right">
-    <button class="btn" onclick="openCalendar()">Open Calendar</button>
-    <button class="btn" onclick="toggleStudentsPanel()">Students</button>
-    <button class="btn" onclick="toggleNotesPanel()">Notes</button>
-    <button class="btn" onclick="logout()">Sign Out</button>
-  </div>
-</header>
-
-<div id="studentsPanel" class="students-panel hidden">
-  <h2>Assigned Students</h2>
-  <ul id="studentList"></ul>
-</div>
-
-<div id="notesPanel" class="notes-panel hidden">
-  <h2>Notes</h2>
-  <textarea id="newNote" style="width:100%;height:120px;"></textarea>
-  <button class="btn" onclick="saveNote()">Save Note</button>
-  <ul id="notesHistory"></ul>
-</div>
-
-<div id="studentDetailPanel" class="student-detail hidden">
-  <button class="btn small-btn" onclick="closeStudentDetail()">Back</button>
-  <h2 id="studentName"></h2>
-  <p id="studentEmail"></p>
-</div>
-
-<!-- DASHBOARD -->
-<div class="dashboard">
-
-  <div id="redRow" class="urgency-row">
-    <div class="face red-face"><div class="eyes"></div><div class="mouth"></div></div>
-  </div>
-
-  <div id="orangeRow" class="urgency-row">
-    <div class="face orange-face"><div class="eyes"></div><div class="mouth"></div></div>
-  </div>
-
-  <div id="yellowRow" class="urgency-row">
-    <div class="face yellow-face"><div class="eyes"></div><div class="mouth"></div></div>
-  </div>
-
-  <div id="greenRow" class="urgency-row">
-    <div class="face green-face"><div class="eyes"></div><div class="mouth"></div></div>
-  </div>
-
-</div>
-
-<script src="app.js"></script>
+<script src="login.js"></script>
 </body>
 </html>
+
