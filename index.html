@@ -8,7 +8,7 @@
 
 <body>
 
-<!-- LOGIN SCREEN (CENTERED, DOES NOT AFFECT CSS) -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen" style="
   position:fixed;
   inset:0;
@@ -18,24 +18,28 @@
   align-items:center;
   z-index:9999;
 ">
-  <form id="loginForm" style="width:600px;">
-    <div>
-      <label style="font-size:20px;font-weight:bold;">Username</label>
-      <input id="username" type="text" style="width:100%;height:40px;">
-    </div>
-    <br>
-    <div>
-      <label style="font-size:20px;font-weight:bold;">Password</label>
-      <input id="password" type="password" style="width:100%;height:40px;">
-    </div>
-    <br>
-    <a href="#" style="color:#0070c9;">Forgot Username or Password?</a>
+
+  <!-- IMPORTANT: type='button' so it does NOT refresh -->
+  <div style="width:600px;">
+    <label style="font-size:20px;font-weight:bold;">Username</label>
+    <input id="username" type="text" style="width:100%;height:40px;">
+
     <br><br>
-    <button type="submit" style="float:right;">Sign In</button>
-  </form>
+
+    <label style="font-size:20px;font-weight:bold;">Password</label>
+    <input id="password" type="password" style="width:100%;height:40px;">
+
+    <br><br>
+
+    <a href="#" style="color:#0070c9;">Forgot Username or Password?</a>
+
+    <br><br>
+
+    <button id="loginBtn" style="float:right;">Sign In</button>
+  </div>
 </div>
 
-<!-- YOUR ORIGINAL DASHBOARD (UNCHANGED) -->
+<!-- ORIGINAL DASHBOARD -->
 <header class="main-header">
   <h1>TapOut! - Counselor Dashboard</h1>
 
@@ -53,10 +57,6 @@
 
 <div id="studentsPanel" class="students-panel hidden">
   <h2>Assigned Students</h2>
-  <select id="sortOption">
-    <option value="alpha">Alphabetical</option>
-    <option value="grade">Grade Level</option>
-  </select>
   <ul id="studentList"></ul>
 </div>
 
@@ -73,8 +73,9 @@
   <p id="studentEmail"></p>
 </div>
 
-<!-- DASHBOARD ROWS -->
+<!-- DASHBOARD -->
 <div class="dashboard">
+
   <div id="redRow" class="urgency-row">
     <div class="face red-face"><div class="eyes"></div><div class="mouth"></div></div>
   </div>
@@ -90,13 +91,9 @@
   <div id="greenRow" class="urgency-row">
     <div class="face green-face"><div class="eyes"></div><div class="mouth"></div></div>
   </div>
+
 </div>
 
 <script src="app.js"></script>
 </body>
 </html>
-
-
-
-
-
