@@ -8,21 +8,21 @@ const counselors = {
   "cfilson": "1234"
 };
 
-/* LOGIN */
-document.getElementById("loginForm").addEventListener("submit", e => {
-  e.preventDefault();
+/* LOGIN BUTTON */
+document.getElementById("loginBtn").addEventListener("click", login);
 
-  const u = username.value.trim();
-  const p = password.value.trim();
+function login() {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
 
   if (counselors[u] === p) {
     localStorage.setItem("loggedInCounselor", u);
-    loginScreen.style.display = "none";
+    document.getElementById("loginScreen").style.display = "none";
     loadMessages();
   } else {
     alert("Invalid login");
   }
-});
+}
 
 /* LOGOUT */
 function logout() {
@@ -66,16 +66,17 @@ function loadMessages() {
 
 /* AUTO LOGIN */
 if (localStorage.getItem("loggedInCounselor")) {
-  loginScreen.style.display = "none";
+  document.getElementById("loginScreen").style.display = "none";
   loadMessages();
 }
 
-/* STUB FUNCTIONS (KEEP BUTTONS WORKING) */
+/* STUB FUNCTIONS */
 function openCalendar() { alert("Calendar coming soon"); }
 function toggleStudentsPanel() { studentsPanel.classList.toggle("hidden"); }
 function toggleNotesPanel() { notesPanel.classList.toggle("hidden"); }
 function saveNote() {}
 function closeStudentDetail() {}
+
 
 
 
