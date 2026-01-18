@@ -1,23 +1,39 @@
-const counselors = {
-  "miap2k10": "1234",
-  "kmcconnell": "1234",
-  "gsorbi": "1234",
-  "apanlilio": "1234",
-  "aturner": "1234",
-  "cfilson": "1234"
-};
+const counselor = localStorage.getItem("loggedInCounselor");
 
-document.getElementById("loginBtn").addEventListener("click", () => {
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
+if (!counselor) {
+  window.location.href = "counselor-login.html";
+}
 
-  if (counselors[user] === pass) {
-    localStorage.setItem("loggedInCounselor", user);
-    window.location.href = "counselor-dashboard.html";
-  } else {
-    alert("Invalid login");
-  }
+const messages = JSON.parse(localStorage.getItem("studentMessages")) || [];
+
+const board = document.getElementById("messageBoard");
+
+const urgencyOrder = ["High", "Medium", "Low"];
+
+urgencyOrder.forEach(level => {
+  const section = document.createElement("div");
+  section.innerHTML = `<h2>${level} Urgency</h2>`;
+
+  messages
+    .filter(msg => msg.urgency === level && msg.counselor === counselor)
+    .forEach(msg => {
+      const card = document.createElement("div");
+      card.className = "message-card";
+      card.innerHTML = `
+        <strong>Reason:</strong> ${msg.reason}<br>
+        <strong>Message:</strong> ${msg.message}
+      `;
+      section.appendChild(card);
+    });
+
+  board.appendChild(section);
 });
+
+function logout() {
+  localStorage.removeItem("loggedInCounselor");
+  window.location.href = "counselor-login.html";
+}
+
 
 
 
