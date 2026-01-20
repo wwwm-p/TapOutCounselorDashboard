@@ -1,4 +1,4 @@
-// Counselor login accounts
+// Counselor accounts (username: password)
 const counselors = {
   "miap2k10": "1234",
   "kmcconnell": "1234",
@@ -10,42 +10,46 @@ const counselors = {
 
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
-const loginBtn = document.getElementById("loginBtn");
+const loginForm = document.getElementById("loginForm");
 const searchBar = document.getElementById("searchBar");
 
-// Auto login
+// Auto-login if already signed in
 window.onload = () => {
-  const saved = localStorage.getItem("loggedInCounselor");
-  if (saved) showDashboard();
+  const savedCounselor = localStorage.getItem("loggedInCounselor");
+  if (savedCounselor) {
+    showDashboard();
+  }
 };
 
-// Login
-loginBtn.addEventListener("click", () => {
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
+// LOGIN HANDLER
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
 
-  if (counselors[user] === pass) {
-    localStorage.setItem("loggedInCounselor", user);
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (counselors[username] && counselors[username] === password) {
+    localStorage.setItem("loggedInCounselor", username);
     showDashboard();
   } else {
-    alert("Invalid login");
+    alert("Invalid username or password");
   }
 });
 
-// Show dashboard
+// SHOW DASHBOARD
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
   loadMessages();
 }
 
-// Logout
+// LOGOUT
 function logout() {
   localStorage.removeItem("loggedInCounselor");
   location.reload();
 }
 
-// Load student messages
+// LOAD STUDENT MESSAGES
 function loadMessages() {
   const counselor = localStorage.getItem("loggedInCounselor");
   const allMessages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
@@ -57,7 +61,8 @@ function loadMessages() {
     "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
+  // Clear old messages
+  document.querySelectorAll(".messages").forEach(div => div.innerHTML = "");
 
   allMessages.forEach(msg => {
     if (msg.counselor !== counselor) return;
@@ -71,31 +76,23 @@ function loadMessages() {
       <strong>${msg.name} (Grade ${msg.grade})</strong><br>
       Reason: ${msg.reason}<br>
       Urgency: ${msg.urgency}<br>
-      <small>${msg.time}</small>
+      Time: ${msg.time}
     `;
 
     container.appendChild(card);
   });
 }
 
-// Search bar
-searchBar.addEventListener("input", () => {
-  const text = searchBar.value.toLowerCase();
-  document.querySelectorAll(".message-card").forEach(card => {
-    card.style.display = card.textContent.toLowerCase().includes(text)
-      ? "block"
-      : "none";
+// SEARCH FUNCTION
+searchBar.addEventListener("input", function () {
+  const searchText = searchBar.value.toLowerCase();
+  const cards = document.querySelectorAll(".message-card");
+
+  cards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(searchText) ? "block" : "none";
   });
 });
-
-// Placeholder buttons
-function openCalendar() {
-  alert("Calendar coming soon!");
-}
-
-function openNotes() {
-  alert("Notes coming soon!");
-}
 
 
 
