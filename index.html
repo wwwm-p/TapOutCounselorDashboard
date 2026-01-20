@@ -1,238 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Counselor Login & Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #fffcf5;
-      text-align: center;
-    }
-
-    /* LOGIN STYLES */
-    .login-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .login-box {
-      background: #fff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 400px;
-      text-align: left;
-    }
-
-    .login-box label {
-      font-weight: bold;
-      display: block;
-      margin: 15px 0 5px;
-      font-size: 18px;
-    }
-
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .login-box button {
-      float: right;
-      padding: 10px 25px;
-      font-size: 16px;
-      background: #0070c9;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .login-box a {
-      display: inline-block;
-      margin-top: 5px;
-      color: #0070c9;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    /* DASHBOARD STYLES */
-    #dashboardScreen {
-      display: none;
-      padding: 20px;
-    }
-
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #87CEFA;
-      padding: 15px 30px;
-    }
-
-    .dashboard-header input {
-      width: 300px;
-      padding: 10px;
-      font-size: 16px;
-    }
-
-    .dashboard-header button {
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .urgency-row {
-      margin: 20px 0;
-      padding: 15px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      background: #fff;
-    }
-
-    .urgency-row h2 {
-      margin: 0 0 10px 0;
-    }
-
-    .message-card {
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: #f9f9f9;
-    }
-
-    /* Color coding for urgency */
-    #red-row { border-left: 6px solid red; }
-    #orange-row { border-left: 6px solid orange; }
-    #yellow-row { border-left: 6px solid gold; }
-    #green-row { border-left: 6px solid green; }
-
-  </style>
+  <meta charset="UTF-8" />
+  <title>TapOut Counselor Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginScreen" class="login-wrapper">
-    <form id="loginForm" class="login-box">
-      <label>Username</label>
-      <input type="text" id="username" required>
-      <label>Password</label>
-      <input type="password" id="password" required>
-      <a href="#">Forgot Username or Password?</a>
-      <button type="submit">Sign In</button>
-    </form>
-  </div>
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="login-container">
+  <h2>Counselor Login</h2>
 
-  <!-- DASHBOARD -->
-  <div id="dashboardScreen">
-    <header class="dashboard-header">
-      <input type="text" id="searchBar" placeholder="Search students...">
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+
+  <button id="loginBtn">Sign In</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardScreen" style="display:none;">
+
+  <!-- HEADER (UNCHANGED LAYOUT) -->
+  <header class="main-header">
+    <h1>TapOut! - Counselor Dashboard</h1>
+
+    <input type="text" id="searchBar" placeholder="Search students..." />
+
+    <div class="header-buttons">
+      <button onclick="openCalendar()">Open Calendar</button>
+      <button onclick="openNotes()">Notes</button>
       <button onclick="logout()">Sign Out</button>
-    </header>
+    </div>
+  </header>
 
-    <div class="urgency-row" id="red-row">
-      <h2>High Urgency</h2>
+  <!-- URGENCY ROWS (SMILEY FACE LAYOUT KEPT) -->
+  <div class="dashboard">
+
+    <div class="urgency-row red-face" id="red-row">
+      <h3>Crisis</h3>
       <div class="messages"></div>
     </div>
-    <div class="urgency-row" id="orange-row">
-      <h2>Medium-High Urgency</h2>
+
+    <div class="urgency-row orange-face" id="orange-row">
+      <h3>Not Coping Well</h3>
       <div class="messages"></div>
     </div>
-    <div class="urgency-row" id="yellow-row">
-      <h2>Medium-Low Urgency</h2>
+
+    <div class="urgency-row yellow-face" id="yellow-row">
+      <h3>Feeling a Little Off</h3>
       <div class="messages"></div>
     </div>
-    <div class="urgency-row" id="green-row">
-      <h2>Low Urgency</h2>
+
+    <div class="urgency-row green-face" id="green-row">
+      <h3>Doing Fine</h3>
       <div class="messages"></div>
     </div>
+
   </div>
+</div>
 
-  <script>
-    // Example counselor accounts
-    const counselors = {
-      "miap2k10": "1234",
-      "kmcconnell": "1234",
-      "gsorbi": "1234",
-      "apanlilio": "1234",
-      "aturner": "1234",
-      "cfilson": "1234"
-    };
-
-    const dashboardScreen = document.getElementById("dashboardScreen");
-    const loginScreen = document.getElementById("loginScreen");
-
-    // Auto-login if already signed in
-    window.onload = () => {
-      const saved = localStorage.getItem("loggedInCounselor");
-      if (saved) showDashboard();
-    };
-
-    // LOGIN
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const user = document.getElementById("username").value.trim();
-      const pass = document.getElementById("password").value.trim();
-
-      if (counselors[user] && counselors[user] === pass) {
-        localStorage.setItem("loggedInCounselor", user);
-        showDashboard();
-      } else {
-        alert("Invalid username or password");
-      }
-    });
-
-    function showDashboard() {
-      loginScreen.style.display = "none";
-      dashboardScreen.style.display = "block";
-      loadMessages();
-    }
-
-    function logout() {
-      localStorage.removeItem("loggedInCounselor");
-      location.reload();
-    }
-
-    function loadMessages() {
-      const counselor = localStorage.getItem("loggedInCounselor");
-      const allMessages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-      const urgencyMap = {
-        "I’m in Crisis": "red-row",
-        "I’m Not Coping Well": "orange-row",
-        "Feeling a Little Off": "yellow-row",
-        "I’m Doing Fine – Just Curious": "green-row"
-      };
-
-      // Clear previous messages
-      document.querySelectorAll(".messages").forEach(div => div.innerHTML = "");
-
-      allMessages.forEach(msg => {
-        if (msg.counselor !== counselor) return;
-
-        const row = urgencyMap[msg.urgency] || "green-row";
-        const container = document.getElementById(row).querySelector(".messages");
-
-        const card = document.createElement("div");
-        card.className = "message-card";
-        card.innerHTML = `<strong>${msg.name} (Grade ${msg.grade})</strong><br>
-                          Reason: ${msg.reason}<br>
-                          Urgency: ${msg.urgency}<br>
-                          Time: ${msg.time}`;
-        container.appendChild(card);
-      });
-    }
-  </script>
-
+<script src="counselor.js"></script>
 </body>
 </html>
+
 
