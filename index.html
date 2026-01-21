@@ -1,20 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Counselor Login</title>
+<meta charset="UTF-8">
+<title>Counselor Dashboard</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div style="width:300px;margin:150px auto;text-align:center;">
-  <h2>Counselor Login</h2>
-  <input id="email" placeholder="Email"><br><br>
-  <input id="password" type="password" placeholder="Password"><br><br>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <h2>Sign In</h2>
+  <input id="loginEmail" placeholder="Email">
+  <input id="loginPass" type="password" placeholder="Password">
   <button onclick="login()">Sign In</button>
 </div>
 
-<script src="login.js"></script>
+<!-- DASHBOARD -->
+<div id="dashboard" style="display:none">
+
+<header class="main-header">
+  <h1>TapOut Dashboard</h1>
+  <input id="searchBar" placeholder="Search students">
+  <button onclick="openCalendar()">Calendar</button>
+  <button onclick="toggleNotes()">Notes</button>
+  <button onclick="logout()">Sign Out</button>
+</header>
+
+<div id="notificationBoard">
+
+  <div class="urgency-row red">
+    <div class="face red-face"></div>
+    <div id="crisisList"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="urgency-row orange">
+    <div class="face orange-face"></div>
+    <div id="highList"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="urgency-row yellow">
+    <div class="face yellow-face"></div>
+    <div id="mediumList"></div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="urgency-row green">
+    <div class="face green-face"></div>
+    <div id="lowList"></div>
+  </div>
+
+</div>
+
+<div id="notesPanel" style="display:none">
+  <textarea id="newNote"></textarea>
+  <button onclick="saveNote()">Save</button>
+  <ul id="notesHistory"></ul>
+</div>
+
+</div>
+
+<script src="counselor.js"></script>
 </body>
 </html>
+
 
 
 
