@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Counselor Login & Dashboard</title>
+
   <style>
     body {
       margin: 0;
@@ -12,7 +13,7 @@
       text-align: center;
     }
 
-    /* LOGIN STYLES */
+    /* LOGIN */
     .login-wrapper {
       display: flex;
       justify-content: center;
@@ -64,7 +65,7 @@
       font-size: 14px;
     }
 
-    /* DASHBOARD STYLES */
+    /* DASHBOARD */
     #dashboardScreen {
       display: none;
       padding: 20px;
@@ -90,10 +91,8 @@
       cursor: pointer;
     }
 
-    /* Urgency rows with faces */
+    /* URGENCY ROWS */
     .urgency-row {
-      display: flex;
-      align-items: center;
       margin: 20px 0;
       padding: 15px;
       border: 2px solid #ddd;
@@ -101,61 +100,15 @@
       background: #fff;
     }
 
-    .face {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 15px;
-      position: relative;
-      flex-shrink: 0;
+    .urgency-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
     }
 
-    /* Eyes for all faces */
-    .face::before, .face::after {
-      content: "";
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      background: black;
-      border-radius: 50%;
-      top: 15px;
-    }
-    .face::before { left: 12px; }
-    .face::after { right: 12px; }
-
-    /* Mouths using pseudo-element */
-    .red-face::after-mouth {
-      content: "";
-      position: absolute;
-      width: 24px;
-      height: 12px;
-      border-bottom: 4px solid black;
-      border-radius: 0 0 12px 12px;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%) rotate(180deg);
-    }
-
-    /* Use separate div for mouth because ::after is used for eyes */
-    .face-mouth {
-      position: absolute;
-      bottom: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 24px;
-      height: 12px;
-      border-bottom: 4px solid black;
-      border-radius: 0 0 12px 12px;
-    }
-
-    .red-face .face-mouth { border-color: black; transform: translateX(-50%) rotate(180deg); }
-    .orange-face .face-mouth { border-color: black; border-radius: 12px 12px 0 0; transform: translateX(-50%) rotate(45deg); }
-    .yellow-face .face-mouth { border-color: black; border-radius: 0; border-bottom: none; height: 2px; top: 26px; left: 13px; }
-    .green-face .face-mouth { border-color: black; border-radius: 12px 12px 0 0; transform: translateX(-50%); }
-
-    .messages {
-      flex: 1;
+    .urgency-row h2 {
+      margin: 0;
     }
 
     .message-card {
@@ -166,7 +119,58 @@
       background: #f9f9f9;
     }
 
-    /* Color coding for urgency borders */
+    /* FACES */
+    .face {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .eye {
+      width: 5px;
+      height: 5px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 12px;
+    }
+
+    .eye.left { left: 11px; }
+    .eye.right { right: 11px; }
+
+    .mouth {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 10px;
+      border: 3px solid black;
+      border-color: black transparent transparent transparent;
+      border-radius: 50%;
+      bottom: 8px;
+    }
+
+    /* Mouth variations */
+    .sad .mouth {
+      transform: translateX(-50%) rotate(180deg);
+    }
+
+    .neutral .mouth {
+      border: none;
+      width: 18px;
+      height: 3px;
+      background: black;
+      bottom: 10px;
+    }
+
+    /* Face colors */
+    .red-face { background: red; }
+    .orange-face { background: orange; }
+    .yellow-face { background: gold; }
+    .green-face { background: green; }
+
+    /* Borders */
     #red-row { border-left: 6px solid red; }
     #orange-row { border-left: 6px solid orange; }
     #yellow-row { border-left: 6px solid gold; }
@@ -176,123 +180,141 @@
 
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginScreen" class="login-wrapper">
-    <form id="loginForm" class="login-box">
-      <label>Username</label>
-      <input type="text" id="username" required>
-      <label>Password</label>
-      <input type="password" id="password" required>
-      <a href="#">Forgot Username or Password?</a>
-      <button type="submit">Sign In</button>
-    </form>
+<!-- LOGIN -->
+<div id="loginScreen" class="login-wrapper">
+  <form id="loginForm" class="login-box">
+    <label>Username</label>
+    <input type="text" id="username" required>
+
+    <label>Password</label>
+    <input type="password" id="password" required>
+
+    <a href="#">Forgot Username or Password?</a>
+    <button type="submit">Sign In</button>
+  </form>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardScreen">
+  <header class="dashboard-header">
+    <input type="text" placeholder="Search students...">
+    <button onclick="logout()">Sign Out</button>
+  </header>
+
+  <div class="urgency-row" id="red-row">
+    <div class="urgency-header">
+      <div class="face red-face sad">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>High Urgency</h2>
+    </div>
+    <div class="messages"></div>
   </div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboardScreen">
-    <header class="dashboard-header">
-      <input type="text" id="searchBar" placeholder="Search students...">
-      <button onclick="logout()">Sign Out</button>
-    </header>
-
-    <div class="urgency-row" id="red-row">
-      <div class="face red-face"><div class="face-mouth"></div></div>
-      <div class="messages"></div>
+  <div class="urgency-row" id="orange-row">
+    <div class="urgency-header">
+      <div class="face orange-face sad">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>Medium-High Urgency</h2>
     </div>
-
-    <div class="urgency-row" id="orange-row">
-      <div class="face orange-face"><div class="face-mouth"></div></div>
-      <div class="messages"></div>
-    </div>
-
-    <div class="urgency-row" id="yellow-row">
-      <div class="face yellow-face"><div class="face-mouth"></div></div>
-      <div class="messages"></div>
-    </div>
-
-    <div class="urgency-row" id="green-row">
-      <div class="face green-face"><div class="face-mouth"></div></div>
-      <div class="messages"></div>
-    </div>
+    <div class="messages"></div>
   </div>
 
-  <script>
-    // Example counselor accounts
-    const counselors = {
-      "miap2k10": "1234",
-      "kmcconnell": "1234",
-      "gsorbi": "1234",
-      "apanlilio": "1234",
-      "aturner": "1234",
-      "cfilson": "1234"
+  <div class="urgency-row" id="yellow-row">
+    <div class="urgency-header">
+      <div class="face yellow-face neutral">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>Medium-Low Urgency</h2>
+    </div>
+    <div class="messages"></div>
+  </div>
+
+  <div class="urgency-row" id="green-row">
+    <div class="urgency-header">
+      <div class="face green-face">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>Low Urgency</h2>
+    </div>
+    <div class="messages"></div>
+  </div>
+</div>
+
+<script>
+  const counselors = {
+    "miap2k10": "1234",
+    "kmcconnell": "1234",
+    "gsorbi": "1234",
+    "apanlilio": "1234",
+    "aturner": "1234",
+    "cfilson": "1234"
+  };
+
+  const dashboardScreen = document.getElementById("dashboardScreen");
+  const loginScreen = document.getElementById("loginScreen");
+
+  window.onload = () => {
+    if (localStorage.getItem("loggedInCounselor")) showDashboard();
+  };
+
+  document.getElementById("loginForm").addEventListener("submit", e => {
+    e.preventDefault();
+    const u = username.value.trim();
+    const p = password.value.trim();
+    if (counselors[u] === p) {
+      localStorage.setItem("loggedInCounselor", u);
+      showDashboard();
+    } else alert("Invalid login");
+  });
+
+  function showDashboard() {
+    loginScreen.style.display = "none";
+    dashboardScreen.style.display = "block";
+    loadMessages();
+  }
+
+  function logout() {
+    localStorage.removeItem("loggedInCounselor");
+    location.reload();
+  }
+
+  function loadMessages() {
+    const counselor = localStorage.getItem("loggedInCounselor");
+    const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+
+    document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
+
+    const map = {
+      "I’m in Crisis": "red-row",
+      "I’m Not Coping Well": "orange-row",
+      "Feeling a Little Off": "yellow-row",
+      "I’m Doing Fine – Just Curious": "green-row"
     };
 
-    const dashboardScreen = document.getElementById("dashboardScreen");
-    const loginScreen = document.getElementById("loginScreen");
-
-    // Auto-login if already signed in
-    window.onload = () => {
-      const saved = localStorage.getItem("loggedInCounselor");
-      if (saved) showDashboard();
-    };
-
-    // LOGIN
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const user = document.getElementById("username").value.trim();
-      const pass = document.getElementById("password").value.trim();
-
-      if (counselors[user] && counselors[user] === pass) {
-        localStorage.setItem("loggedInCounselor", user);
-        showDashboard();
-      } else {
-        alert("Invalid username or password");
-      }
+    messages.forEach(msg => {
+      if (msg.counselor !== counselor) return;
+      const row = document.getElementById(map[msg.urgency] || "green-row");
+      const card = document.createElement("div");
+      card.className = "message-card";
+      card.innerHTML = `<strong>${msg.name}</strong><br>${msg.reason}`;
+      row.querySelector(".messages").appendChild(card);
     });
-
-    function showDashboard() {
-      loginScreen.style.display = "none";
-      dashboardScreen.style.display = "block";
-      loadMessages();
-    }
-
-    function logout() {
-      localStorage.removeItem("loggedInCounselor");
-      location.reload();
-    }
-
-    function loadMessages() {
-      const counselor = localStorage.getItem("loggedInCounselor");
-      const allMessages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-      const urgencyMap = {
-        "I’m in Crisis": "red-row",
-        "I’m Not Coping Well": "orange-row",
-        "Feeling a Little Off": "yellow-row",
-        "I’m Doing Fine – Just Curious": "green-row"
-      };
-
-      // Clear previous messages
-      document.querySelectorAll(".messages").forEach(div => div.innerHTML = "");
-
-      allMessages.forEach(msg => {
-        if (msg.counselor !== counselor) return;
-
-        const row = urgencyMap[msg.urgency] || "green-row";
-        const container = document.getElementById(row).querySelector(".messages");
-
-        const card = document.createElement("div");
-        card.className = "message-card";
-        card.innerHTML = `<strong>${msg.name} (Grade ${msg.grade})</strong><br>
-                          Reason: ${msg.reason}<br>
-                          Urgency: ${msg.urgency}<br>
-                          Time: ${msg.time}`;
-        container.appendChild(card);
-      });
-    }
-  </script>
+  }
+</script>
 
 </body>
 </html>
+
 
 
 
