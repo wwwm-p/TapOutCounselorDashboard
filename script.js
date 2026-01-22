@@ -61,14 +61,20 @@ function loadMessages() {
     "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  // Clear old messages
+  // Clear existing messages
   document.querySelectorAll(".messages").forEach(div => div.innerHTML = "");
 
   allMessages.forEach(msg => {
     if (msg.counselor !== counselor) return;
 
-    const rowId = urgencyMap[msg.urgency] || "green-row";
-    const container = document.getElementById(rowId).querySelector(".messages");
+    const urgency = msg.urgency.trim();
+    const rowId = urgencyMap[urgency] || "green-row";
+
+    const row = document.getElementById(rowId);
+    if (!row) return;
+
+    const container = row.querySelector(".messages");
+    if (!container) return;
 
     const card = document.createElement("div");
     card.className = "message-card";
@@ -93,6 +99,7 @@ searchBar.addEventListener("input", function () {
     card.style.display = text.includes(searchText) ? "block" : "none";
   });
 });
+
 
 
 
