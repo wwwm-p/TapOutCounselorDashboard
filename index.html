@@ -90,7 +90,10 @@
       cursor: pointer;
     }
 
+    /* Urgency rows with faces */
     .urgency-row {
+      display: flex;
+      align-items: center;
       margin: 20px 0;
       padding: 15px;
       border: 2px solid #ddd;
@@ -98,8 +101,61 @@
       background: #fff;
     }
 
-    .urgency-row h2 {
-      margin: 0 0 10px 0;
+    .face {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 15px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    /* Eyes for all faces */
+    .face::before, .face::after {
+      content: "";
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: black;
+      border-radius: 50%;
+      top: 15px;
+    }
+    .face::before { left: 12px; }
+    .face::after { right: 12px; }
+
+    /* Mouths using pseudo-element */
+    .red-face::after-mouth {
+      content: "";
+      position: absolute;
+      width: 24px;
+      height: 12px;
+      border-bottom: 4px solid black;
+      border-radius: 0 0 12px 12px;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(180deg);
+    }
+
+    /* Use separate div for mouth because ::after is used for eyes */
+    .face-mouth {
+      position: absolute;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 12px;
+      border-bottom: 4px solid black;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .red-face .face-mouth { border-color: black; transform: translateX(-50%) rotate(180deg); }
+    .orange-face .face-mouth { border-color: black; border-radius: 12px 12px 0 0; transform: translateX(-50%) rotate(45deg); }
+    .yellow-face .face-mouth { border-color: black; border-radius: 0; border-bottom: none; height: 2px; top: 26px; left: 13px; }
+    .green-face .face-mouth { border-color: black; border-radius: 12px 12px 0 0; transform: translateX(-50%); }
+
+    .messages {
+      flex: 1;
     }
 
     .message-card {
@@ -110,12 +166,11 @@
       background: #f9f9f9;
     }
 
-    /* Color coding for urgency */
+    /* Color coding for urgency borders */
     #red-row { border-left: 6px solid red; }
     #orange-row { border-left: 6px solid orange; }
     #yellow-row { border-left: 6px solid gold; }
     #green-row { border-left: 6px solid green; }
-
   </style>
 </head>
 
@@ -141,19 +196,22 @@
     </header>
 
     <div class="urgency-row" id="red-row">
-      <h2>High Urgency</h2>
+      <div class="face red-face"><div class="face-mouth"></div></div>
       <div class="messages"></div>
     </div>
+
     <div class="urgency-row" id="orange-row">
-      <h2>Medium-High Urgency</h2>
+      <div class="face orange-face"><div class="face-mouth"></div></div>
       <div class="messages"></div>
     </div>
+
     <div class="urgency-row" id="yellow-row">
-      <h2>Medium-Low Urgency</h2>
+      <div class="face yellow-face"><div class="face-mouth"></div></div>
       <div class="messages"></div>
     </div>
+
     <div class="urgency-row" id="green-row">
-      <h2>Low Urgency</h2>
+      <div class="face green-face"><div class="face-mouth"></div></div>
       <div class="messages"></div>
     </div>
   </div>
@@ -235,6 +293,7 @@
 
 </body>
 </html>
+
 
 
 
