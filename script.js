@@ -11,13 +11,11 @@ const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
 const loginForm = document.getElementById("loginForm");
 
-// AUTO LOGIN
 window.onload = () => {
-  const loggedIn = localStorage.getItem("loggedInCounselor");
-  if (loggedIn) showDashboard();
+  const counselor = localStorage.getItem("loggedInCounselor");
+  if (counselor) showDashboard();
 };
 
-// LOGIN
 loginForm.addEventListener("submit", e => {
   e.preventDefault();
 
@@ -38,21 +36,18 @@ function showDashboard() {
   loadMessages();
 }
 
-// LOGOUT
 function logout() {
   localStorage.removeItem("loggedInCounselor");
   location.reload();
 }
 
-// LOAD & SORT BY URGENCY (SMILEY ROWS)
 function loadMessages() {
   const counselor = localStorage.getItem("loggedInCounselor");
   const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
 
-  // Clear rows
-  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
+  document.querySelectorAll(".messages").forEach(m => (m.innerHTML = ""));
 
-  const urgencyRows = {
+  const urgencyMap = {
     "Low": "green-row",
     "Medium Low": "yellow-row",
     "Medium High": "orange-row",
@@ -62,13 +57,11 @@ function loadMessages() {
   messages.forEach(msg => {
     if (msg.counselor !== counselor) return;
 
-    const rowId = urgencyRows[msg.urgency];
+    const rowId = urgencyMap[msg.urgency];
     if (!rowId) return;
 
     const row = document.getElementById(rowId);
     if (!row) return;
-
-    const container = row.querySelector(".messages");
 
     const card = document.createElement("div");
     card.className = "message-card";
@@ -78,19 +71,6 @@ function loadMessages() {
       <small>${msg.time}</small>
     `;
 
-    container.appendChild(card);
+    row.querySelector(".messages").appendChild(card);
   });
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
