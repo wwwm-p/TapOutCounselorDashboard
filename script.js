@@ -1,4 +1,3 @@
-// Counselor accounts (username: password)
 const counselors = {
   "miap2k10": "1234",
   "kmcconnell": "1234",
@@ -13,46 +12,39 @@ const dashboardScreen = document.getElementById("dashboardScreen");
 const loginForm = document.getElementById("loginForm");
 const searchBar = document.getElementById("searchBar");
 
-// Auto-login if already signed in
 window.onload = () => {
-  const savedCounselor = localStorage.getItem("loggedInCounselor");
-  if (savedCounselor) {
-    showDashboard();
-  }
+  const saved = localStorage.getItem("loggedInCounselor");
+  if (saved) showDashboard();
 };
 
-// LOGIN HANDLER
 loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
 
-  if (counselors[username] && counselors[username] === password) {
-    localStorage.setItem("loggedInCounselor", username);
+  if (counselors[user] === pass) {
+    localStorage.setItem("loggedInCounselor", user);
     showDashboard();
   } else {
     alert("Invalid username or password");
   }
 });
 
-// SHOW DASHBOARD
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
   loadMessages();
 }
 
-// LOGOUT
 function logout() {
   localStorage.removeItem("loggedInCounselor");
   location.reload();
 }
 
-// LOAD STUDENT MESSAGES
 function loadMessages() {
   const counselor = localStorage.getItem("loggedInCounselor");
-  const allMessages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
 
   const urgencyMap = {
     "I’m in Crisis": "red-row",
@@ -61,14 +53,17 @@ function loadMessages() {
     "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  // Clear old messages
-  document.querySelectorAll(".messages").forEach(div => div.innerHTML = "");
+  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
 
-  allMessages.forEach(msg => {
+  messages.forEach(msg => {
     if (msg.counselor !== counselor) return;
 
-    const rowId = urgencyMap[msg.urgency] || "green-row";
-    const container = document.getElementById(rowId).querySelector(".messages");
+    const rowId = urgencyMap[msg.urgency];
+    if (!rowId) return;
+
+    const container = document
+      .getElementById(rowId)
+      .querySelector(".messages");
 
     const card = document.createElement("div");
     card.className = "message-card";
@@ -83,13 +78,12 @@ function loadMessages() {
   });
 }
 
-// SEARCH FUNCTION
-searchBar.addEventListener("input", function () {
-  const searchText = searchBar.value.toLowerCase();
-  const cards = document.querySelectorAll(".message-card");
-
-  cards.forEach(card => {
-    const text = card.textContent.toLowerCase();
-    card.style.display = text.includes(searchText) ? "block" : "none";
+searchBar.addEventListener("input", () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(card => {
+    card.style.display = card.textContent.toLowerCase().includes(q)
+      ? "block"
+      : "none";
   });
 });
+
