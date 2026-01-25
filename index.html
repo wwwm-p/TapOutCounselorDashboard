@@ -120,9 +120,22 @@
       background: #f9f9f9;
     }
 
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .message-time {
+      font-size: 12px;
+      color: #666;
+      white-space: nowrap;
+    }
+
     /* TOGGLE BUTTON */
     .toggle-btn {
-      margin: 6px 0 10px 52px; /* aligns under emoji */
+      margin: 6px 0 10px 52px;
       padding: 6px 12px;
       font-size: 14px;
       border-radius: 6px;
@@ -332,10 +345,20 @@
 
     messages.forEach(msg => {
       if (msg.counselor !== counselor) return;
+
       const row = document.getElementById(map[msg.urgency] || "green-row");
       const card = document.createElement("div");
       card.className = "message-card";
-      card.innerHTML = `<strong>${msg.name}</strong><br>${msg.reason}`;
+
+      card.innerHTML = `
+        <div class="message-header">
+          <span>${msg.name} (Grade ${msg.grade || ""})</span>
+          <span class="message-time">${msg.time || ""}</span>
+        </div>
+        <div>Reason: ${msg.reason}</div>
+        <div>Urgency: ${msg.urgency}</div>
+      `;
+
       row.querySelector(".messages").appendChild(card);
     });
   }
@@ -343,4 +366,5 @@
 
 </body>
 </html>
+
 
