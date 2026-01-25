@@ -117,4 +117,3 @@ searchBar.addEventListener("input", () => {
       : "none";
   });
 });
-
