@@ -83,6 +83,7 @@
       cursor: pointer;
     }
 
+    /* URGENCY ROWS */
     .urgency-row {
       margin: 20px 0;
       padding: 15px;
@@ -90,6 +91,17 @@
       border-radius: 10px;
       background: #fff;
       text-align: left;
+    }
+
+    .urgency-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .urgency-row h2 {
+      margin: 0;
     }
 
     .messages {
@@ -102,36 +114,74 @@
 
     .message-card {
       padding: 10px;
-      margin-bottom: 10px;
+      margin: 6px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
       background: #f9f9f9;
     }
 
-    .message-header {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .message-time {
-      font-size: 12px;
-      color: #666;
-    }
-
+    /* TOGGLE BUTTON */
     .toggle-btn {
-      margin-top: 10px;
-      padding: 8px 14px;
+      margin: 6px 0 10px 52px; /* aligns under emoji */
+      padding: 6px 12px;
       font-size: 14px;
       border-radius: 6px;
       border: none;
-      cursor: pointer;
       background: #0070c9;
       color: white;
+      cursor: pointer;
     }
 
-    /* Urgency colors */
+    /* FACES */
+    .face {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .eye {
+      width: 5px;
+      height: 5px;
+      background: black;
+      border-radius: 50%;
+      position: absolute;
+      top: 12px;
+    }
+
+    .eye.left { left: 11px; }
+    .eye.right { right: 11px; }
+
+    .mouth {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 10px;
+      border: 3px solid black;
+      border-color: black transparent transparent transparent;
+      border-radius: 50%;
+      bottom: 8px;
+    }
+
+    .sad .mouth {
+      transform: translateX(-50%) rotate(180deg);
+    }
+
+    .neutral .mouth {
+      border: none;
+      width: 18px;
+      height: 3px;
+      background: black;
+      bottom: 10px;
+    }
+
+    .red-face { background: red; }
+    .orange-face { background: orange; }
+    .yellow-face { background: gold; }
+    .green-face { background: green; }
+
     #red-row { border-left: 6px solid red; }
     #orange-row { border-left: 6px solid orange; }
     #yellow-row { border-left: 6px solid gold; }
@@ -156,36 +206,66 @@
 
 <!-- DASHBOARD -->
 <div id="dashboardScreen">
-
   <header class="dashboard-header">
-    <input type="text" id="searchBar" placeholder="Search students...">
+    <input type="text" placeholder="Search students...">
     <button onclick="logout()">Sign Out</button>
   </header>
 
+  <!-- RED -->
   <div class="urgency-row" id="red-row">
-    <h2>High Urgency</h2>
-    <div class="messages hidden"></div>
+    <div class="urgency-header">
+      <div class="face red-face sad">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>High Urgency</h2>
+    </div>
     <button class="toggle-btn" onclick="toggleMessages('red-row')">Show Messages</button>
+    <div class="messages hidden"></div>
   </div>
 
+  <!-- ORANGE -->
   <div class="urgency-row" id="orange-row">
-    <h2>Medium-High Urgency</h2>
-    <div class="messages hidden"></div>
+    <div class="urgency-header">
+      <div class="face orange-face sad">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>Medium-High Urgency</h2>
+    </div>
     <button class="toggle-btn" onclick="toggleMessages('orange-row')">Show Messages</button>
+    <div class="messages hidden"></div>
   </div>
 
+  <!-- YELLOW -->
   <div class="urgency-row" id="yellow-row">
-    <h2>Medium-Low Urgency</h2>
-    <div class="messages hidden"></div>
+    <div class="urgency-header">
+      <div class="face yellow-face neutral">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>Medium-Low Urgency</h2>
+    </div>
     <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Show Messages</button>
-  </div>
-
-  <div class="urgency-row" id="green-row">
-    <h2>Low Urgency</h2>
     <div class="messages hidden"></div>
-    <button class="toggle-btn" onclick="toggleMessages('green-row')">Show Messages</button>
   </div>
 
+  <!-- GREEN -->
+  <div class="urgency-row" id="green-row">
+    <div class="urgency-header">
+      <div class="face green-face">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
+      </div>
+      <h2>Low Urgency</h2>
+    </div>
+    <button class="toggle-btn" onclick="toggleMessages('green-row')">Show Messages</button>
+    <div class="messages hidden"></div>
+  </div>
 </div>
 
 <script>
@@ -200,24 +280,19 @@
 
   const loginScreen = document.getElementById("loginScreen");
   const dashboardScreen = document.getElementById("dashboardScreen");
-  const loginForm = document.getElementById("loginForm");
-  const searchBar = document.getElementById("searchBar");
 
   window.onload = () => {
     if (localStorage.getItem("loggedInCounselor")) showDashboard();
   };
 
-  loginForm.addEventListener("submit", e => {
+  document.getElementById("loginForm").addEventListener("submit", e => {
     e.preventDefault();
     const u = username.value.trim();
     const p = password.value.trim();
-
     if (counselors[u] === p) {
       localStorage.setItem("loggedInCounselor", u);
       showDashboard();
-    } else {
-      alert("Invalid login");
-    }
+    } else alert("Invalid login");
   });
 
   function showDashboard() {
@@ -233,11 +308,11 @@
 
   function toggleMessages(rowId) {
     const row = document.getElementById(rowId);
-    const messages = row.querySelector(".messages");
+    const box = row.querySelector(".messages");
     const btn = row.querySelector(".toggle-btn");
 
-    messages.classList.toggle("hidden");
-    btn.textContent = messages.classList.contains("hidden")
+    box.classList.toggle("hidden");
+    btn.textContent = box.classList.contains("hidden")
       ? "Show Messages"
       : "Hide Messages";
   }
@@ -257,33 +332,15 @@
 
     messages.forEach(msg => {
       if (msg.counselor !== counselor) return;
-
       const row = document.getElementById(map[msg.urgency] || "green-row");
-      const box = row.querySelector(".messages");
-
       const card = document.createElement("div");
       card.className = "message-card";
-
-      card.innerHTML = `
-        <div class="message-header">
-          <span>${msg.name} (Grade ${msg.grade})</span>
-          <span class="message-time">${msg.time || ""}</span>
-        </div>
-        <div>Reason: ${msg.reason}</div>
-        <div>Urgency: ${msg.urgency}</div>
-      `;
-
-      box.appendChild(card);
+      card.innerHTML = `<strong>${msg.name}</strong><br>${msg.reason}`;
+      row.querySelector(".messages").appendChild(card);
     });
   }
-
-  searchBar.addEventListener("input", () => {
-    const q = searchBar.value.toLowerCase();
-    document.querySelectorAll(".message-card").forEach(c => {
-      c.style.display = c.textContent.toLowerCase().includes(q) ? "block" : "none";
-    });
-  });
 </script>
 
 </body>
 </html>
+
