@@ -1,119 +1,78 @@
-/* ================================
-   Counselor Accounts
-================================ */
-const counselors = {
-  miap2k10: "1234",
-  kmcconnell: "1234",
-  gsorbi: "1234",
-  apanlilio: "1234",
-  aturner: "1234",
-  cfilson: "1234"
-};
+let selectedReason = "";
+let selectedUrgency = "";
+let selectedCounselorEmail = "";
 
 /* ================================
-   DOM References
+   Page Navigation
 ================================ */
-const loginScreen = document.getElementById("loginScreen");
-const dashboardScreen = document.getElementById("dashboardScreen");
-const loginForm = document.getElementById("loginForm");
-const searchBar = document.getElementById("searchBar");
-
-/* ================================
-   Auto Login
-================================ */
-window.onload = () => {
-  const saved = localStorage.getItem("loggedInCounselor");
-  if (saved) showDashboard();
-};
-
-/* ================================
-   Login
-================================ */
-loginForm.addEventListener("submit", e => {
-  e.preventDefault();
-
-  const user = document.getElementById("username").value.trim();
-  const pass = document.getElementById("password").value.trim();
-
-  if (counselors[user] === pass) {
-    localStorage.setItem("loggedInCounselor", user);
-    showDashboard();
-  } else {
-    alert("Invalid username or password");
-  }
-});
-
-/* ================================
-   Dashboard
-================================ */
-function showDashboard() {
-  loginScreen.style.display = "none";
-  dashboardScreen.style.display = "block";
-  loadMessages();
+function goToPage(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
 }
 
-function logout() {
-  localStorage.removeItem("loggedInCounselor");
+function chooseReason(reason) {
+  selectedReason = reason;
+  goToPage("page2");
+}
+
+function chooseUrgency(urgency) {
+  selectedUrgency = urgency;
+  goToPage("page3");
+}
+
+/* ================================
+   Modal Handling
+================================ */
+function openModal(counselorEmail) {
+  selectedCounselorEmail = counselorEmail;
+  document.getElementById("modalOverlay").style.display = "flex";
+
+  // Clear previous values
+  document.getElementById("firstName").value = "";
+  document.getElementById("lastName").value = "";
+  document.getElementById("studentGrade").value = "";
+  document.getElementById("extraNotes").value = "";
+}
+
+function closeModal() {
+  document.getElementById("modalOverlay").style.display = "none";
+}
+
+/* ================================
+   Submit Message
+================================ */
+function submitMessage() {
+  const firstName = document.getElementById("firstName").value.trim();
+  const lastName = document.getElementById("lastName").value.trim();
+  const grade = document.getElementById("studentGrade").value.trim();
+  const notes = document.getElementById("extraNotes").value.trim();
+
+  if (!firstName || !lastName || !grade) {
+    alert("Please fill out First Name, Last Name, and Grade.");
+    return;
+  }
+
+  // Convert email → counselor username
+  const counselorUsername = selectedCounselorEmail.split("@")[0];
+
+  // Get existing messages or start fresh
+  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+
+  messages.push({
+    firstName,
+    lastName,
+    grade,
+    reason: selectedReason,
+    urgency: selectedUrgency,
+    counselor: counselorUsername,
+    notes,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("studentMessages", JSON.stringify(messages));
+
+  alert("Your message has been sent.");
+  closeModal();
   location.reload();
 }
 
-/* ================================
-   Load Messages
-================================ */
-function loadMessages() {
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-
-  const urgencyMap = {
-    "I’m in Crisis": "red-row",
-    "I’m Not Coping Well": "orange-row",
-    "Feeling a Little Off": "yellow-row",
-    "I’m Doing Fine – Just Curious": "green-row"
-  };
-
-  document.querySelectorAll(".messages").forEach(m => (m.innerHTML = ""));
-
-  messages.forEach(msg => {
-    if (msg.counselor !== counselor) return;
-
-    const rowId = urgencyMap[msg.urgency];
-    if (!rowId) return;
-
-    const container = document
-      .getElementById(rowId)
-      .querySelector(".messages");
-
-    // ✅ SAFE NAME RESOLUTION
-    const fullName =
-      msg.firstName && msg.lastName
-        ? `${msg.firstName} ${msg.lastName}`
-        : msg.name
-        ? msg.name
-        : "Name Not Provided";
-
-    const card = document.createElement("div");
-    card.className = "message-card";
-
-    card.innerHTML = `
-      <strong>${fullName} (Grade ${msg.grade || "N/A"})</strong><br>
-      Reason: ${msg.reason}<br>
-      Urgency: ${msg.urgency}<br>
-      ${msg.notes ? `Notes: ${msg.notes}<br>` : ""}
-      Time: ${msg.time}
-    `;
-
-    container.appendChild(card);
-  });
-}
-
-/* ================================
-   Search
-================================ */
-searchBar.addEventListener("input", () => {
-  const q = searchBar.value.toLowerCase();
-  document.querySelectorAll(".message-card").forEach(card => {
-    card.style.display = card.textContent.toLowerCase().includes(q)
-      ? "block"
-      : "none";
-  });
-});
