@@ -2,12 +2,12 @@
    Counselor Accounts
 ================================ */
 const counselors = {
-  "miap2k10": "1234",
-  "kmcconnell": "1234",
-  "gsorbi": "1234",
-  "apanlilio": "1234",
-  "aturner": "1234",
-  "cfilson": "1234"
+  miap2k10: "1234",
+  kmcconnell: "1234",
+  gsorbi: "1234",
+  apanlilio: "1234",
+  aturner: "1234",
+  cfilson: "1234"
 };
 
 /* ================================
@@ -19,26 +19,24 @@ const loginForm = document.getElementById("loginForm");
 const searchBar = document.getElementById("searchBar");
 
 /* ================================
-   Auto-login if already signed in
+   Auto Login
 ================================ */
 window.onload = () => {
-  const savedCounselor = localStorage.getItem("loggedInCounselor");
-  if (savedCounselor) {
-    showDashboard();
-  }
+  const saved = localStorage.getItem("loggedInCounselor");
+  if (saved) showDashboard();
 };
 
 /* ================================
-   Login Handling
+   Login
 ================================ */
-loginForm.addEventListener("submit", function (e) {
+loginForm.addEventListener("submit", e => {
   e.preventDefault();
 
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
 
-  if (counselors[username] && counselors[username] === password) {
-    localStorage.setItem("loggedInCounselor", username);
+  if (counselors[user] === pass) {
+    localStorage.setItem("loggedInCounselor", user);
     showDashboard();
   } else {
     alert("Invalid username or password");
@@ -46,7 +44,7 @@ loginForm.addEventListener("submit", function (e) {
 });
 
 /* ================================
-   Dashboard Controls
+   Dashboard
 ================================ */
 function showDashboard() {
   loginScreen.style.display = "none";
@@ -60,7 +58,7 @@ function logout() {
 }
 
 /* ================================
-   Load & Display Messages
+   Load Messages
 ================================ */
 function loadMessages() {
   const counselor = localStorage.getItem("loggedInCounselor");
@@ -73,10 +71,7 @@ function loadMessages() {
     "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  // Clear all message containers
-  document.querySelectorAll(".messages").forEach(div => {
-    div.innerHTML = "";
-  });
+  document.querySelectorAll(".messages").forEach(m => (m.innerHTML = ""));
 
   messages.forEach(msg => {
     if (msg.counselor !== counselor) return;
@@ -88,11 +83,19 @@ function loadMessages() {
       .getElementById(rowId)
       .querySelector(".messages");
 
+    // ✅ SAFE NAME RESOLUTION
+    const fullName =
+      msg.firstName && msg.lastName
+        ? `${msg.firstName} ${msg.lastName}`
+        : msg.name
+        ? msg.name
+        : "Name Not Provided";
+
     const card = document.createElement("div");
     card.className = "message-card";
 
     card.innerHTML = `
-      <strong>${msg.firstName} ${msg.lastName} (Grade ${msg.grade})</strong><br>
+      <strong>${fullName} (Grade ${msg.grade || "N/A"})</strong><br>
       Reason: ${msg.reason}<br>
       Urgency: ${msg.urgency}<br>
       ${msg.notes ? `Notes: ${msg.notes}<br>` : ""}
@@ -104,14 +107,14 @@ function loadMessages() {
 }
 
 /* ================================
-   Search Filter
+   Search
 ================================ */
 searchBar.addEventListener("input", () => {
-  const query = searchBar.value.toLowerCase();
-
+  const q = searchBar.value.toLowerCase();
   document.querySelectorAll(".message-card").forEach(card => {
-    card.style.display = card.textContent.toLowerCase().includes(query)
+    card.style.display = card.textContent.toLowerCase().includes(q)
       ? "block"
       : "none";
   });
 });
+
