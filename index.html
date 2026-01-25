@@ -102,12 +102,14 @@
     .urgency-header {
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 12px;
       margin-bottom: 10px;
     }
 
     .urgency-row h2 {
       margin: 0;
+      flex: 1;
     }
 
     .message-card {
@@ -169,6 +171,17 @@
     #orange-row { border-left: 6px solid orange; }
     #yellow-row { border-left: 6px solid gold; }
     #green-row { border-left: 6px solid green; }
+
+    /* Toggle button */
+    .toggle-btn {
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #0070c9;
+      border-radius: 5px;
+      background: #fff;
+      color: #0070c9;
+    }
   </style>
 </head>
 <body>
@@ -201,6 +214,7 @@
         <div class="mouth"></div>
       </div>
       <h2>High Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -214,6 +228,7 @@
         <div class="mouth"></div>
       </div>
       <h2>Medium-High Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -227,6 +242,7 @@
         <div class="mouth"></div>
       </div>
       <h2>Medium-Low Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -240,6 +256,7 @@
         <div class="mouth"></div>
       </div>
       <h2>Low Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -321,10 +338,23 @@
         : "none";
     });
   });
+
+  function toggleMessages(rowId) {
+    const container = document.querySelector(`#${rowId} .messages`);
+    const btn = document.querySelector(`#${rowId} .toggle-btn`);
+    if (container.style.display === "none") {
+      container.style.display = "block";
+      btn.textContent = "Hide";
+    } else {
+      container.style.display = "none";
+      btn.textContent = "Show";
+    }
+  }
 </script>
 
 </body>
 </html>
+
 
 
 
