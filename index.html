@@ -97,24 +97,20 @@
       border: 2px solid #ddd;
       border-radius: 10px;
       background: #fff;
+      text-align: center;
     }
 
     .urgency-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-
-    .urgency-label {
-      display: flex;
-      align-items: center;
+      justify-content: center;
       gap: 12px;
-      flex: 1;
+      margin-bottom: 10px;
     }
 
     .urgency-row h2 {
       margin: 0;
+      font-size: 18px;
     }
 
     .message-card {
@@ -177,17 +173,24 @@
     #yellow-row { border-left: 6px solid gold; }
     #green-row { border-left: 6px solid green; }
 
-    /* Toggle button */
+    /* Toggle buttons */
     .toggle-btn {
-      padding: 5px 10px;
+      padding: 8px 18px;
       font-size: 14px;
       cursor: pointer;
-      border: 1px solid #0070c9;
-      border-radius: 5px;
-      background: #fff;
+      border: 2px solid #0070c9;
+      border-radius: 20px;
+      background-color: #fff;
       color: #0070c9;
-      min-width: 110px;
+      margin-bottom: 10px;
+      transition: 0.2s;
     }
+
+    .toggle-btn:hover {
+      background-color: #0070c9;
+      color: #fff;
+    }
+
   </style>
 </head>
 <body>
@@ -214,64 +217,56 @@
   <!-- High Urgency -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-header">
-      <div class="urgency-label">
-        <div class="face red-face sad">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
-        <h2>High Urgency</h2>
+      <div class="face red-face sad">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
       </div>
-      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
+      <h2>High Urgency</h2>
     </div>
+    <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 
   <!-- Medium-High -->
   <div class="urgency-row" id="orange-row">
     <div class="urgency-header">
-      <div class="urgency-label">
-        <div class="face orange-face sad">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
-        <h2>Medium-High Urgency</h2>
+      <div class="face orange-face sad">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
       </div>
-      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
+      <h2>Medium-High Urgency</h2>
     </div>
+    <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 
   <!-- Medium-Low -->
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-header">
-      <div class="urgency-label">
-        <div class="face yellow-face neutral">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
-        <h2>Medium-Low Urgency</h2>
+      <div class="face yellow-face neutral">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
       </div>
-      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
+      <h2>Medium-Low Urgency</h2>
     </div>
+    <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 
   <!-- Low -->
   <div class="urgency-row" id="green-row">
     <div class="urgency-header">
-      <div class="urgency-label">
-        <div class="face green-face">
-          <div class="eye left"></div>
-          <div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
-        <h2>Low Urgency</h2>
+      <div class="face green-face">
+        <div class="eye left"></div>
+        <div class="eye right"></div>
+        <div class="mouth"></div>
       </div>
-      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
+      <h2>Low Urgency</h2>
     </div>
+    <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 </div>
@@ -365,8 +360,10 @@
     }
   }
 </script>
+
 </body>
 </html>
+
 
 
 
