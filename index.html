@@ -9,7 +9,6 @@
       margin: 0;
       font-family: sans-serif;
       background: #fffcf5;
-      text-align: center;
     }
 
     /* LOGIN */
@@ -92,25 +91,33 @@
 
     /* URGENCY ROWS */
     .urgency-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
       margin: 20px 0;
       padding: 15px;
       border: 2px solid #ddd;
       border-radius: 10px;
       background: #fff;
-      text-align: center;
+    }
+
+    .urgency-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      min-width: 150px;
     }
 
     .urgency-header {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 10px;
     }
 
     .urgency-row h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     .message-card {
@@ -175,20 +182,23 @@
 
     /* Toggle buttons */
     .toggle-btn {
-      padding: 8px 18px;
+      padding: 6px 16px;
       font-size: 14px;
       cursor: pointer;
       border: 2px solid #0070c9;
       border-radius: 20px;
       background-color: #fff;
       color: #0070c9;
-      margin-bottom: 10px;
       transition: 0.2s;
     }
 
     .toggle-btn:hover {
       background-color: #0070c9;
       color: #fff;
+    }
+
+    .messages {
+      flex: 1;
     }
 
   </style>
@@ -216,57 +226,65 @@
 
   <!-- High Urgency -->
   <div class="urgency-row" id="red-row">
-    <div class="urgency-header">
-      <div class="face red-face sad">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face red-face sad">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>High Urgency</h2>
       </div>
-      <h2>High Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     </div>
-    <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 
   <!-- Medium-High -->
   <div class="urgency-row" id="orange-row">
-    <div class="urgency-header">
-      <div class="face orange-face sad">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face orange-face sad">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>Medium-High Urgency</h2>
       </div>
-      <h2>Medium-High Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     </div>
-    <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 
   <!-- Medium-Low -->
   <div class="urgency-row" id="yellow-row">
-    <div class="urgency-header">
-      <div class="face yellow-face neutral">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face yellow-face neutral">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>Medium-Low Urgency</h2>
       </div>
-      <h2>Medium-Low Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     </div>
-    <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 
   <!-- Low -->
   <div class="urgency-row" id="green-row">
-    <div class="urgency-header">
-      <div class="face green-face">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face green-face">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>Low Urgency</h2>
       </div>
-      <h2>Low Urgency</h2>
+      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     </div>
-    <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     <div class="messages"></div>
   </div>
 </div>
@@ -313,7 +331,6 @@
   function loadMessages() {
     const counselor = localStorage.getItem("loggedInCounselor");
     const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-
     document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
 
     const urgencyMap = {
@@ -360,9 +377,9 @@
     }
   }
 </script>
-
 </body>
 </html>
+
 
 
 
