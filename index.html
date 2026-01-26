@@ -1,207 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Counselor Login & Dashboard</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-      background: #fffcf5;
-    }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Counselor Login & Dashboard</title>
+<style>
+  body {
+    margin: 0;
+    font-family: sans-serif;
+    background: #fffcf5;
+  }
 
-    /* LOGIN */
-    .login-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+  /* LOGIN */
+  .login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
 
-    .login-box {
-      background: #fff;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      width: 400px;
-      text-align: left;
-    }
+  .login-box {
+    background: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    width: 400px;
+    text-align: left;
+  }
 
-    .login-box label {
-      font-weight: bold;
-      display: block;
-      margin: 15px 0 5px;
-      font-size: 18px;
-    }
+  .login-box label {
+    font-weight: bold;
+    display: block;
+    margin: 15px 0 5px;
+    font-size: 18px;
+  }
 
-    .login-box input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 20px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
+  .login-box input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
 
-    .login-box button {
-      float: right;
-      padding: 10px 25px;
-      font-size: 16px;
-      background: #0070c9;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+  .login-box button {
+    float: right;
+    padding: 10px 25px;
+    font-size: 16px;
+    background: #0070c9;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
 
-    .login-box a {
-      display: inline-block;
-      margin-top: 5px;
-      color: #0070c9;
-      text-decoration: none;
-      font-size: 14px;
-    }
+  .login-box a {
+    display: inline-block;
+    margin-top: 5px;
+    color: #0070c9;
+    text-decoration: none;
+    font-size: 14px;
+  }
 
-    /* DASHBOARD */
-    #dashboardScreen {
-      display: none;
-      padding: 20px;
-    }
+  /* DASHBOARD */
+  #dashboardScreen {
+    display: none;
+    padding: 20px;
+  }
 
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #87CEFA;
-      padding: 15px 30px;
-    }
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #87CEFA;
+    padding: 15px 30px;
+  }
 
-    .dashboard-header input {
-      width: 300px;
-      padding: 10px;
-      font-size: 16px;
-    }
+  .dashboard-header input {
+    width: 300px;
+    padding: 10px;
+    font-size: 16px;
+  }
 
-    .dashboard-header button {
-      padding: 10px 15px;
-      font-size: 16px;
-      cursor: pointer;
-    }
+  .dashboard-header button {
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+  }
 
-    /* URGENCY ROWS */
-    .urgency-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 15px;
-      margin: 20px 0;
-      padding: 15px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      background: #fff;
-    }
+  /* URGENCY ROWS */
+  .urgency-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 20px 0;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    background: #fff;
+  }
 
-    .urgency-left {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 8px;
-      min-width: 150px;
-    }
+  .urgency-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 150px;
+  }
 
-    .urgency-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+  .urgency-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 
-    .urgency-row h2 {
-      margin: 0;
-      font-size: 16px;
-    }
+  .urgency-row h2 {
+    margin: 0;
+    font-size: 16px;
+  }
 
-    .message-card {
-      padding: 10px;
-      margin: 5px 0;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      background: #f9f9f9;
-      text-align: left;
-    }
+  .messages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex: 1;
+  }
 
-    /* FACES */
-    .face {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      position: relative;
-    }
+  .message-card {
+    max-width: 220px; /* limit the width of the notification box */
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #f9f9f9;
+    text-align: left;
+    word-wrap: break-word;
+    font-size: 14px;
+  }
 
-    .eye {
-      width: 5px;
-      height: 5px;
-      background: black;
-      border-radius: 50%;
-      position: absolute;
-      top: 12px;
-    }
+  /* FACES */
+  .face {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    position: relative;
+  }
 
-    .eye.left { left: 11px; }
-    .eye.right { right: 11px; }
+  .eye {
+    width: 5px;
+    height: 5px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    top: 12px;
+  }
 
-    .mouth {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18px;
-      height: 10px;
-      border: 3px solid black;
-      border-color: black transparent transparent transparent;
-      border-radius: 50%;
-      bottom: 8px;
-    }
+  .eye.left { left: 11px; }
+  .eye.right { right: 11px; }
 
-    .sad .mouth { transform: translateX(-50%) rotate(180deg); }
-    .neutral .mouth {
-      border: none;
-      width: 18px;
-      height: 3px;
-      background: black;
-      bottom: 10px;
-    }
+  .mouth {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 10px;
+    border: 3px solid black;
+    border-color: black transparent transparent transparent;
+    border-radius: 50%;
+    bottom: 8px;
+  }
 
-    .red-face { background: red; }
-    .orange-face { background: orange; }
-    .yellow-face { background: gold; }
-    .green-face { background: green; }
+  .sad .mouth { transform: translateX(-50%) rotate(180deg); }
+  .neutral .mouth {
+    border: none;
+    width: 18px;
+    height: 3px;
+    background: black;
+    bottom: 10px;
+  }
 
-    #red-row { border-left: 6px solid red; }
-    #orange-row { border-left: 6px solid orange; }
-    #yellow-row { border-left: 6px solid gold; }
-    #green-row { border-left: 6px solid green; }
+  .red-face { background: red; }
+  .orange-face { background: orange; }
+  .yellow-face { background: gold; }
+  .green-face { background: green; }
 
-    /* Toggle buttons */
-    .toggle-btn {
-      padding: 6px 16px;
-      font-size: 14px;
-      cursor: pointer;
-      border: 2px solid #0070c9;
-      border-radius: 20px;
-      background-color: #fff;
-      color: #0070c9;
-      transition: 0.2s;
-    }
+  #red-row { border-left: 6px solid red; }
+  #orange-row { border-left: 6px solid orange; }
+  #yellow-row { border-left: 6px solid gold; }
+  #green-row { border-left: 6px solid green; }
 
-    .toggle-btn:hover {
-      background-color: #0070c9;
-      color: #fff;
-    }
+  /* Toggle buttons */
+  .toggle-btn {
+    padding: 6px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border: 2px solid #0070c9;
+    border-radius: 20px;
+    background-color: #fff;
+    color: #0070c9;
+    transition: 0.2s;
+  }
 
-    .messages {
-      flex: 1;
-    }
+  .toggle-btn:hover {
+    background-color: #0070c9;
+    color: #fff;
+  }
 
-  </style>
+</style>
 </head>
 <body>
 
@@ -290,95 +295,94 @@
 </div>
 
 <script>
-  const counselors = {
-    "miap2k10": "1234",
-    "kmcconnell": "1234",
-    "gsorbi": "1234",
-    "apanlilio": "1234",
-    "aturner": "1234",
-    "cfilson": "1234"
+const counselors = {
+  "miap2k10": "1234",
+  "kmcconnell": "1234",
+  "gsorbi": "1234",
+  "apanlilio": "1234",
+  "aturner": "1234",
+  "cfilson": "1234"
+};
+
+const dashboardScreen = document.getElementById("dashboardScreen");
+const loginScreen = document.getElementById("loginScreen");
+const searchBar = document.getElementById("searchBar");
+
+window.onload = () => {
+  if (localStorage.getItem("loggedInCounselor")) showDashboard();
+};
+
+document.getElementById("loginForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+  if (counselors[u] === p) {
+    localStorage.setItem("loggedInCounselor", u);
+    showDashboard();
+  } else alert("Invalid login");
+});
+
+function showDashboard() {
+  loginScreen.style.display = "none";
+  dashboardScreen.style.display = "block";
+  loadMessages();
+}
+
+function logout() {
+  localStorage.removeItem("loggedInCounselor");
+  location.reload();
+}
+
+function loadMessages() {
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
+
+  const urgencyMap = {
+    "I’m in Crisis": "red-row",
+    "I’m Not Coping Well": "orange-row",
+    "Feeling a Little Off": "yellow-row",
+    "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  const dashboardScreen = document.getElementById("dashboardScreen");
-  const loginScreen = document.getElementById("loginScreen");
-  const searchBar = document.getElementById("searchBar");
-
-  window.onload = () => {
-    if (localStorage.getItem("loggedInCounselor")) showDashboard();
-  };
-
-  document.getElementById("loginForm").addEventListener("submit", e => {
-    e.preventDefault();
-    const u = document.getElementById("username").value.trim();
-    const p = document.getElementById("password").value.trim();
-    if (counselors[u] === p) {
-      localStorage.setItem("loggedInCounselor", u);
-      showDashboard();
-    } else alert("Invalid login");
+  messages.forEach(msg => {
+    if (msg.counselor !== counselor) return;
+    const row = document.getElementById(urgencyMap[msg.urgency] || "green-row");
+    const card = document.createElement("div");
+    card.className = "message-card";
+    card.innerHTML = `
+      <strong>${msg.firstName} ${msg.lastName} (Grade ${msg.grade})</strong><br>
+      Reason: ${msg.reason}<br>
+      Urgency: ${msg.urgency}<br>
+      ${msg.notes ? "Notes: " + msg.notes + "<br>" : ""}
+      Time: ${msg.time}
+    `;
+    row.querySelector(".messages").appendChild(card);
   });
+}
 
-  function showDashboard() {
-    loginScreen.style.display = "none";
-    dashboardScreen.style.display = "block";
-    loadMessages();
-  }
-
-  function logout() {
-    localStorage.removeItem("loggedInCounselor");
-    location.reload();
-  }
-
-  function loadMessages() {
-    const counselor = localStorage.getItem("loggedInCounselor");
-    const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-    document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
-
-    const urgencyMap = {
-      "I’m in Crisis": "red-row",
-      "I’m Not Coping Well": "orange-row",
-      "Feeling a Little Off": "yellow-row",
-      "I’m Doing Fine – Just Curious": "green-row"
-    };
-
-    messages.forEach(msg => {
-      if (msg.counselor !== counselor) return;
-      const row = document.getElementById(urgencyMap[msg.urgency] || "green-row");
-      const card = document.createElement("div");
-      card.className = "message-card";
-      card.innerHTML = `
-        <strong>${msg.firstName} ${msg.lastName} (Grade ${msg.grade})</strong><br>
-        Reason: ${msg.reason}<br>
-        Urgency: ${msg.urgency}<br>
-        ${msg.notes ? "Notes: " + msg.notes + "<br>" : ""}
-        Time: ${msg.time}
-      `;
-      row.querySelector(".messages").appendChild(card);
-    });
-  }
-
-  searchBar.addEventListener("input", () => {
-    const q = searchBar.value.toLowerCase();
-    document.querySelectorAll(".message-card").forEach(card => {
-      card.style.display = card.textContent.toLowerCase().includes(q)
-        ? "block"
-        : "none";
-    });
+searchBar.addEventListener("input", () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(card => {
+    card.style.display = card.textContent.toLowerCase().includes(q) ? "block" : "none";
   });
+});
 
-  function toggleMessages(rowId) {
-    const container = document.querySelector(`#${rowId} .messages`);
-    const btn = document.querySelector(`#${rowId} .toggle-btn`);
-    if (container.style.display === "none") {
-      container.style.display = "block";
-      btn.textContent = "Hide Messages";
-    } else {
-      container.style.display = "none";
-      btn.textContent = "Show Messages";
-    }
+function toggleMessages(rowId) {
+  const container = document.querySelector(`#${rowId} .messages`);
+  const btn = document.querySelector(`#${rowId} .toggle-btn`);
+  if (container.style.display === "none") {
+    container.style.display = "flex";
+    btn.textContent = "Hide Messages";
+  } else {
+    container.style.display = "none";
+    btn.textContent = "Show Messages";
   }
+}
 </script>
 </body>
 </html>
+
 
 
 
