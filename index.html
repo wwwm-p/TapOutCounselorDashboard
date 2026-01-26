@@ -103,13 +103,18 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
       margin-bottom: 10px;
+    }
+
+    .urgency-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 1;
     }
 
     .urgency-row h2 {
       margin: 0;
-      flex: 1;
     }
 
     .message-card {
@@ -181,6 +186,7 @@
       border-radius: 5px;
       background: #fff;
       color: #0070c9;
+      min-width: 110px;
     }
   </style>
 </head>
@@ -208,13 +214,15 @@
   <!-- High Urgency -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-header">
-      <div class="face red-face sad">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+      <div class="urgency-label">
+        <div class="face red-face sad">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>High Urgency</h2>
       </div>
-      <h2>High Urgency</h2>
-      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide</button>
+      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -222,13 +230,15 @@
   <!-- Medium-High -->
   <div class="urgency-row" id="orange-row">
     <div class="urgency-header">
-      <div class="face orange-face sad">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+      <div class="urgency-label">
+        <div class="face orange-face sad">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>Medium-High Urgency</h2>
       </div>
-      <h2>Medium-High Urgency</h2>
-      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide</button>
+      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -236,13 +246,15 @@
   <!-- Medium-Low -->
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-header">
-      <div class="face yellow-face neutral">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+      <div class="urgency-label">
+        <div class="face yellow-face neutral">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>Medium-Low Urgency</h2>
       </div>
-      <h2>Medium-Low Urgency</h2>
-      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide</button>
+      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -250,13 +262,15 @@
   <!-- Low -->
   <div class="urgency-row" id="green-row">
     <div class="urgency-header">
-      <div class="face green-face">
-        <div class="eye left"></div>
-        <div class="eye right"></div>
-        <div class="mouth"></div>
+      <div class="urgency-label">
+        <div class="face green-face">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+        <h2>Low Urgency</h2>
       </div>
-      <h2>Low Urgency</h2>
-      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide</button>
+      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     </div>
     <div class="messages"></div>
   </div>
@@ -344,16 +358,16 @@
     const btn = document.querySelector(`#${rowId} .toggle-btn`);
     if (container.style.display === "none") {
       container.style.display = "block";
-      btn.textContent = "Hide";
+      btn.textContent = "Hide Messages";
     } else {
       container.style.display = "none";
-      btn.textContent = "Show";
+      btn.textContent = "Show Messages";
     }
   }
 </script>
-
 </body>
 </html>
+
 
 
 
