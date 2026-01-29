@@ -1,74 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TapOut – Counselor Dashboard</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f7f6f2;
-  color: #222;
+  font-family: sans-serif;
+  background: #fffcf5;
 }
 
 /* LOGIN */
 .login-wrapper {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
 }
 
 .login-box {
-  background: white;
-  padding: 35px;
-  width: 360px;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-.login-box h2 {
-  margin-top: 0;
-  text-align: center;
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  width: 400px;
 }
 
 .login-box label {
   font-weight: bold;
-  margin-top: 15px;
   display: block;
+  margin: 15px 0 5px;
+  font-size: 18px;
 }
 
 .login-box input {
   width: 100%;
   padding: 10px;
-  margin-top: 6px;
-  font-size: 15px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 .login-box button {
-  margin-top: 20px;
-  width: 100%;
-  padding: 12px;
+  float: right;
+  padding: 10px 25px;
+  font-size: 16px;
   background: #0070c9;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-/* DASHBOARD HEADER */
+/* DASHBOARD */
+#dashboardScreen {
+  display: none;
+  padding: 20px;
+}
+
 .dashboard-header {
-  background: #ffffff;
-  padding: 14px 24px;
-  border-bottom: 1px solid #ddd;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: #87CEFA;
+  padding: 15px 30px;
 }
 
 .dashboard-title {
@@ -76,108 +74,135 @@ body {
   font-weight: bold;
 }
 
-.dashboard-header span {
-  font-size: 13px;
-  opacity: 0.7;
+.dashboard-header input {
+  width: 280px;
+  padding: 10px;
+  font-size: 16px;
 }
 
 .dashboard-header button {
-  padding: 8px 14px;
+  padding: 10px 15px;
+  font-size: 16px;
   cursor: pointer;
 }
 
 /* URGENCY ROWS */
 .urgency-row {
-  margin: 18px;
-  padding: 14px;
-  background: white;
-  border-radius: 14px;
-  border-left: 6px solid;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin: 20px 0;
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
 }
 
-#red-row { border-color: #e74c3c; }
-#orange-row { border-color: #e67e22; }
-#yellow-row { border-color: #f1c40f; }
-#green-row { border-color: #2ecc71; }
+.urgency-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 170px;
+}
 
 .urgency-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.urgency-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.toggle-btn {
-  margin-top: 6px;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 12px;
-  border: 1px solid #ccc;
-  background: none;
-  cursor: pointer;
+.urgency-row h2 {
+  margin: 0;
+  font-size: 16px;
 }
 
-/* MESSAGES */
+/* MESSAGE AREA */
 .messages {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 12px;
+  flex: 1;
 }
 
 .message-card {
-  background: #f3f3f3;
-  padding: 6px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  width: fit-content;
-  max-width: 240px;
+  max-width: 220px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #f9f9f9;
+  font-size: 14px;
+  text-align: left;
+  word-wrap: break-word;
 }
 
 /* FACES */
 .face {
-  width: 34px;
-  height: 34px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   position: relative;
 }
 
 .eye {
-  width: 4px;
-  height: 4px;
+  width: 5px;
+  height: 5px;
   background: black;
   border-radius: 50%;
   position: absolute;
-  top: 11px;
+  top: 12px;
 }
 
-.eye.left { left: 9px; }
-.eye.right { right: 9px; }
+.eye.left { left: 11px; }
+.eye.right { right: 11px; }
 
 .mouth {
   position: absolute;
   left: 50%;
-  bottom: 7px;
   transform: translateX(-50%);
-  width: 14px;
-  height: 8px;
+  width: 18px;
+  height: 10px;
   border: 3px solid black;
   border-color: black transparent transparent transparent;
   border-radius: 50%;
+  bottom: 8px;
 }
 
 .sad .mouth { transform: translateX(-50%) rotate(180deg); }
-.neutral .mouth { border: none; height: 3px; background: black; }
 
-.red-face { background: #e74c3c; }
-.orange-face { background: #e67e22; }
-.yellow-face { background: #f1c40f; }
-.green-face { background: #2ecc71; }
+.neutral .mouth {
+  border: none;
+  width: 18px;
+  height: 3px;
+  background: black;
+  bottom: 10px;
+}
+
+.red-face { background: red; }
+.orange-face { background: orange; }
+.yellow-face { background: gold; }
+.green-face { background: green; }
+
+#red-row { border-left: 6px solid red; }
+#orange-row { border-left: 6px solid orange; }
+#yellow-row { border-left: 6px solid gold; }
+#green-row { border-left: 6px solid green; }
+
+/* TOGGLE */
+.toggle-btn {
+  padding: 6px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  border: 2px solid #0070c9;
+  border-radius: 20px;
+  background: #fff;
+  color: #0070c9;
+  transition: 0.2s;
+}
+
+.toggle-btn:hover {
+  background: #0070c9;
+  color: white;
+}
 </style>
 </head>
 
@@ -185,9 +210,7 @@ body {
 
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
-  <form class="login-box" id="loginForm">
-    <h2>TapOut Login</h2>
-
+  <form id="loginForm" class="login-box">
     <label>Username</label>
     <input id="username" required>
 
@@ -199,68 +222,65 @@ body {
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboardScreen" style="display:none;">
-
-<header class="dashboard-header">
-  <div>
+<div id="dashboardScreen">
+  <header class="dashboard-header">
     <div class="dashboard-title">TapOut – Counselor Dashboard</div>
-    <span id="signedIn"></span>
-  </div>
-  <button onclick="logout()">Sign Out</button>
-</header>
+    <input id="searchBar" placeholder="Search students...">
+    <button onclick="logout()">Sign Out</button>
+  </header>
 
-<div id="red-row" class="urgency-row">
-  <div class="urgency-header">
-    <div class="urgency-info">
-      <div class="face red-face sad">
-        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+  <!-- ROW TEMPLATE -->
+  <div class="urgency-row" id="red-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face red-face sad">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>High Urgency</h2>
       </div>
-      <strong>High Urgency</strong>
+      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     </div>
+    <div class="messages"></div>
   </div>
-  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
-  <div class="messages"></div>
-</div>
 
-<div id="orange-row" class="urgency-row">
-  <div class="urgency-header">
-    <div class="urgency-info">
-      <div class="face orange-face sad">
-        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+  <div class="urgency-row" id="orange-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face orange-face sad">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Medium-High Urgency</h2>
       </div>
-      <strong>Medium-High</strong>
+      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     </div>
+    <div class="messages"></div>
   </div>
-  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
-  <div class="messages"></div>
-</div>
 
-<div id="yellow-row" class="urgency-row">
-  <div class="urgency-header">
-    <div class="urgency-info">
-      <div class="face yellow-face neutral">
-        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+  <div class="urgency-row" id="yellow-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face yellow-face neutral">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Medium-Low Urgency</h2>
       </div>
-      <strong>Medium-Low</strong>
+      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     </div>
+    <div class="messages"></div>
   </div>
-  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
-  <div class="messages"></div>
-</div>
 
-<div id="green-row" class="urgency-row">
-  <div class="urgency-header">
-    <div class="urgency-info">
-      <div class="face green-face">
-        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+  <div class="urgency-row" id="green-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face green-face">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Low Urgency</h2>
       </div>
-      <strong>Low Urgency</strong>
+      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     </div>
+    <div class="messages"></div>
   </div>
-  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
-  <div class="messages"></div>
-</div>
-
 </div>
 
 <script>
@@ -273,12 +293,14 @@ const counselors = {
   cfilson: "1234"
 };
 
-document.getElementById("loginForm").onsubmit = e => {
+const loginScreen = document.getElementById("loginScreen");
+const dashboardScreen = document.getElementById("dashboardScreen");
+const searchBar = document.getElementById("searchBar");
+
+loginForm.onsubmit = e => {
   e.preventDefault();
-  const u = username.value.trim();
-  const p = password.value.trim();
-  if (counselors[u] === p) {
-    localStorage.setItem("loggedInCounselor", u);
+  if (counselors[username.value] === password.value) {
+    localStorage.setItem("loggedInCounselor", username.value);
     showDashboard();
   } else alert("Invalid login");
 };
@@ -286,7 +308,6 @@ document.getElementById("loginForm").onsubmit = e => {
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
-  signedIn.textContent = "Signed in as: " + localStorage.getItem("loggedInCounselor");
   loadMessages();
 }
 
@@ -295,17 +316,9 @@ function logout() {
   location.reload();
 }
 
-function toggle(btn) {
-  const box = btn.nextElementSibling;
-  const hidden = box.style.display === "none";
-  box.style.display = hidden ? "flex" : "none";
-  btn.textContent = hidden ? "Hide Messages" : "Show Messages";
-}
-
 function loadMessages() {
   const counselor = localStorage.getItem("loggedInCounselor");
   const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-
   document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
 
   const map = {
@@ -315,20 +328,35 @@ function loadMessages() {
     "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  messages.forEach(m => {
-    if (m.counselor !== counselor) return;
+  messages.forEach(msg => {
+    if (msg.counselor !== counselor) return;
     const card = document.createElement("div");
     card.className = "message-card";
-    card.innerHTML = `<strong>${m.name}</strong> (${m.grade})<br>${m.reason}`;
-    document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
+    card.innerHTML = `<strong>${msg.firstName} ${msg.lastName}</strong><br>Grade ${msg.grade}<br>${msg.reason}`;
+    document.querySelector(`#${map[msg.urgency]} .messages`).appendChild(card);
   });
 }
+
+function toggleMessages(id) {
+  const box = document.querySelector(`#${id} .messages`);
+  const btn = document.querySelector(`#${id} .toggle-btn`);
+  box.style.display = box.style.display === "none" ? "flex" : "none";
+  btn.textContent = box.style.display === "none" ? "Show Messages" : "Hide Messages";
+}
+
+searchBar.oninput = () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(q) ? "block" : "none";
+  });
+};
 
 if (localStorage.getItem("loggedInCounselor")) showDashboard();
 </script>
 
 </body>
 </html>
+
 
 
 
