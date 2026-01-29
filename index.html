@@ -6,46 +6,69 @@
 <title>TapOut – Counselor Dashboard</title>
 
 <style>
-:root {
-  --bg: #fffcf5;
-  --card: #ffffff;
-  --text: #000;
-  --header: #87CEFA;
-}
-
-body.dark {
-  --bg: #1e1e1e;
-  --card: #2a2a2a;
-  --text: #fff;
-  --header: #333;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: #f7f6f2;
+  color: #222;
 }
 
-/* HEADER */
+/* LOGIN */
+.login-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-box {
+  background: white;
+  padding: 35px;
+  width: 360px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.login-box h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.login-box label {
+  font-weight: bold;
+  margin-top: 15px;
+  display: block;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  font-size: 15px;
+}
+
+.login-box button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #0070c9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* DASHBOARD HEADER */
 .dashboard-header {
+  background: #ffffff;
+  padding: 14px 24px;
+  border-bottom: 1px solid #ddd;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  background: var(--header);
-  padding: 12px 20px;
-  flex-wrap: wrap;
-}
-
-.header-left {
-  display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.header-left img {
-  width: 36px;
-  height: 36px;
 }
 
 .dashboard-title {
@@ -53,60 +76,49 @@ body {
   font-weight: bold;
 }
 
-.signed-in {
+.dashboard-header span {
   font-size: 13px;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-.header-right {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.header-right input {
-  padding: 6px 8px;
-}
-
-.header-right button {
-  padding: 6px 10px;
+.dashboard-header button {
+  padding: 8px 14px;
   cursor: pointer;
 }
 
 /* URGENCY ROWS */
 .urgency-row {
-  margin: 14px;
-  padding: 10px;
-  border-radius: 10px;
-  background: var(--card);
+  margin: 18px;
+  padding: 14px;
+  background: white;
+  border-radius: 14px;
   border-left: 6px solid;
 }
 
-#red-row { border-color: red; }
-#orange-row { border-color: orange; }
-#yellow-row { border-color: gold; }
-#green-row { border-color: green; }
+#red-row { border-color: #e74c3c; }
+#orange-row { border-color: #e67e22; }
+#yellow-row { border-color: #f1c40f; }
+#green-row { border-color: #2ecc71; }
 
 .urgency-header {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.urgency-left {
+.urgency-info {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.urgency-controls {
-  margin-left: auto;
-}
-
-.urgency-controls button {
+.toggle-btn {
+  margin-top: 6px;
   font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 14px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  background: none;
   cursor: pointer;
 }
 
@@ -115,187 +127,209 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .message-card {
-  background: var(--bg);
-  border: 1px solid #ccc;
+  background: #f3f3f3;
+  padding: 6px 10px;
   border-radius: 8px;
-  padding: 6px 8px;
   font-size: 12px;
-  width: 220px;
+  width: fit-content;
+  max-width: 240px;
 }
 
 /* FACES */
 .face {
-  width: 36px;
-  height: 36px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   position: relative;
 }
 
 .eye {
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   background: black;
   border-radius: 50%;
   position: absolute;
   top: 11px;
 }
 
-.eye.left { left: 10px; }
-.eye.right { right: 10px; }
+.eye.left { left: 9px; }
+.eye.right { right: 9px; }
 
 .mouth {
   position: absolute;
   left: 50%;
-  bottom: 8px;
+  bottom: 7px;
   transform: translateX(-50%);
-  width: 16px;
+  width: 14px;
   height: 8px;
   border: 3px solid black;
   border-color: black transparent transparent transparent;
   border-radius: 50%;
 }
 
-.sad .mouth {
-  transform: translateX(-50%) rotate(180deg);
-}
+.sad .mouth { transform: translateX(-50%) rotate(180deg); }
+.neutral .mouth { border: none; height: 3px; background: black; }
 
-.neutral .mouth {
-  border: none;
-  height: 3px;
-  background: black;
-}
-
-.red-face { background: red; }
-.orange-face { background: orange; }
-.yellow-face { background: gold; }
-.green-face { background: green; }
-
-/* MOBILE */
-@media (max-width: 600px) {
-  .header-right {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .messages {
-    justify-content: center;
-  }
-}
+.red-face { background: #e74c3c; }
+.orange-face { background: #e67e22; }
+.yellow-face { background: #f1c40f; }
+.green-face { background: #2ecc71; }
 </style>
 </head>
 
 <body>
 
-<header class="dashboard-header">
-  <div class="header-left">
-    <img src="logo.png" alt="School Logo">
-    <div>
-      <div class="dashboard-title">TapOut – Counselor Dashboard</div>
-      <div class="signed-in">Signed in as: <span id="counselorName">Counselor</span></div>
-    </div>
-  </div>
+<!-- LOGIN -->
+<div id="loginScreen" class="login-wrapper">
+  <form class="login-box" id="loginForm">
+    <h2>TapOut Login</h2>
 
-  <div class="header-right">
-    <input id="searchBar" placeholder="Search students">
-    <button onclick="toggleDarkMode()">🌙</button>
-    <button onclick="logout()">Sign Out</button>
+    <label>Username</label>
+    <input id="username" required>
+
+    <label>Password</label>
+    <input type="password" id="password" required>
+
+    <button type="submit">Sign In</button>
+  </form>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardScreen" style="display:none;">
+
+<header class="dashboard-header">
+  <div>
+    <div class="dashboard-title">TapOut – Counselor Dashboard</div>
+    <span id="signedIn"></span>
   </div>
+  <button onclick="logout()">Sign Out</button>
 </header>
 
-<div id="dashboard">
-
-  <!-- RED -->
-  <div class="urgency-row" id="red-row">
-    <div class="urgency-header">
-      <div class="urgency-left">
-        <div class="face red-face sad">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <strong>High Urgency</strong>
+<div id="red-row" class="urgency-row">
+  <div class="urgency-header">
+    <div class="urgency-info">
+      <div class="face red-face sad">
+        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
       </div>
-      <div class="urgency-controls">
-        <button onclick="toggleMessages('red-row', this)">Hide Messages</button>
-      </div>
+      <strong>High Urgency</strong>
     </div>
-    <div class="messages"></div>
   </div>
+  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
+  <div class="messages"></div>
+</div>
 
-  <!-- ORANGE -->
-  <div class="urgency-row" id="orange-row">
-    <div class="urgency-header">
-      <div class="urgency-left">
-        <div class="face orange-face sad">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <strong>Medium-High</strong>
+<div id="orange-row" class="urgency-row">
+  <div class="urgency-header">
+    <div class="urgency-info">
+      <div class="face orange-face sad">
+        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
       </div>
-      <div class="urgency-controls">
-        <button onclick="toggleMessages('orange-row', this)">Hide Messages</button>
-      </div>
+      <strong>Medium-High</strong>
     </div>
-    <div class="messages"></div>
   </div>
+  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
+  <div class="messages"></div>
+</div>
 
-  <!-- YELLOW -->
-  <div class="urgency-row" id="yellow-row">
-    <div class="urgency-header">
-      <div class="urgency-left">
-        <div class="face yellow-face neutral">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <strong>Medium-Low</strong>
+<div id="yellow-row" class="urgency-row">
+  <div class="urgency-header">
+    <div class="urgency-info">
+      <div class="face yellow-face neutral">
+        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
       </div>
-      <div class="urgency-controls">
-        <button onclick="toggleMessages('yellow-row', this)">Hide Messages</button>
-      </div>
+      <strong>Medium-Low</strong>
     </div>
-    <div class="messages"></div>
   </div>
+  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
+  <div class="messages"></div>
+</div>
 
-  <!-- GREEN -->
-  <div class="urgency-row" id="green-row">
-    <div class="urgency-header">
-      <div class="urgency-left">
-        <div class="face green-face">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <strong>Low Urgency</strong>
+<div id="green-row" class="urgency-row">
+  <div class="urgency-header">
+    <div class="urgency-info">
+      <div class="face green-face">
+        <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
       </div>
-      <div class="urgency-controls">
-        <button onclick="toggleMessages('green-row', this)">Hide Messages</button>
-      </div>
+      <strong>Low Urgency</strong>
     </div>
-    <div class="messages"></div>
   </div>
+  <button class="toggle-btn" onclick="toggle(this)">Hide Messages</button>
+  <div class="messages"></div>
+</div>
 
 </div>
 
 <script>
-document.getElementById("counselorName").textContent =
-  localStorage.getItem("counselorName") || "Counselor";
+const counselors = {
+  miap2k10: "1234",
+  kmcconnell: "1234",
+  gsorbi: "1234",
+  apanlilio: "1234",
+  aturner: "1234",
+  cfilson: "1234"
+};
 
-function toggleMessages(rowId, btn) {
-  const box = document.querySelector(`#${rowId} .messages`);
+document.getElementById("loginForm").onsubmit = e => {
+  e.preventDefault();
+  const u = username.value.trim();
+  const p = password.value.trim();
+  if (counselors[u] === p) {
+    localStorage.setItem("loggedInCounselor", u);
+    showDashboard();
+  } else alert("Invalid login");
+};
+
+function showDashboard() {
+  loginScreen.style.display = "none";
+  dashboardScreen.style.display = "block";
+  signedIn.textContent = "Signed in as: " + localStorage.getItem("loggedInCounselor");
+  loadMessages();
+}
+
+function logout() {
+  localStorage.removeItem("loggedInCounselor");
+  location.reload();
+}
+
+function toggle(btn) {
+  const box = btn.nextElementSibling;
   const hidden = box.style.display === "none";
   box.style.display = hidden ? "flex" : "none";
   btn.textContent = hidden ? "Hide Messages" : "Show Messages";
 }
 
-function toggleDarkMode() {
-  document.body.classList.toggle("dark");
+function loadMessages() {
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const messages = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+
+  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
+
+  const map = {
+    "I’m in Crisis": "red-row",
+    "I’m Not Coping Well": "orange-row",
+    "Feeling a Little Off": "yellow-row",
+    "I’m Doing Fine – Just Curious": "green-row"
+  };
+
+  messages.forEach(m => {
+    if (m.counselor !== counselor) return;
+    const card = document.createElement("div");
+    card.className = "message-card";
+    card.innerHTML = `<strong>${m.name}</strong> (${m.grade})<br>${m.reason}`;
+    document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
+  });
 }
 
-function logout() {
-  location.reload();
-}
+if (localStorage.getItem("loggedInCounselor")) showDashboard();
 </script>
 
 </body>
 </html>
+
 
 
 
