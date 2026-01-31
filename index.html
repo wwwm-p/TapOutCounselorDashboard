@@ -96,6 +96,31 @@ body {
   display: none;
 }
 
+/* Notification dropdown */
+.bell-dropdown {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 240px;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 1000;
+}
+
+.bell-dropdown div {
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+}
+
+.bell-dropdown div:last-child { border-bottom: none; }
+
+.bell-dropdown div:hover { background: #f1f1f1; }
+
 /* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble {
   width: 42px;
@@ -238,6 +263,7 @@ body {
 .orange { background: orange; }
 .yellow { background: gold; }
 .green { background: green; }
+
 </style>
 </head>
 <body>
@@ -260,9 +286,12 @@ body {
     <div class="header-right">
       <input id="searchBar" placeholder="Search students...">
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
-      <button class="calendar-btn" id="notifBell">🔔
-        <span class="bell-dot" id="bellDot"></span>
-      </button>
+      <div style="position: relative;">
+        <button class="calendar-btn" id="notifBell">🔔
+          <span class="bell-dot" id="bellDot"></span>
+        </button>
+        <div class="bell-dropdown" id="bellDropdown"></div>
+      </div>
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -303,10 +332,7 @@ function showDashboard(){
   checkNotifications();
 }
 
-function logout(){
-  localStorage.removeItem("loggedInCounselor");
-  location.reload();
-}
+function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
 /* ---------- CALENDAR ---------- */
 const today = new Date();
@@ -378,30 +404,52 @@ function toggleMessages(id){
   btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
-/* ---------- BELL NOTIFICATION DOT ---------- */
+/* ---------- BELL ---------- */
 const bellDot = document.getElementById("bellDot");
+const bellDropdown = document.getElementById("bellDropdown");
+const notifBell = document.getElementById("notifBell");
+
 function checkNotifications(){
   const counselor = localStorage.getItem("loggedInCounselor");
   const students = JSON.parse(localStorage.getItem("studentMessages")||"[]");
   const appointments = JSON.parse(localStorage.getItem("appointments")||"[]");
 
-  const crisisToday = students.some(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
+  const crisisStudents = students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
   const todayDate = new Date();
   const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
-  const apptToday = appointments.some(a=>a.date===todayKey);
+  const apptToday = appointments.filter(a=>a.date===todayKey);
 
-  if(crisisToday || apptToday){ bellDot.style.display="block"; }
+  if(crisisStudents.length || apptToday.length){ bellDot.style.display="block"; }
   else { bellDot.style.display="none"; }
+
+  // Fill dropdown
+  bellDropdown.innerHTML="";
+  crisisStudents.forEach(s=>{
+    const div = document.createElement("div");
+    div.textContent = `Student in Crisis: ${s.firstName} ${s.lastName}`;
+    bellDropdown.appendChild(div);
+  });
+  apptToday.forEach(a=>{
+    const div = document.createElement("div");
+    div.textContent = `Appointment today`;
+    bellDropdown.appendChild(div);
+  });
+}
+
+// Toggle dropdown
+notifBell.onclick = () => {
+  if(bellDropdown.style.display==="flex"){ bellDropdown.style.display="none"; }
+  else { bellDropdown.style.display="flex"; bellDot.style.display="none"; }
 }
 
 setInterval(checkNotifications,5000);
-document.getElementById("notifBell").onclick = () => bellDot.style.display="none";
 
 /* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
 </script>
 </body>
 </html>
+
 
 
 
