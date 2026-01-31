@@ -96,28 +96,32 @@ body {
   display: none;
 }
 
+/* Clean notification dropdown */
 .bell-dropdown {
   position: absolute;
   top: 48px;
   right: 0;
   background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  width: 240px;
+  border-radius: 12px;
+  width: 260px;
   display: none;
   flex-direction: column;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
   z-index: 1000;
+  padding: 8px;
+  gap: 6px;
 }
 
 .bell-dropdown div {
-  padding: 8px 12px;
-  border-bottom: 1px solid #eee;
+  background: #f9f9f9;
+  padding: 10px 12px;
+  border-radius: 8px;
   font-size: 14px;
+  cursor: default;
+  transition: background 0.2s;
 }
 
-.bell-dropdown div:last-child { border-bottom: none; }
-.bell-dropdown div:hover { background: #f1f1f1; }
+.bell-dropdown div:hover { background: #e6f0ff; font-weight: bold; }
 
 /* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble {
@@ -411,19 +415,14 @@ function checkNotifications(){
   const students = JSON.parse(localStorage.getItem("studentMessages")||"[]");
   const appointments = JSON.parse(localStorage.getItem("appointments")||"[]");
 
-  // Students in crisis
   const crisisStudents = students.filter(s => s.counselor === counselor && s.urgency === "I’m in Crisis");
 
-  // Today's appointments
   const todayDate = new Date();
   const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()+1}-${todayDate.getDate()}`;
   const apptToday = appointments.filter(a => a.date === todayKey);
 
-  // Show/hide red dot
-  if(crisisStudents.length || apptToday.length) bellDot.style.display = "block";
-  else bellDot.style.display = "none";
+  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
 
-  // Populate dropdown
   bellDropdown.innerHTML = "";
   crisisStudents.forEach(s => {
     const div = document.createElement("div");
@@ -437,25 +436,22 @@ function checkNotifications(){
   });
 }
 
-// Toggle dropdown
 notifBell.onclick = () => {
   if(bellDropdown.style.display === "flex") bellDropdown.style.display = "none";
   else { bellDropdown.style.display = "flex"; bellDot.style.display = "none"; }
 }
 
-// Close dropdown if clicking outside
 document.addEventListener("click", e => {
   if(!notifBell.contains(e.target) && !bellDropdown.contains(e.target)){
     bellDropdown.style.display = "none";
   }
 });
 
-// Initial check + refresh every 5s
 checkNotifications();
 setInterval(checkNotifications, 5000);
 
-/* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
 </script>
 </body>
 </html>
+
