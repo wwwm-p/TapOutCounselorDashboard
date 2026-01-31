@@ -30,7 +30,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .bell-dropdown div:last-child { border-bottom:none; }
 .bell-dropdown div:hover { background:#f1f1f1; }
 
-/* ---------- PROFILE ---------- */
+/* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble { width:42px; height:42px; border-radius:50%; background:#0070c9; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; }
 
 /* ---------- URGENCY ROWS ---------- */
@@ -39,23 +39,37 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 #orange-row { border-color:orange; }
 #yellow-row { border-color:gold; }
 #green-row { border-color:green; }
-.urgency-left { min-width:160px; }
+.urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; }
+.urgency-header { display:flex; align-items:center; gap:10px; }
 .messages { display:flex; flex-wrap:wrap; gap:10px; }
-.message-card { width:220px; padding:8px 10px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; font-size:14px; }
+.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; }
+.face { width:40px; height:40px; border-radius:50%; position:relative; }
+.eye { width:5px; height:5px; background:black; border-radius:50%; position:absolute; top:12px; }
+.eye.left { left:11px; }
+.eye.right { right:11px; }
+.mouth { position:absolute; left:50%; bottom:8px; transform:translateX(-50%); width:18px; height:10px; border:3px solid black; border-color:black transparent transparent transparent; border-radius:50%; }
+.sad .mouth { transform:translateX(-50%) rotate(180deg); }
+.neutral .mouth { border:none; height:3px; background:black; width:18px; }
+.red-face { background:red; }
+.orange-face { background:orange; }
+.yellow-face { background:gold; }
+.green-face { background:green; }
+.toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:420px; border-radius:14px; position:relative; }
+.calendar-box h3 { margin:0; text-align:center; }
+.close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
-.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; text-align:center; font-size:13px; }
-.dot { width:8px; height:8px; border-radius:50%; margin:4px auto 0; }
+.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; }
+.dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .red { background:red; }
 .orange { background:orange; }
 .yellow { background:gold; }
 .green { background:green; }
 </style>
 </head>
-
 <body>
 
 <!-- LOGIN -->
@@ -84,34 +98,82 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
   </header>
 
-  <div class="urgency-row" id="red-row"><div class="messages"></div></div>
-  <div class="urgency-row" id="orange-row"><div class="messages"></div></div>
-  <div class="urgency-row" id="yellow-row"><div class="messages"></div></div>
-  <div class="urgency-row" id="green-row"><div class="messages"></div></div>
+  <!-- URGENCY ROWS -->
+  <div class="urgency-row" id="red-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face red-face sad">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>High Urgency</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
+  </div>
+
+  <div class="urgency-row" id="orange-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face orange-face sad">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Medium-High</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
+  </div>
+
+  <div class="urgency-row" id="yellow-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face yellow-face neutral">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Medium-Low</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
+  </div>
+
+  <div class="urgency-row" id="green-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face green-face">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Low Urgency</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
+  </div>
 </div>
 
 <!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
   <div class="calendar-box">
-    <span onclick="closeCalendar()" style="position:absolute;top:8px;right:12px;cursor:pointer;">✖</span>
-
-    <h3 style="display:flex;justify-content:space-between;align-items:center;">
-      <button onclick="changeMonth(-1)" style="background:none;border:none;font-size:18px;cursor:pointer;">◀</button>
-      <span id="monthLabel"></span>
-      <button onclick="changeMonth(1)" style="background:none;border:none;font-size:18px;cursor:pointer;">▶</button>
-    </h3>
-
+    <span class="close-calendar" onclick="closeCalendar()">✖</span>
+    <h3 id="monthLabel"></h3>
     <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 </div>
 
 <script>
 /* ---------- LOGIN ---------- */
-const counselors = { miap2k10:"1234" };
+const loginForm = document.getElementById("loginForm");
+const loginScreen = document.getElementById("loginScreen");
+const dashboardScreen = document.getElementById("dashboardScreen");
+const profileBubble = document.getElementById("profileBubble");
+const searchBar = document.getElementById("searchBar");
+
+const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
 
 loginForm.onsubmit = e => {
   e.preventDefault();
-  if (counselors[username.value] === password.value) {
+  if(counselors[username.value]===password.value){
     localStorage.setItem("loggedInCounselor", username.value);
     showDashboard();
   } else alert("Invalid login");
@@ -120,62 +182,144 @@ loginForm.onsubmit = e => {
 function showDashboard(){
   loginScreen.style.display="none";
   dashboardScreen.style.display="block";
-  profileBubble.textContent = username.value.slice(0,2).toUpperCase();
+  profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
   loadMessages();
   checkNotifications();
 }
 
-function logout(){ localStorage.clear(); location.reload(); }
+function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
-/* ---------- CALENDAR (MONTH NAVIGATION SAFE) ---------- */
+/* ---------- MESSAGES ---------- */
+function loadMessages(){
+  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
+
+  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
+
+  data.forEach(m=>{
+    if(m.counselor !== counselor) return;
+
+    const rowId = map[m.urgency] || "green-row";
+    const card = document.createElement("div");
+    card.className = "message-card";
+
+    const dateTime = m.dateTime ? `📅 ${m.dateTime}` : "";
+    const notes = m.notes ? `<br><em>Notes: ${m.notes}</em>` : "";
+
+    card.innerHTML = `
+      <strong>${m.firstName} ${m.lastName}</strong><br>
+      Grade: ${m.grade}<br>
+      ${m.reason}<br>
+      ${dateTime}
+      ${notes}
+    `;
+    document.querySelector(`#${rowId} .messages`).appendChild(card);
+  });
+}
+
+/* ---------- SEARCH ---------- */
+searchBar.oninput = () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(c => c.style.display = c.textContent.toLowerCase().includes(q)?"block":"none");
+};
+
+/* ---------- TOGGLE ---------- */
+function toggleMessages(id){
+  const box=document.querySelector(`#${id} .messages`);
+  const btn=document.querySelector(`#${id} .toggle-btn`);
+  const hide = box.style.display!=="none";
+  box.style.display = hide?"none":"flex";
+  btn.textContent = hide?"Show Messages":"Hide Messages";
+}
+
+/* ---------- CALENDAR ---------- */
+const today = new Date();
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 
-let calendarDate = new Date();
-
-function openCalendar(){
-  calendarOverlay.style.display="flex";
-  renderCalendar();
-}
-
-function closeCalendar(){
-  calendarOverlay.style.display="none";
-}
-
-function changeMonth(delta){
-  calendarDate.setMonth(calendarDate.getMonth() + delta);
-  renderCalendar();
-}
+function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
+function closeCalendar(){ calendarOverlay.style.display="none"; }
 
 function renderCalendar(){
   calendarGrid.innerHTML="";
-  const y = calendarDate.getFullYear();
-  const m = calendarDate.getMonth();
-
-  monthLabel.textContent = calendarDate.toLocaleString("default",{month:"long",year:"numeric"});
-
+  const y=today.getFullYear(), m=today.getMonth();
+  monthLabel.textContent = today.toLocaleString("default",{month:"long",year:"numeric"});
   const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  const days = new Date(y,m+1,0).getDate();
 
-  for(let d=1; d<=days; d++){
-    const key = `${y}-${m}-${d}`;
+  for(let d=1; d<=new Date(y,m+1,0).getDate(); d++){
+    const key=`${y}-${m}-${d}`;
     const cell = document.createElement("div");
     cell.className="calendar-day";
     cell.innerHTML=`<strong>${d}</strong>`;
-
     appts.filter(a=>a.date===key).forEach(a=>{
-      const dot=document.createElement("div");
-      dot.className=`dot ${a.urgency}`;
+      const dot = document.createElement("div");
+      dot.className = `dot ${a.urgency}`;
       cell.appendChild(dot);
     });
-
-    cell.onclick=()=>addAppt(key);
+    cell.onclick = () => addAppt(key);
     calendarGrid.appendChild(cell);
   }
 }
-</script>
 
+function addAppt(date){
+  const urgency = prompt("Urgency (red/orange/yellow/green)");
+  if(!urgency) return;
+  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  appts.push({date,urgency});
+  localStorage.setItem("appointments",JSON.stringify(appts));
+  renderCalendar();
+  checkNotifications();
+}
+
+/* ---------- BELL NOTIFICATIONS FIXED ---------- */
+const bellDot = document.getElementById("bellDot");
+const bellDropdown = document.getElementById("bellDropdown");
+const notifBell = document.getElementById("notifBell");
+
+function checkNotifications(){
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const students = JSON.parse(localStorage.getItem("studentMessages")||"[]");
+  const appointments = JSON.parse(localStorage.getItem("appointments")||"[]");
+
+  const crisisStudents = students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
+  const todayDate = new Date();
+  const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
+  const apptToday = appointments.filter(a=>a.date===todayKey);
+
+  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
+
+  bellDropdown.innerHTML = "";
+  crisisStudents.forEach(s=>{
+    const div = document.createElement("div");
+    div.innerHTML = `<strong>Student in Crisis:</strong> ${s.firstName} ${s.lastName}<br>${s.reason}<br>${s.dateTime||""}${s.notes ? "<br><em>Notes: "+s.notes+"</em>":""}`;
+    bellDropdown.appendChild(div);
+  });
+  apptToday.forEach(a=>{
+    const div = document.createElement("div");
+    div.textContent = `Appointment today`;
+    bellDropdown.appendChild(div);
+  });
+}
+
+// Toggle dropdown safely
+notifBell.onclick = (e) => {
+  e.stopPropagation();
+  bellDropdown.style.display = (bellDropdown.style.display==="flex")?"none":"flex";
+  if(bellDropdown.style.display==="flex") bellDot.style.display="none";
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => bellDropdown.style.display="none");
+bellDropdown.addEventListener('click', e => e.stopPropagation());
+
+setInterval(checkNotifications,5000);
+checkNotifications();
+
+/* ---------- INITIAL ---------- */
+window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
+</script>
 </body>
 </html>
 
