@@ -85,7 +85,7 @@ body {
   font-size: 16px;
 }
 
-/* ---------- CALENDAR BUTTON ---------- */
+/* ---------- ICON BUTTONS ---------- */
 .calendar-btn {
   width: 42px;
   height: 42px;
@@ -102,7 +102,6 @@ body {
   color: white;
 }
 
-/* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble {
   width: 42px;
   height: 42px;
@@ -139,13 +138,6 @@ body {
   gap: 10px;
 }
 
-.urgency-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-/* ---------- MESSAGES ---------- */
 .messages {
   display: flex;
   flex-wrap: wrap;
@@ -161,46 +153,6 @@ body {
   border-radius: 6px;
 }
 
-/* ---------- FACES ---------- */
-.face {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  position: relative;
-}
-
-.eye {
-  width: 5px;
-  height: 5px;
-  background: black;
-  border-radius: 50%;
-  position: absolute;
-  top: 12px;
-}
-
-.eye.left { left: 11px; }
-.eye.right { right: 11px; }
-
-.mouth {
-  position: absolute;
-  left: 50%;
-  bottom: 8px;
-  transform: translateX(-50%);
-  width: 18px;
-  height: 10px;
-  border: 3px solid black;
-  border-color: black transparent transparent transparent;
-  border-radius: 50%;
-}
-
-.sad .mouth { transform: translateX(-50%) rotate(180deg); }
-.neutral .mouth { border: none; height: 3px; background: black; width: 18px; }
-
-.red-face { background: red; }
-.orange-face { background: orange; }
-.yellow-face { background: gold; }
-.green-face { background: green; }
-
 /* ---------- TOGGLE ---------- */
 .toggle-btn {
   padding: 6px 18px;
@@ -211,7 +163,7 @@ body {
   cursor: pointer;
 }
 
-/* ---------- CALENDAR ---------- */
+/* ---------- CALENDAR OVERLAY ---------- */
 .calendar-overlay {
   position: fixed;
   inset: 0;
@@ -224,16 +176,50 @@ body {
 
 .calendar-box {
   background: white;
-  padding: 20px;
-  width: 420px;
+  width: 460px;
   border-radius: 14px;
+  padding: 16px;
+  position: relative;
+}
+
+/* Close X */
+.calendar-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Calendar header */
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.calendar-header button {
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Days */
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 6px;
 }
 
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7,1fr);
   gap: 6px;
-  margin-top: 10px;
 }
 
 .calendar-day {
@@ -242,6 +228,7 @@ body {
   padding: 6px;
   cursor: pointer;
   font-size: 13px;
+  min-height: 46px;
 }
 
 .dot {
@@ -282,61 +269,80 @@ body {
     </div>
   </header>
 
-  <!-- URGENCY ROWS (unchanged) -->
-  <div class="urgency-row" id="red-row"><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
-  <div class="urgency-row" id="orange-row"><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
-  <div class="urgency-row" id="yellow-row"><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
-  <div class="urgency-row" id="green-row"><div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="red-row"><div class="urgency-left"><strong>High Urgency</strong><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="orange-row"><div class="urgency-left"><strong>Medium-High</strong><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="yellow-row"><div class="urgency-left"><strong>Medium-Low</strong><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="green-row"><div class="urgency-left"><strong>Low Urgency</strong><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
 </div>
 
 <!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
   <div class="calendar-box">
-    <h3 id="monthLabel"></h3>
+    <div class="calendar-close" onclick="closeCalendar()">✕</div>
+
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">‹</button>
+      <h3 id="monthLabel"></h3>
+      <button onclick="changeMonth(1)">›</button>
+    </div>
+
+    <div class="calendar-days">
+      <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+    </div>
+
     <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 </div>
 
 <script>
-/* ---------- LOGIN ---------- */
-const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
+const counselors={miap2k10:"1234",kmcconnell:"1234",gsorbi:"1234",apanlilio:"1234",aturner:"1234",cfilson:"1234"};
+let currentDate=new Date();
 
-loginForm.onsubmit = e => {
+loginForm.onsubmit=e=>{
   e.preventDefault();
-  if (counselors[username.value] === password.value) {
-    localStorage.setItem("loggedInCounselor", username.value);
+  if(counselors[username.value]===password.value){
+    localStorage.setItem("loggedInCounselor",username.value);
     showDashboard();
   } else alert("Invalid login");
 };
 
-function showDashboard() {
-  loginScreen.style.display = "none";
-  dashboardScreen.style.display = "block";
-  profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
-  loadMessages();
+function showDashboard(){
+  loginScreen.style.display="none";
+  dashboardScreen.style.display="block";
+  profileBubble.textContent=localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
 }
 
-function logout() {
+function logout(){
   localStorage.removeItem("loggedInCounselor");
   location.reload();
 }
 
 /* ---------- CALENDAR ---------- */
-const today = new Date();
+function openCalendar(){
+  calendarOverlay.style.display="flex";
+  renderCalendar();
+}
+function closeCalendar(){
+  calendarOverlay.style.display="none";
+}
 
-function openCalendar() {
-  calendarOverlay.style.display = "flex";
+function changeMonth(dir){
+  currentDate.setMonth(currentDate.getMonth()+dir);
   renderCalendar();
 }
 
-function renderCalendar() {
-  calendarGrid.innerHTML = "";
-  const y = today.getFullYear();
-  const m = today.getMonth();
-  monthLabel.textContent = today.toLocaleString("default",{month:"long",year:"numeric"});
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+function renderCalendar(){
+  calendarGrid.innerHTML="";
+  const y=currentDate.getFullYear();
+  const m=currentDate.getMonth();
+  monthLabel.textContent=currentDate.toLocaleString("default",{month:"long",year:"numeric"});
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
-  for(let d=1; d<=new Date(y,m+1,0).getDate(); d++){
+  for(let i=0;i<firstDay;i++) calendarGrid.appendChild(document.createElement("div"));
+
+  for(let d=1;d<=daysInMonth;d++){
     const key=`${y}-${m}-${d}`;
     const cell=document.createElement("div");
     cell.className="calendar-day";
@@ -352,7 +358,7 @@ function renderCalendar() {
 }
 
 function addAppt(date){
-  const urgency=prompt("Urgency (red/orange/yellow/green)");
+  const urgency=prompt("Urgency: red / orange / yellow / green");
   if(!urgency) return;
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
   appts.push({date,urgency});
@@ -360,39 +366,15 @@ function addAppt(date){
   renderCalendar();
 }
 
-/* ---------- MESSAGES ---------- */
-function loadMessages() {
-  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
-  const counselor=localStorage.getItem("loggedInCounselor");
-  const data=JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const map={"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
-  data.forEach(m=>{
-    if(m.counselor!==counselor) return;
-    const card=document.createElement("div");
-    card.className="message-card";
-    card.innerHTML=`<strong>${m.firstName} ${m.lastName}</strong><br>Grade ${m.grade}<br>${m.reason}`;
-    document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
-  });
-}
-
-searchBar.oninput=()=> {
-  const q=searchBar.value.toLowerCase();
-  document.querySelectorAll(".message-card").forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?"block":"none");
-};
-
 function toggleMessages(id){
   const box=document.querySelector(`#${id} .messages`);
-  const btn=document.querySelector(`#${id} .toggle-btn`);
-  const hide=box.style.display!=="none";
-  box.style.display=hide?"none":"flex";
-  btn.textContent=hide?"Show Messages":"Hide Messages";
+  box.style.display=box.style.display==="none"?"flex":"none";
 }
 
-window.onload=()=> {
-  if(localStorage.getItem("loggedInCounselor")) showDashboard();
-};
+window.onload=()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
 
 </body>
 </html>
+
 
