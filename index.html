@@ -96,28 +96,31 @@ body {
   display: none;
 }
 
+/* Notification dropdown */
 .bell-dropdown {
   position: absolute;
   top: 48px;
   right: 0;
   background: #fff;
   border: 1px solid #ccc;
-  border-radius: 10px;
+  border-radius: 8px;
   width: 260px;
   display: none;
   flex-direction: column;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   z-index: 1000;
-  font-size: 14px;
-  overflow: hidden;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .bell-dropdown div {
   padding: 10px 12px;
   border-bottom: 1px solid #eee;
+  font-size: 14px;
 }
 
 .bell-dropdown div:last-child { border-bottom: none; }
+
 .bell-dropdown div:hover { background: #f1f1f1; }
 
 /* ---------- PROFILE BUBBLE ---------- */
@@ -151,7 +154,9 @@ body {
 #green-row { border-color: green; }
 
 .urgency-left { min-width: 160px; display: flex; flex-direction: column; gap: 10px; }
+
 .urgency-header { display: flex; align-items: center; gap: 10px; }
+
 .messages { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .message-card {
@@ -164,11 +169,29 @@ body {
   line-height: 1.3;
 }
 
-.face { width: 40px; height: 40px; border-radius: 50%; position: relative; }
+/* ---------- FACES ---------- */
+.face {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+}
+
 .eye { width: 5px; height: 5px; background: black; border-radius: 50%; position: absolute; top: 12px; }
 .eye.left { left: 11px; }
 .eye.right { right: 11px; }
-.mouth { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: 18px; height: 10px; border: 3px solid black; border-color: black transparent transparent transparent; border-radius: 50%; }
+
+.mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 10px;
+  border: 3px solid black;
+  border-color: black transparent transparent transparent;
+  border-radius: 50%;
+}
 .sad .mouth { transform: translateX(-50%) rotate(180deg); }
 .neutral .mouth { border: none; height: 3px; background: black; width: 18px; }
 
@@ -206,6 +229,7 @@ body {
 }
 
 .calendar-box h3 { margin: 0; text-align: center; }
+
 .close-calendar {
   position: absolute;
   top: 6px;
@@ -232,7 +256,13 @@ body {
   align-items: center;
 }
 
-.dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; }
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+}
+
 .red { background: red; }
 .orange { background: orange; }
 .yellow { background: gold; }
@@ -274,10 +304,7 @@ body {
   <div class="urgency-row" id="red-row">
     <div class="urgency-left">
       <div class="urgency-header">
-        <div class="face red-face sad">
-          <div class="eye left"></div><div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
+        <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
         <h2>High Urgency</h2>
       </div>
       <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
@@ -288,10 +315,7 @@ body {
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header">
-        <div class="face orange-face sad">
-          <div class="eye left"></div><div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
+        <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
         <h2>Medium-High</h2>
       </div>
       <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
@@ -302,10 +326,7 @@ body {
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header">
-        <div class="face yellow-face neutral">
-          <div class="eye left"></div><div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
+        <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
         <h2>Medium-Low</h2>
       </div>
       <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
@@ -316,10 +337,7 @@ body {
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header">
-        <div class="face green-face">
-          <div class="eye left"></div><div class="eye right"></div>
-          <div class="mouth"></div>
-        </div>
+        <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
         <h2>Low Urgency</h2>
       </div>
       <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
@@ -404,27 +422,15 @@ function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
-
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
-
   data.forEach(m=>{
-    if(m.counselor !== counselor) return;
-
-    const rowId = map[m.urgency] || "green-row";
+    if(m.counselor!==counselor) return;
+    const notes = m.notes ? `<em>Notes:</em> ${m.notes}<br>` : "";
+    const dateTime = m.dateTime ? `<small>${m.dateTime}</small>` : "";
     const card = document.createElement("div");
-    card.className = "message-card";
-
-    const dateTime = m.dateTime ? `📅 ${m.dateTime}` : "";
-    const notes = m.notes ? `<br><em>Notes: ${m.notes}</em>` : "";
-
-    card.innerHTML = `
-      <strong>${m.firstName} ${m.lastName}</strong><br>
-      Grade: ${m.grade}<br>
-      ${m.reason}<br>
-      ${dateTime}
-      ${notes}
-    `;
-    document.querySelector(`#${rowId} .messages`).appendChild(card);
+    card.className="message-card";
+    card.innerHTML=`<strong>${m.firstName} ${m.lastName}</strong><br>Grade: ${m.grade}<br>${m.reason}<br>${notes}${dateTime}`;
+    document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
   });
 }
 
@@ -458,27 +464,28 @@ function checkNotifications(){
   const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
   const apptToday = appointments.filter(a=>a.date===todayKey);
 
-  if(crisisStudents.length || apptToday.length){ bellDot.style.display="block"; }
-  else { bellDot.style.display="none"; }
+  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
 
   // Fill dropdown
   bellDropdown.innerHTML="";
   crisisStudents.forEach(s=>{
+    const notes = s.notes ? ` <em>Notes:</em> ${s.notes}` : "";
+    const dateTime = s.dateTime ? ` <small>${s.dateTime}</small>` : "";
     const div = document.createElement("div");
-    div.innerHTML = `<strong>Student in Crisis:</strong> ${s.firstName} ${s.lastName}<br>${s.reason}<br>${s.dateTime||""}${s.notes ? "<br><em>Notes: "+s.notes+"</em>":""}`;
+    div.innerHTML = `🚨 Student in Crisis: ${s.firstName} ${s.lastName}${notes}${dateTime}`;
     bellDropdown.appendChild(div);
   });
   apptToday.forEach(a=>{
     const div = document.createElement("div");
-    div.textContent = `Appointment today`;
+    div.textContent = `📅 Appointment today`;
     bellDropdown.appendChild(div);
   });
 }
 
 // Toggle dropdown
 notifBell.onclick = () => {
-  if(bellDropdown.style.display==="flex"){ bellDropdown.style.display="none"; }
-  else { bellDropdown.style.display="flex"; bellDot.style.display="none"; }
+  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
+  bellDot.style.display = "none";
 }
 
 setInterval(checkNotifications,5000);
@@ -488,5 +495,6 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
