@@ -6,28 +6,10 @@
 <title>TapOut – Counselor Dashboard</title>
 
 <style>
-/* ================== COLORS ================== */
-:root {
-  --bg: #fffcf5;
-  --card: #ffffff;
-  --text: #000;
-  --header: #87CEFA;
-  --accent: #0070c9;
-}
-
-body.dark {
-  --bg: #1e1e1e;
-  --card: #2a2a2a;
-  --text: #fff;
-  --header: #333;
-}
-
-/* ================== BASE ================== */
 body {
   margin: 0;
   font-family: sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  background: #fffcf5;
 }
 
 /* ---------- LOGIN ---------- */
@@ -39,7 +21,7 @@ body {
 }
 
 .login-box {
-  background: var(--card);
+  background: #fff;
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -57,23 +39,29 @@ body {
   padding: 10px;
   margin-top: 6px;
   font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
 .login-box button {
   margin-top: 25px;
   float: right;
   padding: 10px 25px;
-  background: var(--accent);
+  font-size: 16px;
+  background: #0070c9;
   color: white;
   border: none;
   border-radius: 6px;
+  cursor: pointer;
 }
 
 /* ---------- DASHBOARD ---------- */
-#dashboardScreen { display: none; }
+#dashboardScreen {
+  display: none;
+}
 
 .dashboard-header {
-  background: var(--header);
+  background: #87CEFA;
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
@@ -94,120 +82,36 @@ body {
 .header-right input {
   width: 260px;
   padding: 10px;
+  font-size: 16px;
 }
 
-/* ---------- PROFILE ---------- */
-.profile-wrapper {
-  position: relative;
-}
-
+/* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble {
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  background: var(--accent);
+  background: #0070c9;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  font-size: 16px;
   cursor: pointer;
+  user-select: none;
 }
 
-/* hover full name */
-.profile-bubble:hover::after {
-  content: attr(data-name);
-  position: absolute;
-  top: 48px;
-  right: 0;
-  background: #000;
-  color: white;
-  padding: 6px 10px;
-  font-size: 12px;
-  border-radius: 6px;
-  white-space: nowrap;
+.profile-bubble:hover {
+  background: #005fa3;
 }
 
-/* ---------- DROPDOWN ---------- */
-.profile-menu {
-  position: absolute;
-  right: 0;
-  top: 52px;
-  width: 200px;
-  background: var(--card);
-  border-radius: 10px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-  display: none;
-  overflow: hidden;
-  animation: fade 0.15s ease;
-}
-
-.profile-menu label,
-.profile-menu button {
-  padding: 12px 14px;
-  width: 100%;
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.profile-menu label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.profile-menu button:hover,
-.profile-menu label:hover {
-  background: rgba(0,0,0,0.05);
-}
-
-@keyframes fade {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ---------- LOGOUT MODAL ---------- */
-.modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-box {
-  background: var(--card);
-  padding: 25px;
-  border-radius: 12px;
-  width: 280px;
-  text-align: center;
-  animation: pop 0.15s ease;
-}
-
-@keyframes pop {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
-
-.modal-box button {
-  margin: 10px;
-  padding: 8px 18px;
-}
-
-.confirm { background: #d9534f; color: white; }
-.cancel { background: #ccc; }
-
-/* ---------- URGENCY ROWS (UNCHANGED) ---------- */
+/* ---------- URGENCY ROWS ---------- */
 .urgency-row {
   display: flex;
   gap: 16px;
   margin: 20px;
   padding: 16px;
-  background: var(--card);
+  background: #fff;
   border-radius: 12px;
   border-left: 6px solid;
 }
@@ -217,8 +121,25 @@ body {
 #yellow-row { border-color: gold; }
 #green-row { border-color: green; }
 
-.urgency-left { min-width: 160px; }
+.urgency-left {
+  min-width: 160px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
+.urgency-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.urgency-header h2 {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* ---------- MESSAGES ---------- */
 .messages {
   display: flex;
   flex-wrap: wrap;
@@ -229,19 +150,71 @@ body {
   width: 220px;
   padding: 8px 10px;
   font-size: 14px;
-  background: var(--bg);
+  background: #f9f9f9;
   border: 1px solid #ccc;
   border-radius: 6px;
+  line-height: 1.3;
 }
 
-/* ---------- TOGGLE ---------- */
+/* ---------- FACES ---------- */
+.face {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.eye {
+  width: 5px;
+  height: 5px;
+  background: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 12px;
+}
+
+.eye.left { left: 11px; }
+.eye.right { right: 11px; }
+
+.mouth {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 10px;
+  border: 3px solid black;
+  border-color: black transparent transparent transparent;
+  border-radius: 50%;
+}
+
+.sad .mouth { transform: translateX(-50%) rotate(180deg); }
+.neutral .mouth {
+  border: none;
+  height: 3px;
+  background: black;
+  width: 18px;
+}
+
+.red-face { background: red; }
+.orange-face { background: orange; }
+.yellow-face { background: gold; }
+.green-face { background: green; }
+
+/* ---------- TOGGLE BUTTON ---------- */
 .toggle-btn {
   padding: 6px 18px;
+  font-size: 14px;
   border-radius: 20px;
-  border: 2px solid var(--accent);
-  background: none;
-  color: var(--accent);
+  border: 2px solid #0070c9;
+  background: #fff;
+  color: #0070c9;
   cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background: #0070c9;
+  color: white;
 }
 </style>
 </head>
@@ -255,43 +228,75 @@ body {
     <input id="username" required>
     <label>Password</label>
     <input id="password" type="password" required>
-    <button>Sign In</button>
+    <button type="submit">Sign In</button>
   </form>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboardScreen">
-<header class="dashboard-header">
-  <div class="dashboard-title">TapOut – Counselor Dashboard</div>
-  <div class="header-right">
-    <input id="searchBar" placeholder="Search students...">
-
-    <div class="profile-wrapper">
-      <div class="profile-bubble" id="profileBubble"></div>
-      <div class="profile-menu" id="profileMenu">
-        <label>
-          Dark Mode
-          <input type="checkbox" onchange="toggleDarkMode(this)">
-        </label>
-        <button onclick="openLogout()">Sign Out</button>
-      </div>
+  <header class="dashboard-header">
+    <div class="dashboard-title">TapOut – Counselor Dashboard</div>
+    <div class="header-right">
+      <input id="searchBar" placeholder="Search students...">
+      <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
+  </header>
+
+  <!-- URGENCY ROWS (unchanged) -->
+  <!-- Red -->
+  <div class="urgency-row" id="red-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face red-face sad">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>High Urgency</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
   </div>
-</header>
 
-<!-- URGENCY ROWS REMAIN IDENTICAL -->
-<div id="red-row" class="urgency-row"><div class="urgency-left"><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
-<div id="orange-row" class="urgency-row"><div class="urgency-left"><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
-<div id="yellow-row" class="urgency-row"><div class="urgency-left"><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
-<div id="green-row" class="urgency-row"><div class="urgency-left"><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
-</div>
+  <!-- Orange -->
+  <div class="urgency-row" id="orange-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face orange-face sad">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Medium-High</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
+  </div>
 
-<!-- LOGOUT MODAL -->
-<div class="modal" id="logoutModal">
-  <div class="modal-box">
-    <h3>Sign out?</h3>
-    <button class="confirm" onclick="logout()">Sign Out</button>
-    <button class="cancel" onclick="closeLogout()">Cancel</button>
+  <!-- Yellow -->
+  <div class="urgency-row" id="yellow-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face yellow-face neutral">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Medium-Low</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
+  </div>
+
+  <!-- Green -->
+  <div class="urgency-row" id="green-row">
+    <div class="urgency-left">
+      <div class="urgency-header">
+        <div class="face green-face">
+          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
+        </div>
+        <h2>Low Urgency</h2>
+      </div>
+      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
+    </div>
+    <div class="messages"></div>
   </div>
 </div>
 
@@ -316,28 +321,14 @@ loginForm.onsubmit = e => {
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
-
-  const name = localStorage.getItem("loggedInCounselor");
-  profileBubble.textContent = name.slice(0,2).toUpperCase();
-  profileBubble.dataset.name = name;
+  setProfileInitials();
+  loadMessages();
 }
 
-profileBubble.onclick = () => {
-  profileMenu.style.display =
-    profileMenu.style.display === "block" ? "none" : "block";
-};
-
-function toggleDarkMode(cb) {
-  document.body.classList.toggle("dark", cb.checked);
-}
-
-function openLogout() {
-  profileMenu.style.display = "none";
-  logoutModal.style.display = "flex";
-}
-
-function closeLogout() {
-  logoutModal.style.display = "none";
+function setProfileInitials() {
+  const name = localStorage.getItem("loggedInCounselor") || "";
+  const initials = name.slice(0, 2).toUpperCase();
+  document.getElementById("profileBubble").textContent = initials;
 }
 
 function logout() {
@@ -345,9 +336,47 @@ function logout() {
   location.reload();
 }
 
-window.onclick = e => {
-  if (!e.target.closest(".profile-wrapper")) profileMenu.style.display = "none";
+function loadMessages() {
+  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const data = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+
+  const map = {
+    "I’m in Crisis": "red-row",
+    "I’m Not Coping Well": "orange-row",
+    "Feeling a Little Off": "yellow-row",
+    "I’m Doing Fine – Just Curious": "green-row"
+  };
+
+  data.forEach(m => {
+    if (m.counselor !== counselor) return;
+    const card = document.createElement("div");
+    card.className = "message-card";
+    card.innerHTML = `
+      <strong>${m.firstName} ${m.lastName}</strong><br>
+      Grade ${m.grade}<br>
+      ${m.reason}<br>
+      ${m.notes ? "<em>Notes:</em> " + m.notes + "<br>" : ""}
+      <small>${m.time}</small>
+    `;
+    document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
+  });
+}
+
+searchBar.oninput = () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(c =>
+    c.style.display = c.textContent.toLowerCase().includes(q) ? "block" : "none"
+  );
 };
+
+function toggleMessages(id) {
+  const box = document.querySelector(`#${id} .messages`);
+  const btn = document.querySelector(`#${id} .toggle-btn`);
+  const hidden = box.style.display === "none";
+  box.style.display = hidden ? "flex" : "none";
+  btn.textContent = hidden ? "Hide Messages" : "Show Messages";
+}
 
 window.onload = () => {
   if (localStorage.getItem("loggedInCounselor")) showDashboard();
