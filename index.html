@@ -27,11 +27,7 @@ body {
   width: 400px;
 }
 
-.login-box label {
-  font-weight: bold;
-  margin-top: 15px;
-  display: block;
-}
+.login-box label { font-weight: bold; margin-top: 15px; display: block; }
 
 .login-box input {
   width: 100%;
@@ -65,16 +61,9 @@ body {
   align-items: center;
 }
 
-.dashboard-title {
-  font-size: 22px;
-  font-weight: bold;
-}
+.dashboard-title { font-size: 22px; font-weight: bold; }
 
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.header-right { display: flex; align-items: center; gap: 10px; }
 
 .header-right input { width: 260px; padding: 10px; font-size: 16px; }
 
@@ -91,10 +80,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .calendar-btn:hover { background: #0070c9; color: white; }
 
+.bell-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 10px;
+  height: 10px;
+  background: red;
+  border-radius: 50%;
+  display: none;
+}
+
+/* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble {
   width: 42px;
   height: 42px;
@@ -108,6 +110,7 @@ body {
   cursor: pointer;
 }
 
+/* ---------- URGENCY ROWS ---------- */
 .urgency-row {
   display: flex;
   gap: 16px;
@@ -257,55 +260,18 @@ body {
     <div class="header-right">
       <input id="searchBar" placeholder="Search students...">
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
-      <button class="calendar-btn" id="notifBell" onclick="clearBell()">🔔</button>
+      <button class="calendar-btn" id="notifBell">🔔
+        <span class="bell-dot" id="bellDot"></span>
+      </button>
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
 
   <!-- URGENCY ROWS -->
-  <div class="urgency-row" id="red-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>High Urgency</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="orange-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Medium-High</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="yellow-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Medium-Low</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="green-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Low Urgency</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
+  <div class="urgency-row" id="red-row"><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="orange-row"><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="yellow-row"><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="green-row"><div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
 </div>
 
 <!-- CALENDAR -->
@@ -323,7 +289,7 @@ const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlili
 
 loginForm.onsubmit = e => {
   e.preventDefault();
-  if(counselors[username.value] === password.value){
+  if(counselors[username.value]===password.value){
     localStorage.setItem("loggedInCounselor", username.value);
     showDashboard();
   } else alert("Invalid login");
@@ -337,7 +303,6 @@ function showDashboard(){
   checkNotifications();
 }
 
-/* ---------- LOGOUT ---------- */
 function logout(){
   localStorage.removeItem("loggedInCounselor");
   location.reload();
@@ -349,17 +314,12 @@ const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 
-function openCalendar(){
-  calendarOverlay.style.display="flex";
-  renderCalendar();
-}
-
+function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; }
 
 function renderCalendar(){
   calendarGrid.innerHTML="";
-  const y = today.getFullYear();
-  const m = today.getMonth();
+  const y=today.getFullYear(), m=today.getMonth();
   monthLabel.textContent = today.toLocaleString("default",{month:"long",year:"numeric"});
   const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
 
@@ -385,7 +345,7 @@ function addAppt(date){
   appts.push({date,urgency});
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
-  checkNotifications(); // update bell immediately
+  checkNotifications();
 }
 
 /* ---------- MESSAGES ---------- */
@@ -418,39 +378,31 @@ function toggleMessages(id){
   btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
-/* ---------- NOTIFICATIONS ---------- */
-const notifBell = document.getElementById("notifBell");
-
+/* ---------- BELL NOTIFICATION DOT ---------- */
+const bellDot = document.getElementById("bellDot");
 function checkNotifications(){
   const counselor = localStorage.getItem("loggedInCounselor");
-  const students = JSON.parse(localStorage.getItem("studentMessages") || "[]");
-  const appointments = JSON.parse(localStorage.getItem("appointments") || "[]");
+  const students = JSON.parse(localStorage.getItem("studentMessages")||"[]");
+  const appointments = JSON.parse(localStorage.getItem("appointments")||"[]");
 
-  let crisisToday = students.some(s => s.counselor===counselor && s.urgency==="I’m in Crisis");
-  let todayDate = new Date();
-  let todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
-  let apptToday = appointments.some(a => a.date===todayKey);
+  const crisisToday = students.some(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
+  const todayDate = new Date();
+  const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
+  const apptToday = appointments.some(a=>a.date===todayKey);
 
-  if(crisisToday || apptToday){
-    notifBell.style.color="red";
-    if(Notification.permission==="granted"){
-      if(crisisToday) new Notification("Crisis Alert!", {body:"A student has marked 'I’m in Crisis'."});
-      if(apptToday) new Notification("Appointment Reminder", {body:"You have an appointment today."});
-    } else Notification.requestPermission();
-  } else {
-    notifBell.style.color="#0070c9";
-  }
+  if(crisisToday || apptToday){ bellDot.style.display="block"; }
+  else { bellDot.style.display="none"; }
 }
 
-function clearBell(){ notifBell.style.color="#0070c9"; }
-
-setInterval(checkNotifications,10000);
+setInterval(checkNotifications,5000);
+document.getElementById("notifBell").onclick = () => bellDot.style.display="none";
 
 /* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
 </script>
 </body>
 </html>
+
 
 
 
