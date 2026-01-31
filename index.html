@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TapOut – Counselor Dashboard</title>
-
 <style>
 body {
   margin: 0;
@@ -56,9 +55,7 @@ body {
 }
 
 /* ---------- DASHBOARD ---------- */
-#dashboardScreen {
-  display: none;
-}
+#dashboardScreen { display: none; }
 
 .dashboard-header {
   background: #87CEFA;
@@ -76,16 +73,12 @@ body {
 .header-right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
-.header-right input {
-  width: 260px;
-  padding: 10px;
-  font-size: 16px;
-}
+.header-right input { width: 260px; padding: 10px; font-size: 16px; }
 
-/* ---------- CALENDAR BUTTON ---------- */
+/* ---------- BUTTONS ---------- */
 .calendar-btn {
   width: 42px;
   height: 42px;
@@ -100,12 +93,8 @@ body {
   justify-content: center;
 }
 
-.calendar-btn:hover {
-  background: #0070c9;
-  color: white;
-}
+.calendar-btn:hover { background: #0070c9; color: white; }
 
-/* ---------- PROFILE BUBBLE ---------- */
 .profile-bubble {
   width: 42px;
   height: 42px;
@@ -119,7 +108,6 @@ body {
   cursor: pointer;
 }
 
-/* ---------- URGENCY ROWS ---------- */
 .urgency-row {
   display: flex;
   gap: 16px;
@@ -135,25 +123,11 @@ body {
 #yellow-row { border-color: gold; }
 #green-row { border-color: green; }
 
-.urgency-left {
-  min-width: 160px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
+.urgency-left { min-width: 160px; display: flex; flex-direction: column; gap: 10px; }
 
-.urgency-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+.urgency-header { display: flex; align-items: center; gap: 10px; }
 
-/* ---------- MESSAGES ---------- */
-.messages {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
+.messages { display: flex; flex-wrap: wrap; gap: 10px; }
 
 .message-card {
   width: 220px;
@@ -164,7 +138,6 @@ body {
   border-radius: 6px;
 }
 
-/* ---------- FACES ---------- */
 .face {
   width: 40px;
   height: 40px;
@@ -172,15 +145,7 @@ body {
   position: relative;
 }
 
-.eye {
-  width: 5px;
-  height: 5px;
-  background: black;
-  border-radius: 50%;
-  position: absolute;
-  top: 12px;
-}
-
+.eye { width: 5px; height: 5px; background: black; border-radius: 50%; position: absolute; top: 12px; }
 .eye.left { left: 11px; }
 .eye.right { right: 11px; }
 
@@ -195,7 +160,6 @@ body {
   border-color: black transparent transparent transparent;
   border-radius: 50%;
 }
-
 .sad .mouth { transform: translateX(-50%) rotate(180deg); }
 .neutral .mouth { border: none; height: 3px; background: black; width: 18px; }
 
@@ -204,7 +168,6 @@ body {
 .yellow-face { background: gold; }
 .green-face { background: green; }
 
-/* ---------- TOGGLE ---------- */
 .toggle-btn {
   padding: 6px 18px;
   border-radius: 20px;
@@ -228,8 +191,19 @@ body {
 .calendar-box {
   background: white;
   padding: 20px;
-  width: 450px;
+  width: 420px;
   border-radius: 14px;
+  position: relative;
+}
+
+.calendar-box h3 { margin: 0; text-align: center; }
+
+.close-calendar {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  cursor: pointer;
+  font-size: 18px;
 }
 
 .calendar-grid {
@@ -263,7 +237,6 @@ body {
 .green { background: green; }
 </style>
 </head>
-
 <body>
 
 <!-- LOGIN -->
@@ -284,6 +257,7 @@ body {
     <div class="header-right">
       <input id="searchBar" placeholder="Search students...">
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
+      <button class="calendar-btn" id="notifBell" onclick="clearBell()">🔔</button>
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -299,6 +273,7 @@ body {
     </div>
     <div class="messages"></div>
   </div>
+
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -309,6 +284,7 @@ body {
     </div>
     <div class="messages"></div>
   </div>
+
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -319,6 +295,7 @@ body {
     </div>
     <div class="messages"></div>
   </div>
+
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -334,12 +311,8 @@ body {
 <!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
   <div class="calendar-box">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-      <button onclick="changeMonth(-1)">‹</button>
-      <h3 id="monthLabel"></h3>
-      <button onclick="changeMonth(1)">›</button>
-      <span style="cursor:pointer;font-size:18px;" onclick="closeCalendar()">✖</span>
-    </div>
+    <span class="close-calendar" onclick="closeCalendar()">✖</span>
+    <h3 id="monthLabel"></h3>
     <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 </div>
@@ -350,111 +323,135 @@ const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlili
 
 loginForm.onsubmit = e => {
   e.preventDefault();
-  if (counselors[username.value] === password.value) {
+  if(counselors[username.value] === password.value){
     localStorage.setItem("loggedInCounselor", username.value);
     showDashboard();
   } else alert("Invalid login");
 };
 
-function showDashboard() {
-  loginScreen.style.display = "none";
-  dashboardScreen.style.display = "block";
+function showDashboard(){
+  loginScreen.style.display="none";
+  dashboardScreen.style.display="block";
   profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
   loadMessages();
+  checkNotifications();
 }
 
-function logout() {
+/* ---------- LOGOUT ---------- */
+function logout(){
   localStorage.removeItem("loggedInCounselor");
   location.reload();
 }
 
 /* ---------- CALENDAR ---------- */
-let calendarDate = new Date();
+const today = new Date();
+const calendarOverlay = document.getElementById("calendarOverlay");
+const calendarGrid = document.getElementById("calendarGrid");
+const monthLabel = document.getElementById("monthLabel");
 
-function openCalendar() {
-  calendarOverlay.style.display = "flex";
+function openCalendar(){
+  calendarOverlay.style.display="flex";
   renderCalendar();
 }
 
-function closeCalendar() {
-  calendarOverlay.style.display = "none";
-}
+function closeCalendar(){ calendarOverlay.style.display="none"; }
 
-function changeMonth(delta) {
-  calendarDate.setMonth(calendarDate.getMonth() + delta);
-  renderCalendar();
-}
-
-function renderCalendar() {
-  calendarGrid.innerHTML = "";
-  const y = calendarDate.getFullYear();
-  const m = calendarDate.getMonth();
-  monthLabel.textContent = calendarDate.toLocaleString("default", { month:"long", year:"numeric" });
-
+function renderCalendar(){
+  calendarGrid.innerHTML="";
+  const y = today.getFullYear();
+  const m = today.getMonth();
+  monthLabel.textContent = today.toLocaleString("default",{month:"long",year:"numeric"});
   const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  const daysInMonth = new Date(y, m + 1, 0).getDate();
 
-  for (let d=1; d<=daysInMonth; d++) {
-    const key = `${y}-${m}-${d}`;
+  for(let d=1; d<=new Date(y,m+1,0).getDate(); d++){
+    const key=`${y}-${m}-${d}`;
     const cell = document.createElement("div");
-    cell.className = "calendar-day";
-    cell.innerHTML = `<strong>${d}</strong>`;
-
-    appts.filter(a => a.date === key).forEach(a=>{
+    cell.className="calendar-day";
+    cell.innerHTML=`<strong>${d}</strong>`;
+    appts.filter(a=>a.date===key).forEach(a=>{
       const dot = document.createElement("div");
       dot.className = `dot ${a.urgency}`;
       cell.appendChild(dot);
     });
-
-    cell.onclick = ()=>addAppt(key);
+    cell.onclick = () => addAppt(key);
     calendarGrid.appendChild(cell);
   }
 }
 
 function addAppt(date){
-  const urgency = prompt("Enter urgency (red / orange / yellow / green)");
+  const urgency = prompt("Urgency (red/orange/yellow/green)");
   if(!urgency) return;
   const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
   appts.push({date,urgency});
-  localStorage.setItem("appointments", JSON.stringify(appts));
+  localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
+  checkNotifications(); // update bell immediately
 }
 
 /* ---------- MESSAGES ---------- */
-function loadMessages() {
+function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
-  const counselor=localStorage.getItem("loggedInCounselor");
-  const data=JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const map={"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
+  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
   data.forEach(m=>{
     if(m.counselor!==counselor) return;
-    const card=document.createElement("div");
+    const card = document.createElement("div");
     card.className="message-card";
     card.innerHTML=`<strong>${m.firstName} ${m.lastName}</strong><br>Grade ${m.grade}<br>${m.reason}`;
     document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
   });
 }
 
-searchBar.oninput=()=> {
-  const q=searchBar.value.toLowerCase();
-  document.querySelectorAll(".message-card").forEach(c=>c.style.display=c.textContent.toLowerCase().includes(q)?"block":"none");
+/* ---------- SEARCH ---------- */
+searchBar.oninput = () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(c => c.style.display = c.textContent.toLowerCase().includes(q)?"block":"none");
 };
 
+/* ---------- TOGGLE ---------- */
 function toggleMessages(id){
   const box=document.querySelector(`#${id} .messages`);
   const btn=document.querySelector(`#${id} .toggle-btn`);
-  const hide=box.style.display!=="none";
-  box.style.display=hide?"none":"flex";
-  btn.textContent=hide?"Show Messages":"Hide Messages";
+  const hide = box.style.display!=="none";
+  box.style.display = hide?"none":"flex";
+  btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
-window.onload=()=> {
-  if(localStorage.getItem("loggedInCounselor")) showDashboard();
-};
-</script>
+/* ---------- NOTIFICATIONS ---------- */
+const notifBell = document.getElementById("notifBell");
 
+function checkNotifications(){
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const students = JSON.parse(localStorage.getItem("studentMessages") || "[]");
+  const appointments = JSON.parse(localStorage.getItem("appointments") || "[]");
+
+  let crisisToday = students.some(s => s.counselor===counselor && s.urgency==="I’m in Crisis");
+  let todayDate = new Date();
+  let todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
+  let apptToday = appointments.some(a => a.date===todayKey);
+
+  if(crisisToday || apptToday){
+    notifBell.style.color="red";
+    if(Notification.permission==="granted"){
+      if(crisisToday) new Notification("Crisis Alert!", {body:"A student has marked 'I’m in Crisis'."});
+      if(apptToday) new Notification("Appointment Reminder", {body:"You have an appointment today."});
+    } else Notification.requestPermission();
+  } else {
+    notifBell.style.color="#0070c9";
+  }
+}
+
+function clearBell(){ notifBell.style.color="#0070c9"; }
+
+setInterval(checkNotifications,10000);
+
+/* ---------- INITIAL ---------- */
+window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
+</script>
 </body>
 </html>
+
 
 
 
