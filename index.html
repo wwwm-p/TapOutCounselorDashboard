@@ -73,16 +73,36 @@ body {
   font-weight: bold;
 }
 
-.dashboard-header input {
-  width: 280px;
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-right input {
+  width: 260px;
   padding: 10px;
   font-size: 16px;
 }
 
-.dashboard-header button {
-  padding: 10px 16px;
+/* ---------- PROFILE BUBBLE ---------- */
+.profile-bubble {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #0070c9;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
   font-size: 16px;
   cursor: pointer;
+  user-select: none;
+}
+
+.profile-bubble:hover {
+  background: #005fa3;
 }
 
 /* ---------- URGENCY ROWS ---------- */
@@ -168,10 +188,7 @@ body {
   border-radius: 50%;
 }
 
-.sad .mouth {
-  transform: translateX(-50%) rotate(180deg);
-}
-
+.sad .mouth { transform: translateX(-50%) rotate(180deg); }
 .neutral .mouth {
   border: none;
   height: 3px;
@@ -219,13 +236,14 @@ body {
 <div id="dashboardScreen">
   <header class="dashboard-header">
     <div class="dashboard-title">TapOut – Counselor Dashboard</div>
-    <div>
+    <div class="header-right">
       <input id="searchBar" placeholder="Search students...">
-      <button onclick="logout()">Sign Out</button>
+      <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
 
-  <!-- ROW TEMPLATE -->
+  <!-- URGENCY ROWS (unchanged) -->
+  <!-- Red -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -239,6 +257,7 @@ body {
     <div class="messages"></div>
   </div>
 
+  <!-- Orange -->
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -252,6 +271,7 @@ body {
     <div class="messages"></div>
   </div>
 
+  <!-- Yellow -->
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -265,6 +285,7 @@ body {
     <div class="messages"></div>
   </div>
 
+  <!-- Green -->
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -300,7 +321,14 @@ loginForm.onsubmit = e => {
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
+  setProfileInitials();
   loadMessages();
+}
+
+function setProfileInitials() {
+  const name = localStorage.getItem("loggedInCounselor") || "";
+  const initials = name.slice(0, 2).toUpperCase();
+  document.getElementById("profileBubble").textContent = initials;
 }
 
 function logout() {
@@ -357,6 +385,7 @@ window.onload = () => {
 
 </body>
 </html>
+
 
 
 
