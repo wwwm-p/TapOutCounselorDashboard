@@ -23,82 +23,25 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .header-right input { width:260px; padding:10px; font-size:16px; }
 
 /* ---------- BUTTONS ---------- */
-.icon-btn {
-  width:42px; height:42px; border-radius:50%;
-  border:2px solid #0070c9;
-  background:#fff; color:#0070c9;
-  font-size:18px; cursor:pointer;
-  display:flex; align-items:center; justify-content:center;
-}
-.icon-btn:hover { background:#0070c9; color:white; }
-
-.bell-dot {
-  position:absolute; top:4px; right:4px;
-  width:10px; height:10px;
-  background:red; border-radius:50%;
-  display:none;
-}
-
-.bell-dropdown {
-  position:absolute; top:48px; right:0;
-  background:#fff; border:1px solid #ccc;
-  border-radius:10px; width:260px;
-  display:none; flex-direction:column;
-  box-shadow:0 6px 16px rgba(0,0,0,0.15);
-  z-index:1000; font-size:14px;
-}
-
-.bell-dropdown div { padding:10px; border-bottom:1px solid #eee; }
+.calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; }
+.calendar-btn:hover { background:#0070c9; color:white; }
+.bell-dot { position:absolute; top:4px; right:4px; width:10px; height:10px; background:red; border-radius:50%; display:none; }
+.bell-dropdown { position:absolute; top:48px; right:0; background:#fff; border:1px solid #ccc; border-radius:10px; width:260px; display:none; flex-direction:column; box-shadow:0 6px 16px rgba(0,0,0,0.15); z-index:1000; font-size:14px; overflow:hidden; }
+.bell-dropdown div { padding:10px 12px; border-bottom:1px solid #eee; }
 .bell-dropdown div:last-child { border-bottom:none; }
+.bell-dropdown div:hover { background:#f1f1f1; }
 
 /* ---------- PROFILE ---------- */
-.profile-bubble {
-  width:42px; height:42px; border-radius:50%;
-  background:#0070c9; color:white;
-  display:flex; align-items:center; justify-content:center;
-  font-weight:bold; cursor:pointer;
-}
+.profile-bubble { width:42px; height:42px; border-radius:50%; background:#0070c9; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; }
 
 /* ---------- CALENDAR ---------- */
-.calendar-overlay {
-  position:fixed; inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:2000;
-}
-
-.calendar-box {
-  background:white;
-  padding:20px;
-  width:420px;
-  border-radius:14px;
-  position:relative;
-}
-
-.close-calendar {
-  position:absolute;
-  top:8px;
-  right:12px;
-  font-size:18px;
-  cursor:pointer;
-}
-
-.calendar-grid {
-  display:grid;
-  grid-template-columns:repeat(7,1fr);
-  gap:6px;
-  margin-top:10px;
-}
-
-.calendar-day {
-  background:#f1f1f1;
-  border-radius:6px;
-  padding:6px;
-  font-size:13px;
-  text-align:center;
-}
+.calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
+.calendar-box { background:white; padding:20px; width:420px; border-radius:14px; position:relative; }
+.calendar-header { display:flex; justify-content:space-between; align-items:center; }
+.calendar-header button { background:none; border:none; font-size:18px; cursor:pointer; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
+.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; text-align:center; }
+.close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 </style>
 </head>
 
@@ -120,17 +63,11 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 <header class="dashboard-header">
   <div class="dashboard-title">TapOut – Counselor Dashboard</div>
   <div class="header-right">
-
     <input id="searchBar" placeholder="Search students...">
+    <button class="calendar-btn" onclick="openCalendar()">📅</button>
 
-    <!-- CALENDAR BUTTON -->
-    <button class="icon-btn" id="calendarBtn">📅</button>
-
-    <!-- NOTIFICATION BUTTON -->
-    <div style="position:relative;">
-      <button class="icon-btn" id="notifBell">
-        🔔<span class="bell-dot" id="bellDot"></span>
-      </button>
+    <div style="position: relative;">
+      <button class="calendar-btn" id="notifBell">🔔<span class="bell-dot" id="bellDot"></span></button>
       <div class="bell-dropdown" id="bellDropdown"></div>
     </div>
 
@@ -142,8 +79,14 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 <!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
   <div class="calendar-box">
-    <span class="close-calendar" id="closeCalendar">✖</span>
-    <h3 id="monthLabel"></h3>
+    <span class="close-calendar" onclick="closeCalendar()">✖</span>
+
+    <div class="calendar-header">
+      <button onclick="changeMonth(-1)">◀</button>
+      <h3 id="monthLabel"></h3>
+      <button onclick="changeMonth(1)">▶</button>
+    </div>
+
     <div class="calendar-grid" id="calendarGrid"></div>
   </div>
 </div>
@@ -155,77 +98,71 @@ const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
 const profileBubble = document.getElementById("profileBubble");
 
-const counselors = { admin:"1234" };
+const counselors = { miap2k10:"1234" };
 
 loginForm.onsubmit = e => {
   e.preventDefault();
   if(counselors[username.value] === password.value){
     localStorage.setItem("loggedInCounselor", username.value);
-    showDashboard();
+    loginScreen.style.display="none";
+    dashboardScreen.style.display="block";
+    profileBubble.textContent = username.value.slice(0,2).toUpperCase();
   } else alert("Invalid login");
 };
 
-function showDashboard(){
-  loginScreen.style.display="none";
-  dashboardScreen.style.display="block";
-  profileBubble.textContent = "AD";
-  renderCalendar();
-}
+function logout(){ localStorage.clear(); location.reload(); }
 
-/* ---------- CALENDAR (ISOLATED) ---------- */
+/* ---------- CALENDAR (FIXED) ---------- */
 const calendarOverlay = document.getElementById("calendarOverlay");
-const calendarBtn = document.getElementById("calendarBtn");
-const closeCalendarBtn = document.getElementById("closeCalendar");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 
-calendarBtn.onclick = e => {
-  e.stopPropagation();
-  calendarOverlay.style.display = "flex";
-};
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
 
-closeCalendarBtn.onclick = () => {
-  calendarOverlay.style.display = "none";
-};
+function openCalendar(){
+  calendarOverlay.style.display="flex";
+  renderCalendar();
+}
 
-calendarOverlay.onclick = e => {
-  if(e.target === calendarOverlay){
-    calendarOverlay.style.display = "none";
-  }
-};
+function closeCalendar(){
+  calendarOverlay.style.display="none";
+}
+
+function changeMonth(delta){
+  currentMonth += delta;
+  if(currentMonth < 0){ currentMonth = 11; currentYear--; }
+  if(currentMonth > 11){ currentMonth = 0; currentYear++; }
+  renderCalendar();
+}
 
 function renderCalendar(){
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = now.getMonth();
   calendarGrid.innerHTML="";
-  monthLabel.textContent = now.toLocaleString("default",{month:"long",year:"numeric"});
-  for(let d=1; d<=new Date(y,m+1,0).getDate(); d++){
-    const div = document.createElement("div");
-    div.className="calendar-day";
-    div.textContent=d;
-    calendarGrid.appendChild(div);
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  monthLabel.textContent =
+    new Date(currentYear, currentMonth).toLocaleString("default", { month:"long", year:"numeric" });
+
+  for(let d=1; d<=daysInMonth; d++){
+    const cell = document.createElement("div");
+    cell.className="calendar-day";
+    cell.textContent=d;
+    calendarGrid.appendChild(cell);
   }
 }
 
-/* ---------- NOTIFICATIONS (FIXED) ---------- */
+/* ---------- NOTIFICATIONS (UNCHANGED) ---------- */
 const notifBell = document.getElementById("notifBell");
 const bellDropdown = document.getElementById("bellDropdown");
-const bellDot = document.getElementById("bellDot");
 
 notifBell.onclick = e => {
   e.stopPropagation();
-  bellDropdown.style.display =
-    bellDropdown.style.display === "flex" ? "none" : "flex";
+  bellDropdown.style.display = bellDropdown.style.display==="flex"?"none":"flex";
 };
 
-document.addEventListener("click", () => {
-  bellDropdown.style.display = "none";
-});
-
-/* ---------- INIT ---------- */
-if(localStorage.getItem("loggedInCounselor")) showDashboard();
+document.addEventListener("click", () => bellDropdown.style.display="none");
+bellDropdown.addEventListener("click", e => e.stopPropagation());
 </script>
 
 </body>
 </html>
+
