@@ -77,12 +77,14 @@ function loadMessages(){
     const card = document.createElement("div");
     card.className="message-card";
 
+    const sentAt = m.dateTime || m.time || "Unknown time";
+
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName || ""}</strong><br>
       Grade ${m.grade}<br>
       ${m.reason}<br>
       ${m.notes ? "<em>Notes:</em> " + m.notes + "<br>" : ""}
-      <small>${m.dateTime}</small>
+      <small>Sent: ${sentAt}</small>
     `;
     document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
   });
@@ -118,10 +120,8 @@ function checkNotifications(){
   const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
   const apptToday = appointments.filter(a=>a.date===todayKey);
 
-  // Show red dot if needed
   bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
 
-  // Build dropdown
   bellDropdown.innerHTML = "";
   if(crisisStudents.length===0 && apptToday.length===0){
     const div = document.createElement("div");
@@ -141,7 +141,6 @@ function checkNotifications(){
   });
 }
 
-// Toggle dropdown on click
 notifBell.onclick = () => {
   bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
   bellDot.style.display="none";
@@ -151,6 +150,7 @@ setInterval(checkNotifications,5000);
 
 /* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
+
 
 
 
