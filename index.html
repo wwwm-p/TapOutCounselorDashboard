@@ -46,19 +46,78 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 }
 
 /* ---------- BUTTONS ---------- */
-.calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; }
+.calendar-btn {
+  width:42px; height:42px; border-radius:50%;
+  border:2px solid #0070c9;
+  background:#fff; color:#0070c9;
+  font-size:18px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; position:relative;
+}
 .calendar-btn:hover { background:#0070c9; color:white; }
-.bell-dot { position:absolute; top:4px; right:4px; width:10px; height:10px; background:red; border-radius:50%; display:none; }
-.bell-dropdown { position:absolute; top:48px; right:0; background:#fff; border:1px solid #ccc; border-radius:10px; width:260px; display:none; flex-direction:column; box-shadow:0 6px 16px rgba(0,0,0,0.15); z-index:1000; font-size:14px; overflow:hidden; }
-.bell-dropdown div { padding:10px 12px; border-bottom:1px solid #eee; }
+
+/* ---------- NOTIFICATION BUTTON (MODERN) ---------- */
+.notif-wrap { position:relative; }
+.notif-btn {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid #e6e6e6;
+  background:#ffffff;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06);
+  cursor:pointer;
+  transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+.notif-btn:hover {
+  transform:translateY(-1px);
+  border:1px solid #0070c9;
+  box-shadow:0 8px 18px rgba(0,112,201,0.20);
+}
+.notif-icon { font-size:16px; }
+.notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
+.notif-badge {
+  width:8px; height:8px; border-radius:50%;
+  background:#ff3b30; display:none;
+  box-shadow:0 0 0 2px #fff;
+}
+
+/* ---------- DROPDOWN ---------- */
+.bell-dropdown {
+  position:absolute;
+  top:48px;
+  right:0;
+  background:#fff;
+  border:1px solid #e6e6e6;
+  border-radius:12px;
+  width:280px;
+  display:none;
+  flex-direction:column;
+  box-shadow:0 10px 24px rgba(0,0,0,0.15);
+  z-index:1000;
+  font-size:14px;
+  overflow:hidden;
+}
+.bell-dropdown div {
+  padding:12px 14px;
+  border-bottom:1px solid #f0f0f0;
+}
 .bell-dropdown div:last-child { border-bottom:none; }
-.bell-dropdown div:hover { background:#f1f1f1; }
+.bell-dropdown div:hover { background:#f7f7f7; }
 
 /* ---------- PROFILE BUBBLE ---------- */
-.profile-bubble { width:42px; height:42px; border-radius:50%; background:#0070c9; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; }
+.profile-bubble {
+  width:42px; height:42px; border-radius:50%;
+  background:#0070c9; color:white;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:bold; cursor:pointer;
+}
 
 /* ---------- URGENCY ROWS ---------- */
-.urgency-row { display:flex; gap:16px; margin:20px; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; }
+.urgency-row {
+  display:flex; gap:16px; margin:20px; padding:16px;
+  background:#fff; border-radius:12px; border-left:6px solid;
+}
 #red-row { border-color:red; }
 #orange-row { border-color:orange; }
 #yellow-row { border-color:gold; }
@@ -66,7 +125,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
 .messages { display:flex; flex-wrap:wrap; gap:10px; }
-.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; }
+.message-card {
+  width:220px; padding:8px 10px; font-size:14px;
+  background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
+}
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 .face { width:40px; height:40px; border-radius:50%; position:relative; }
 .eye { width:5px; height:5px; background:black; border-radius:50%; position:absolute; top:12px; }
@@ -122,11 +184,18 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
+
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
-      <div style="position: relative;">
-        <button class="calendar-btn" id="notifBell">🔔<span class="bell-dot" id="bellDot"></span></button>
+
+      <div class="notif-wrap">
+        <button class="notif-btn" id="notifBell" aria-label="Notifications">
+          <span class="notif-icon">🔔</span>
+          <span class="notif-label">Alerts</span>
+          <span class="notif-badge" id="bellDot"></span>
+        </button>
         <div class="bell-dropdown" id="bellDropdown"></div>
       </div>
+
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -226,52 +295,33 @@ function showDashboard(){
 
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
-function formatDateTime(date){
-  return date.toLocaleString(undefined, {
-    month:"short",
-    day:"numeric",
-    year:"numeric",
-    hour:"numeric",
-    minute:"2-digit"
-  });
-}
-
 /* ---------- MESSAGES ---------- */
 function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
 
-  let changed = false;
+  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
 
   data.forEach(m=>{
     if(m.counselor !== counselor) return;
-
-    if(!m.dateTime){
-      m.dateTime = formatDateTime(new Date());
-      changed = true;
-    }
 
     const rowId = map[m.urgency] || "green-row";
     const card = document.createElement("div");
     card.className = "message-card";
 
+    const dateTime = m.dateTime ? m.dateTime : "Unknown time";
     const notes = m.notes ? `<br><em>Notes: ${m.notes}</em>` : "";
 
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName}</strong><br>
       Grade: ${m.grade}<br>
       ${m.reason}<br>
-      <div class="message-meta">Sent: ${m.dateTime}</div>
+      <div class="message-meta">Sent: ${dateTime}</div>
       ${notes}
     `;
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
-
-  if(changed){
-    localStorage.setItem("studentMessages", JSON.stringify(data));
-  }
 }
 
 /* ---------- SEARCH ---------- */
@@ -353,7 +403,7 @@ function addAppt(date){
   checkNotifications();
 }
 
-/* ---------- BELL NOTIFICATIONS FIXED ---------- */
+/* ---------- NOTIFICATIONS ---------- */
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
@@ -383,14 +433,12 @@ function checkNotifications(){
   });
 }
 
-// Toggle dropdown safely
 notifBell.onclick = (e) => {
   e.stopPropagation();
   bellDropdown.style.display = (bellDropdown.style.display==="flex")?"none":"flex";
   if(bellDropdown.style.display==="flex") bellDot.style.display="none";
-}
+};
 
-// Close dropdown when clicking outside
 document.addEventListener('click', () => bellDropdown.style.display="none");
 bellDropdown.addEventListener('click', e => e.stopPropagation());
 
@@ -402,6 +450,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
