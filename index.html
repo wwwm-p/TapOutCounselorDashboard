@@ -19,7 +19,34 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .dashboard-header { background:#87CEFA; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
 .dashboard-title { font-size:22px; font-weight:bold; }
 .header-right { display:flex; align-items:center; gap:10px; }
-.header-right input { width:260px; padding:10px; font-size:16px; }
+
+/* ---------- SEARCH BAR (MODERN) ---------- */
+.search-wrap {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#ffffff;
+  border:1px solid #e6e6e6;
+  border-radius:999px;
+  padding:8px 14px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06);
+  transition:border 0.2s ease, box-shadow 0.2s ease;
+}
+.search-wrap:focus-within {
+  border:1px solid #0070c9;
+  box-shadow:0 6px 18px rgba(0,112,201,0.25);
+}
+.search-icon {
+  font-size:16px;
+  opacity:0.7;
+}
+.search-input {
+  border:none;
+  outline:none;
+  background:transparent;
+  font-size:16px;
+  width:220px;
+}
 
 /* ---------- BUTTONS ---------- */
 .calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; }
@@ -93,7 +120,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   <header class="dashboard-header">
     <div class="dashboard-title">TapOut – Counselor Dashboard</div>
     <div class="header-right">
-      <input id="searchBar" placeholder="Search students...">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="searchBar" class="search-input" placeholder="Search students..." />
+      </div>
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
       <div style="position: relative;">
         <button class="calendar-btn" id="notifBell">🔔<span class="bell-dot" id="bellDot"></span></button>
@@ -355,6 +385,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
