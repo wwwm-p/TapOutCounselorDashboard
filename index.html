@@ -36,10 +36,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   border:1px solid #0070c9;
   box-shadow:0 6px 18px rgba(0,112,201,0.25);
 }
-.search-icon {
-  font-size:16px;
-  opacity:0.7;
-}
+.search-icon { font-size:16px; opacity:0.7; }
 .search-input {
   border:none;
   outline:none;
@@ -229,33 +226,52 @@ function showDashboard(){
 
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
+function formatDateTime(date){
+  return date.toLocaleString(undefined, {
+    month:"short",
+    day:"numeric",
+    year:"numeric",
+    hour:"numeric",
+    minute:"2-digit"
+  });
+}
+
 /* ---------- MESSAGES ---------- */
 function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
-
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
+
+  let changed = false;
 
   data.forEach(m=>{
     if(m.counselor !== counselor) return;
+
+    if(!m.dateTime){
+      m.dateTime = formatDateTime(new Date());
+      changed = true;
+    }
 
     const rowId = map[m.urgency] || "green-row";
     const card = document.createElement("div");
     card.className = "message-card";
 
-    const dateTime = m.dateTime ? m.dateTime : "Unknown time";
     const notes = m.notes ? `<br><em>Notes: ${m.notes}</em>` : "";
 
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName}</strong><br>
       Grade: ${m.grade}<br>
       ${m.reason}<br>
-      <div class="message-meta">Sent: ${dateTime}</div>
+      <div class="message-meta">Sent: ${m.dateTime}</div>
       ${notes}
     `;
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
+
+  if(changed){
+    localStorage.setItem("studentMessages", JSON.stringify(data));
+  }
 }
 
 /* ---------- SEARCH ---------- */
@@ -386,6 +402,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
