@@ -72,22 +72,33 @@ function loadMessages(){
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
 
+  let changed = false;
+
   data.forEach(m=>{
     if(m.counselor!==counselor) return;
+
+    // Backfill timestamp if missing
+    if(!m.dateTime){
+      m.dateTime = m.time || new Date().toLocaleString();
+      changed = true;
+    }
+
     const card = document.createElement("div");
     card.className="message-card";
-
-    const sentAt = m.dateTime || m.time || "Unknown time";
 
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName || ""}</strong><br>
       Grade ${m.grade}<br>
       ${m.reason}<br>
       ${m.notes ? "<em>Notes:</em> " + m.notes + "<br>" : ""}
-      <small>Sent: ${sentAt}</small>
+      <small>Sent: ${m.dateTime}</small>
     `;
     document.querySelector(`#${map[m.urgency]} .messages`).appendChild(card);
   });
+
+  if(changed){
+    localStorage.setItem("studentMessages", JSON.stringify(data));
+  }
 }
 
 /* ---------- SEARCH ---------- */
@@ -150,6 +161,7 @@ setInterval(checkNotifications,5000);
 
 /* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
+
 
 
 
