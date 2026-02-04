@@ -17,7 +17,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 /* ---------- DASHBOARD ---------- */
 #dashboardScreen { display:none; }
 .dashboard-header { background:#87CEFA; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
-.dashboard-title { font-size:22px; font-weight:bold; }
 .header-right { display:flex; align-items:center; gap:10px; }
 
 /* ---------- SEARCH BAR (MODERN) ---------- */
@@ -178,7 +177,11 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 <!-- DASHBOARD -->
 <div id="dashboardScreen">
   <header class="dashboard-header">
-    <div class="dashboard-title">TapOut – Counselor Dashboard</div>
+    <div class="dashboard-title" style="display:flex; align-items:center; gap:10px; font-size:20px; letter-spacing:0.2px;">
+      <span style="font-weight:700; color:#0f172a;">TapOut</span>
+      <span style="color:#94a3b8; font-weight:600;">—</span>
+      <span style="font-weight:500; color:#334155;">Counselor Dashboard</span>
+    </div>
     <div class="header-right">
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
@@ -450,6 +453,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
