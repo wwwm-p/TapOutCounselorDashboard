@@ -78,7 +78,7 @@ function loadMessages(){
     const card = document.createElement("div");
     card.className="message-card";
 
-    const sentAt = m.dateTime || m.time || "No timestamp available";
+    const sentAt = m.dateTime || "Unknown time";
 
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName || ""}</strong><br>
@@ -151,6 +151,7 @@ setInterval(checkNotifications,5000);
 
 /* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
+
 
 
 
