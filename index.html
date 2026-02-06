@@ -181,7 +181,14 @@ green { background:green; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
+
+      <!-- School Logo Placeholder (NEW) -->
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">
+        SCHOOL
+      </div>
+
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
+
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -190,6 +197,7 @@ green { background:green; }
         </button>
         <div class="bell-dropdown" id="bellDropdown"></div>
       </div>
+
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -441,6 +449,7 @@ setInterval(checkNotifications,5000);
 </script>
 </body>
 </html>
+
 
 
 
