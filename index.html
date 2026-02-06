@@ -118,18 +118,52 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 
-/* SMILEY FACES */
-.face { width:40px; height:40px; border-radius:50%; position:relative; }
-.eye { width:5px; height:5px; background:black; border-radius:50%; position:absolute; top:12px; }
-.eye.left { left:11px; }
-.eye.right { right:11px; }
-.mouth { position:absolute; left:50%; bottom:8px; transform:translateX(-50%); width:18px; height:10px; border:3px solid black; border-color:black transparent transparent transparent; border-radius:50%; }
+/* ---------- UPDATED FACE STYLE ---------- */
+.face {
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  position:relative;
+}
+.eye {
+  width:8px;
+  height:8px;
+  background:#3b3b3b;
+  border-radius:50%;
+  position:absolute;
+  top:14px;
+}
+.eye.left { left:12px; }
+.eye.right { right:12px; }
+
+.mouth {
+  position:absolute;
+  left:50%;
+  bottom:10px;
+  transform:translateX(-50%);
+  width:22px;
+  height:12px;
+  border:4px solid #3b3b3b;
+  border-color:#3b3b3b transparent transparent transparent;
+  border-radius:50%;
+}
 .sad .mouth { transform:translateX(-50%) rotate(180deg); }
-.neutral .mouth { border:none; height:3px; background:black; width:18px; }
-.red-face { background:red; }
-.orange-face { background:orange; }
-.yellow-face { background:gold; }
-.green-face { background:green; }
+.neutral .mouth {
+  border:none;
+  width:24px;
+  height:4px;
+  background:#3b3b3b;
+  border-radius:6px;
+}
+.green-face .mouth {
+  border-color:transparent transparent #3b3b3b transparent;
+  height:12px;
+}
+
+.red-face { background:#ff5a4e; }
+.orange-face { background:#ffb02e; }
+.yellow-face { background:#ffe31a; }
+.green-face { background:#a9cf4f; }
 
 .toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
@@ -187,12 +221,10 @@ green { background:green; }
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
 
-      <!-- School Logo Placeholder -->
       <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">
         SCHOOL
       </div>
 
-      <!-- Students Button (NEW) -->
       <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">
         Students
       </button>
@@ -459,4 +491,5 @@ setInterval(checkNotifications,5000);
 </script>
 </body>
 </html>
+
 
