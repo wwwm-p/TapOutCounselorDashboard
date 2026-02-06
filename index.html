@@ -103,15 +103,16 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .urgency-row {
   display:flex; gap:16px; margin:20px; padding:16px;
   background:#fff; border-radius:12px; border-left:6px solid;
+  align-items:flex-start;
 }
 #red-row { border-color:red; }
 #orange-row { border-color:orange; }
 #yellow-row { border-color:gold; }
 #green-row { border-color:green; }
 
-.urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; }
+.urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
-.messages { display:flex; flex-wrap:wrap; gap:10px; }
+.messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
 .message-card {
   width:220px; padding:8px 10px; font-size:14px;
   background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
@@ -124,17 +125,18 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   height:44px;
   border-radius:50%;
   position:relative;
+  flex:0 0 44px;
 }
 .eye {
-  width:8px;
-  height:8px;
+  width:6px;
+  height:6px;
   background:#3b3b3b;
   border-radius:50%;
   position:absolute;
   top:14px;
 }
-.eye.left { left:12px; }
-.eye.right { right:12px; }
+.eye.left { left:13px; }
+.eye.right { right:13px; }
 
 .mouth {
   position:absolute;
@@ -162,8 +164,8 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
-.yellow-face { background:#ffe31a; }
-.green-face { background:#a9cf4f; }
+yellow-face { background:#ffe31a; }
+green-face { background:#a9cf4f; }
 
 .toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
@@ -491,3 +493,4 @@ setInterval(checkNotifications,5000);
 </script>
 </body>
 </html>
+
