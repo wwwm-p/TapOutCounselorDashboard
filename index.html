@@ -126,15 +126,15 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   position:relative;
 }
 .eye {
-  width:8px;
-  height:8px;
+  width:6px;
+  height:6px;
   background:#3b3b3b;
   border-radius:50%;
   position:absolute;
   top:14px;
 }
-.eye.left { left:12px; }
-.eye.right { right:12px; }
+.eye.left { left:13px; }
+.eye.right { right:13px; }
 
 .mouth {
   position:absolute;
@@ -158,6 +158,17 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .green-face .mouth {
   border-color:transparent transparent #3b3b3b transparent;
   height:12px;
+}
+
+/* Red face open-mouthed frown */
+.red-face.sad .mouth {
+  width:22px;
+  height:14px;
+  border:3px solid #3b3b3b;
+  border-top:none;
+  border-radius:0 0 20px 20px;
+  transform:translateX(-50%) rotate(180deg);
+  background:transparent;
 }
 
 .red-face { background:#ff5a4e; }
@@ -491,5 +502,6 @@ setInterval(checkNotifications,5000);
 </script>
 </body>
 </html>
+
 
 
