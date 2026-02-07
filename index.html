@@ -126,125 +126,60 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 
 /* ---------- FACE STYLE ---------- */
-.face {
-  width:44px;
-  height:44px;
-  border-radius:50%;
-  position:relative;
-  flex:0 0 44px;
-}
-.eye {
-  width:6px;
-  height:8px;
-  background:#3b3b3b;
-  border-radius:50%;
-  position:absolute;
-  top:15px;
-}
+.face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
+.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
 .eye.left { left:13px; }
 .eye.right { right:13px; }
 
 .mouth {
-  position:absolute;
-  left:50%;
-  bottom:10px;
-  transform:translateX(-50%);
-  width:22px;
-  height:12px;
-  border:4px solid #3b3b3b;
-  border-color:#3b3b3b transparent transparent transparent;
-  border-radius:50%;
+  position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
+  width:22px; height:12px; border:4px solid #3b3b3b;
+  border-color:#3b3b3b transparent transparent transparent; border-radius:50%;
 }
 .sad .mouth { transform:translateX(-50%) rotate(180deg); }
-.neutral .mouth {
-  border:none;
-  width:24px;
-  height:4px;
-  background:#3b3b3b;
-  border-radius:6px;
-}
-.green-face .mouth {
-  border-color:transparent transparent #3b3b3b transparent;
-  height:12px;
-}
+.neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
+.green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
+
 .orange-face.sad .mouth {
-  width:18px;
-  height:9px;
-  border:3px solid #3b3b3b;
+  width:18px; height:9px; border:3px solid #3b3b3b;
   border-color:#3b3b3b transparent transparent transparent;
-  border-radius:50%;
-  transform:translateX(-50%);
-  bottom:4px;
+  border-radius:50%; transform:translateX(-50%); bottom:4px;
 }
 .red-face.sad .mouth {
-  width:26px;
-  height:12px;
-  border:4px solid #3b3b3b;
+  width:26px; height:12px; border:4px solid #3b3b3b;
   border-color:#3b3b3b transparent transparent transparent;
-  border-radius:50%;
-  transform:translateX(-50%);
-  bottom:2px;
+  border-radius:50%; transform:translateX(-50%); bottom:2px;
 }
+
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
-.yellow-face { background:#ffe31a; }
-.green-face { background:#a9cf4f; }
+yellow-face { background:#ffe31a; }
+green-face { background:#a9cf4f; }
 
 .toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
 /* ---------- MESSAGE MODAL ---------- */
 .message-overlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:3000;
+  position:fixed; inset:0; background:rgba(0,0,0,0.55);
+  display:none; align-items:center; justify-content:center; z-index:3000;
 }
 .message-modal {
-  width:min(620px, 92vw);
-  background:#ffffff;
-  border-radius:16px;
-  padding:22px;
-  box-shadow:0 18px 40px rgba(0,0,0,0.25);
+  width:min(620px, 92vw); background:#ffffff; border-radius:16px;
+  padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25);
 }
 .message-modal h3 { margin:0 0 8px 0; }
 .message-modal .modal-body {
-  background:#f8fafc;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
-  padding:14px;
-  line-height:1.5;
-  font-size:15px;
-  color:#1f2937;
-  max-height:50vh;
-  overflow:auto;
+  background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px;
+  padding:14px; line-height:1.5; font-size:15px; color:#1f2937;
+  max-height:50vh; overflow:auto;
 }
-.message-modal .modal-meta {
-  font-size:12px;
-  color:#6b7280;
-  margin-bottom:8px;
-}
-.modal-actions {
-  margin-top:16px;
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-}
+.message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
+.modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
 .modal-actions button {
-  padding:10px 18px;
-  border-radius:999px;
-  border:1px solid #e5e7eb;
-  background:#ffffff;
-  font-weight:600;
-  cursor:pointer;
+  padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb;
+  background:#ffffff; font-weight:600; cursor:pointer;
 }
-.modal-actions .primary {
-  border-color:#0070c9;
-  background:#0070c9;
-  color:#fff;
-}
+.modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
 
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
@@ -259,13 +194,21 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
-.appt-name {
-  font-size:10px;
-  margin-top:4px;
-  text-align:center;
-  font-weight:600;
-  color:#1f2937;
+.appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
+.pending { outline:2px solid #0070c9; }
+
+.calendar-actions {
+  margin-top:12px;
+  display:flex;
+  justify-content:space-between;
 }
+.calendar-actions button{
+  padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600;
+}
+.calendar-actions .primary{
+  border-color:#0070c9; background:#0070c9; color:#fff;
+}
+
 .red { background:red; }
 .orange { background:orange; }
 yellow { background:gold; }
@@ -399,6 +342,10 @@ green { background:green; }
       <button class="month-nav" onclick="changeMonth(1)">›</button>
     </div>
     <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="calendar-actions">
+      <button onclick="closeCalendar()">Back</button>
+      <button class="primary" onclick="confirmAppointment()">Continue</button>
+    </div>
   </div>
 </div>
 
@@ -422,8 +369,10 @@ const modalMeta = document.getElementById("modalMeta");
 
 const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
 let currentMonth = new Date();
+
 let selectedStudent = null;
 let selectedUrgency = null;
+let pendingDate = null;
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -481,17 +430,14 @@ Sent: ${dateTime}
 function openMessage(title, dateTime, body, urgency){
   selectedStudent = title;
   selectedUrgency = urgency;
+  pendingDate = null;
   modalTitle.textContent = title;
   modalMeta.textContent = `Sent: ${dateTime}`;
   modalBody.textContent = body;
   messageOverlay.style.display = "flex";
 }
-function closeMessage(){
-  messageOverlay.style.display = "none";
-}
-messageOverlay.addEventListener("click", (e) => {
-  if(e.target === messageOverlay) closeMessage();
-});
+function closeMessage(){ messageOverlay.style.display = "none"; }
+messageOverlay.addEventListener("click", (e) => { if(e.target === messageOverlay) closeMessage(); });
 
 function goToCalendar(){
   closeMessage();
@@ -514,23 +460,36 @@ function toggleMessages(id){
 /* Calendar */
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; }
-function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
+
+function changeMonth(delta){
+  currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1);
+  renderCalendar();
+}
 
 function renderCalendar(){
   calendarGrid.innerHTML="";
   const y=currentMonth.getFullYear(), m=currentMonth.getMonth();
   monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
+
   const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   weekdays.forEach(d=>{ const w=document.createElement("div"); w.className="calendar-weekday"; w.textContent=d; calendarGrid.appendChild(w); });
+
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
-  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
+
+  for(let i=0;i<firstDay;i++){
+    const empty=document.createElement("div");
+    empty.className="calendar-day calendar-empty";
+    calendarGrid.appendChild(empty);
+  }
+
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
   for(let d=1; d<=daysInMonth; d++){
     const key=`${y}-${m}-${d}`;
     const cell=document.createElement("div");
     cell.className="calendar-day";
+    if(pendingDate===key) cell.classList.add("pending");
     cell.innerHTML=`<strong>${d}</strong>`;
 
     appts.filter(a=>a.date===key).forEach(a=>{
@@ -546,40 +505,26 @@ function renderCalendar(){
       }
     });
 
-    cell.onclick=()=>addAppt(key);
-    cell.ondblclick=()=>removeAppt(key);
+    cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
     calendarGrid.appendChild(cell);
   }
 }
 
-function addAppt(date){
-  if(!selectedStudent || !selectedUrgency){
-    alert("Select a message first.");
+function confirmAppointment(){
+  if(!selectedStudent || !selectedUrgency || !pendingDate){
+    alert("Select a date first.");
     return;
   }
-  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
-  appts.push({date, urgency: urgencyToColor(selectedUrgency), name: selectedStudent});
+  let appts=JSON.parse(localStorage.getItem("appointments")||"[]");
+
+  // remove any existing appointment for this student
+  appts = appts.filter(a=>a.name !== selectedStudent);
+
+  appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent});
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
   checkNotifications();
-}
-
-function removeAppt(date){
-  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
-  let idx = -1;
-
-  if(selectedStudent){
-    idx = appts.findIndex(a=>a.date===date && a.name===selectedStudent);
-  }
-  if(idx === -1){
-    idx = appts.map((a,i)=>({a,i})).filter(x=>x.a.date===date).map(x=>x.i).pop();
-  }
-  if(idx !== -1){
-    appts.splice(idx,1);
-    localStorage.setItem("appointments",JSON.stringify(appts));
-    renderCalendar();
-    checkNotifications();
-  }
+  closeCalendar();
 }
 
 function urgencyToColor(u){
@@ -631,6 +576,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
