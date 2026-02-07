@@ -183,7 +183,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   border-color:#3b3b3b transparent transparent transparent;
   border-radius:50%;
   transform:translateX(-50%);
-  bottom:0px;
+  bottom:2px;
 }
 
 .red-face { background:#ff5a4e; }
@@ -196,7 +196,7 @@ toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; bac
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:420px; border-radius:14px; position:relative; }
-calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
@@ -207,7 +207,7 @@ calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#4
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .red { background:red; }
-.orange { background:orange; }
+orange { background:orange; }
 yellow { background:gold; }
 green { background:green; }
 </style>
@@ -477,8 +477,3 @@ checkNotifications();
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
 </body>
-</html>
-
-
-
-
