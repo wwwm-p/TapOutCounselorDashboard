@@ -191,7 +191,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .yellow-face { background:#ffe31a; }
 .green-face { background:#a9cf4f; }
 
-toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
+.toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
@@ -207,7 +207,7 @@ calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#4
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .red { background:red; }
-orange { background:orange; }
+.orange { background:orange; }
 yellow { background:gold; }
 green { background:green; }
 </style>
@@ -477,3 +477,5 @@ checkNotifications();
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
 </body>
+</html>
+
