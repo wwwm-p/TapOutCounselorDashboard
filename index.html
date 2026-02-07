@@ -127,13 +127,15 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   position:relative;
   flex:0 0 44px;
 }
+
+/* Eyes styled like 😟 (no eyebrows) */
 .eye {
   width:6px;
-  height:6px;
+  height:8px;
   background:#3b3b3b;
   border-radius:50%;
   position:absolute;
-  top:14px;
+  top:15px;
 }
 .eye.left { left:13px; }
 .eye.right { right:13px; }
@@ -173,7 +175,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   bottom:4px;
 }
 
-/* ✅ Red face open frown (not filled) */
+/* Red face open frown (not filled) */
 .red-face.sad .mouth {
   width:22px;
   height:12px;
@@ -211,7 +213,6 @@ green { background:green; }
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -227,9 +228,7 @@ green { background:green; }
 <div id="dashboardScreen">
   <header class="dashboard-header">
     <div class="dashboard-title" style="display:flex; align-items:center; gap:12px; font-size:20px;">
-      <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0070c9;">
-        LOGO
-      </div>
+      <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0070c9;">LOGO</div>
       <div style="display:flex; flex-direction:column; line-height:1.1;">
         <div>
           <span style="font-weight:700; color:#0f172a;">TapOut!</span>
@@ -244,17 +243,9 @@ green { background:green; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
-
-      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">
-        SCHOOL
-      </div>
-
-      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">
-        Students
-      </button>
-
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
+      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
-
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -263,7 +254,6 @@ green { background:green; }
         </button>
         <div class="bell-dropdown" id="bellDropdown"></div>
       </div>
-
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -406,6 +396,7 @@ function toggleMessages(id){
   btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
+/* Calendar */
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; }
 function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
@@ -444,6 +435,7 @@ function addAppt(date){
   checkNotifications();
 }
 
+/* Notifications */
 function checkNotifications(){
   const counselor=localStorage.getItem("loggedInCounselor");
   const students=JSON.parse(localStorage.getItem("studentMessages")||"[]");
@@ -485,6 +477,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
