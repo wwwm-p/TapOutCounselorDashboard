@@ -175,15 +175,15 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   bottom:4px;
 }
 
-/* Red face open frown (not filled) */
+/* ✅ Red face open frown (not filled) */
 .red-face.sad .mouth {
-  width:22px;
+  width:26px;
   height:12px;
-  border:3px solid #3b3b3b;
+  border:4px solid #3b3b3b;
   border-color:#3b3b3b transparent transparent transparent;
   border-radius:50%;
   transform:translateX(-50%);
-  bottom:4px;
+  bottom:6px;
 }
 
 .red-face { background:#ff5a4e; }
@@ -203,7 +203,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .month-nav:hover { background:#0070c9; color:white; }
 .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
 .calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; min-height:48px; }
-.calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
+calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .red { background:red; }
@@ -213,6 +213,7 @@ green { background:green; }
 </style>
 </head>
 <body>
+
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -477,10 +478,3 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
