@@ -112,7 +112,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
-.messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
+messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
 .message-card {
   width:220px; padding:8px 10px; font-size:14px;
   background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
@@ -127,15 +127,13 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   position:relative;
   flex:0 0 44px;
 }
-
-/* Eyes styled like 😟 (no eyebrows) */
 .eye {
   width:6px;
-  height:8px;
+  height:6px;
   background:#3b3b3b;
   border-radius:50%;
   position:absolute;
-  top:15px;
+  top:14px;
 }
 .eye.left { left:13px; }
 .eye.right { right:13px; }
@@ -175,7 +173,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   bottom:4px;
 }
 
-/* ✅ Red face open frown (not filled) */
+/* ✅ Red face open frown (not filled, more pronounced) */
 .red-face.sad .mouth {
   width:26px;
   height:12px;
@@ -201,9 +199,9 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
-.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
+calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
 .calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; min-height:48px; }
-calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
+.calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .red { background:red; }
@@ -397,7 +395,6 @@ function toggleMessages(id){
   btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
-/* Calendar */
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; }
 function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
@@ -436,7 +433,6 @@ function addAppt(date){
   checkNotifications();
 }
 
-/* Notifications */
 function checkNotifications(){
   const counselor=localStorage.getItem("loggedInCounselor");
   const students=JSON.parse(localStorage.getItem("studentMessages")||"[]");
@@ -478,3 +474,4 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
