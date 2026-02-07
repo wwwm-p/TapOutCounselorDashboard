@@ -162,7 +162,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   height:12px;
 }
 
-/* ✅ Orange face frown, lower */
+/* ✅ Orange face frown (lower) */
 .orange-face.sad .mouth {
   width:18px;
   height:9px;
@@ -171,6 +171,18 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   border-radius:50%;
   transform:translateX(-50%);
   bottom:4px;
+}
+
+/* ✅ Red face frown (filled) */
+.red-face.sad .mouth {
+  width:18px;
+  height:9px;
+  border:3px solid #3b3b3b;
+  border-color:#3b3b3b transparent transparent transparent;
+  border-radius:50%;
+  transform:translateX(-50%);
+  bottom:4px;
+  background:#3b3b3b;
 }
 
 .red-face { background:#ff5a4e; }
@@ -399,60 +411,49 @@ function toggleMessages(id){
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-
 let currentMonth = new Date();
 
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; }
-
-function changeMonth(delta){
-  currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1);
-  renderCalendar();
-}
+function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
 
 function renderCalendar(){
   calendarGrid.innerHTML="";
   const y=currentMonth.getFullYear(), m=currentMonth.getMonth();
   monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
-
   const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   weekdays.forEach(d=>{
-    const w = document.createElement("div");
+    const w=document.createElement("div");
     w.className="calendar-weekday";
     w.textContent=d;
     calendarGrid.appendChild(w);
   });
-
-  const firstDay = new Date(y,m,1).getDay();
-  const daysInMonth = new Date(y,m+1,0).getDate();
-
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
   for(let i=0;i<firstDay;i++){
-    const empty = document.createElement("div");
+    const empty=document.createElement("div");
     empty.className="calendar-day calendar-empty";
     calendarGrid.appendChild(empty);
   }
-
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-
+  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
   for(let d=1; d<=daysInMonth; d++){
     const key=`${y}-${m}-${d}`;
-    const cell = document.createElement("div");
+    const cell=document.createElement("div");
     cell.className="calendar-day";
     cell.innerHTML=`<strong>${d}</strong>`;
     appts.filter(a=>a.date===key).forEach(a=>{
-      const dot = document.createElement("div");
-      dot.className = `dot ${a.urgency}`;
+      const dot=document.createElement("div");
+      dot.className=`dot ${a.urgency}`;
       cell.appendChild(dot);
     });
-    cell.onclick = () => addAppt(key);
+    cell.onclick=()=>addAppt(key);
     calendarGrid.appendChild(cell);
   }
 }
-
 function addAppt(date){
-  const urgency = prompt("Urgency (red/orange/yellow/green)");
+  const urgency=prompt("Urgency (red/orange/yellow/green)");
   if(!urgency) return;
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
   appts.push({date,urgency});
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
@@ -460,62 +461,49 @@ function addAppt(date){
 }
 
 /* ---------- NOTIFICATIONS ---------- */
-const bellDot = document.getElementById("bellDot");
-const bellDropdown = document.getElementById("bellDropdown");
-const notifBell = document.getElementById("notifBell");
+const bellDot=document.getElementById("bellDot");
+const bellDropdown=document.getElementById("bellDropdown");
+const notifBell=document.getElementById("notifBell");
 
 function checkNotifications(){
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const students = JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const appointments = JSON.parse(localStorage.getItem("appointments")||"[]");
-
-  const crisisStudents = students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
-  const todayDate = new Date();
-  const todayKey = `${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
-  const apptToday = appointments.filter(a=>a.date===todayKey);
+  const counselor=localStorage.getItem("loggedInCounselor");
+  const students=JSON.parse(localStorage.getItem("studentMessages")||"[]");
+  const appointments=JSON.parse(localStorage.getItem("appointments")||"[]");
+  const crisisStudents=students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
+  const todayDate=new Date();
+  const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
+  const apptToday=appointments.filter(a=>a.date===todayKey);
 
   bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
-
-  bellDropdown.innerHTML = "";
+  bellDropdown.innerHTML="";
   if(crisisStudents.length===0 && apptToday.length===0){
-    const div = document.createElement("div");
-    div.textContent = "No notifications";
+    const div=document.createElement("div");
+    div.textContent="No notifications";
     bellDropdown.appendChild(div);
   }
-
   crisisStudents.forEach(s=>{
-    const div = document.createElement("div");
-    div.textContent = `🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
+    const div=document.createElement("div");
+    div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
     bellDropdown.appendChild(div);
   });
   apptToday.forEach(a=>{
-    const div = document.createElement("div");
-    div.textContent = `📅 Appointment today`;
+    const div=document.createElement("div");
+    div.textContent="📅 Appointment today";
     bellDropdown.appendChild(div);
   });
 }
-
-notifBell.onclick = (e) => {
+notifBell.onclick=(e)=>{
   e.stopPropagation();
-  bellDropdown.style.display = (bellDropdown.style.display==="flex") ? "none" : "flex";
+  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
   bellDot.style.display="none";
 };
-document.addEventListener('click', () => bellDropdown.style.display="none");
-bellDropdown.addEventListener('click', e => e.stopPropagation());
+document.addEventListener('click',()=>bellDropdown.style.display="none");
+bellDropdown.addEventListener('click',e=>e.stopPropagation());
 
 setInterval(checkNotifications,5000);
 checkNotifications();
 
-/* ---------- INITIAL ---------- */
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
