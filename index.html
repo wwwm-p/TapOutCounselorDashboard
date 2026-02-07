@@ -220,7 +220,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
       </div>
       <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
       <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
-      <button class="calendar-btn" onclick="openCalendar()">📅</button>
+      <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -295,7 +295,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     <div class="modal-body" id="modalBody"></div>
     <div class="modal-actions">
       <button onclick="closeMessage()">Back</button>
-      <button class="primary" onclick="goToCalendar()">Continue</button>
+      <button class="primary" onclick="goToCalendarSchedule()">Continue</button>
     </div>
   </div>
 </div>
@@ -337,9 +337,12 @@ const modalMeta = document.getElementById("modalMeta");
 
 const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
 let currentMonth = new Date();
+
 let selectedStudent = null;
 let selectedUrgency = null;
 let pendingDate = null;
+let calendarMode = "view"; // view | schedule | move
+let moveHoldTimer = null;
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -403,13 +406,24 @@ function openMessage(title, dateTime, body, urgency){
   modalBody.textContent = body;
   messageOverlay.style.display = "flex";
 }
+
 function closeMessage(){ messageOverlay.style.display = "none"; }
 messageOverlay.addEventListener("click", (e) => { if(e.target === messageOverlay) closeMessage(); });
 
-function goToCalendar(){
+function goToCalendarSchedule(){
   closeMessage();
+  calendarMode = "schedule";
   openCalendar();
 }
+
+function openCalendarViewOnly(){
+  calendarMode = "view";
+  pendingDate = null;
+  openCalendar();
+}
+
+function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
+function closeCalendar(){ calendarOverlay.style.display="none"; calendarMode="view"; pendingDate=null; }
 
 searchBar.oninput = () => {
   const q = searchBar.value.toLowerCase();
@@ -425,8 +439,6 @@ function toggleMessages(id){
 }
 
 /* Calendar */
-function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
-function closeCalendar(){ calendarOverlay.style.display="none"; }
 function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
 
 function renderCalendar(){
@@ -435,9 +447,15 @@ function renderCalendar(){
   monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
   const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   weekdays.forEach(d=>{ const w=document.createElement("div"); w.className="calendar-weekday"; w.textContent=d; calendarGrid.appendChild(w); });
+
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
-  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
+
+  for(let i=0;i<firstDay;i++){
+    const empty=document.createElement("div");
+    empty.className="calendar-day calendar-empty";
+    calendarGrid.appendChild(empty);
+  }
 
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
@@ -458,10 +476,24 @@ function renderCalendar(){
         name.className="appt-name";
         name.textContent=a.name;
         cell.appendChild(name);
+
+        // press & hold to move
+        name.onpointerdown = () => {
+          clearTimeout(moveHoldTimer);
+          moveHoldTimer = setTimeout(() => {
+            calendarMode = "move";
+            selectedStudent = a.name;
+            selectedUrgency = urgencyFromColor(a.urgency);
+            pendingDate = key;
+            renderCalendar();
+          }, 500);
+        };
+        name.onpointerup = () => clearTimeout(moveHoldTimer);
+        name.onpointerleave = () => clearTimeout(moveHoldTimer);
       }
     });
 
-    if(pendingDate===key && selectedUrgency && selectedStudent){
+    if(pendingDate===key && selectedUrgency && selectedStudent && (calendarMode==="schedule" || calendarMode==="move")){
       const previewDot=document.createElement("div");
       previewDot.className=`dot ${urgencyToColor(selectedUrgency)}`;
       cell.appendChild(previewDot);
@@ -472,12 +504,21 @@ function renderCalendar(){
       cell.appendChild(previewName);
     }
 
-    cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
+    cell.onclick=()=>{
+      if(calendarMode==="schedule" || calendarMode==="move"){
+        pendingDate = key;
+        renderCalendar();
+      }
+    };
     calendarGrid.appendChild(cell);
   }
 }
 
 function confirmAppointment(){
+  if(calendarMode==="view"){
+    alert("Calendar is view-only. Press and hold an appointment to move it.");
+    return;
+  }
   if(!selectedStudent || !selectedUrgency || !pendingDate){
     alert("Select a date first.");
     return;
@@ -496,6 +537,12 @@ function urgencyToColor(u){
   if(u==="I’m Not Coping Well") return "orange";
   if(u==="Feeling a Little Off") return "yellow";
   return "green";
+}
+function urgencyFromColor(c){
+  if(c==="red") return "I’m in Crisis";
+  if(c==="orange") return "I’m Not Coping Well";
+  if(c==="yellow") return "Feeling a Little Off";
+  return "I’m Doing Fine – Just Curious";
 }
 
 /* Notifications */
@@ -540,4 +587,5 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
