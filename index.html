@@ -160,38 +160,29 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
-.calendar-box { background:white; padding:20px; width:460px; border-radius:14px; position:relative; }
+.calendar-box { background:white; padding:20px; width:460px; max-height:85vh; overflow:auto; border-radius:14px; position:relative; }
 .calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 
-.edit-btn {
-  position:absolute;
-  top:6px;
-  left:10px;
-  padding:6px 12px;
-  border-radius:999px;
-  border:1px solid #e5e7eb;
-  background:#ffffff;
-  font-weight:600;
-  cursor:pointer;
-  font-size:12px;
-}
-
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
+
 .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
-.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; min-height:72px; }
+.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; min-height:88px; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
+
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
-.appt-list { display:flex; flex-direction:column; align-items:center; gap:2px; max-height:44px; overflow:auto; width:100%; }
+.appt-list { display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; }
 .appt-name { font-size:10px; text-align:center; font-weight:600; color:#1f2937; white-space:nowrap; }
+
 .pending { outline:2px solid #0070c9; }
 
-.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
+.calendar-actions { margin-top:12px; display:flex; gap:10px; justify-content:flex-start; }
 .calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
 .calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
+.calendar-actions .edit{ border-color:#0ea5e9; background:#e0f2fe; color:#075985; }
 
 .red { background:red; }
 .orange { background:orange; }
@@ -318,7 +309,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 <!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
   <div class="calendar-box">
-    <button class="edit-btn" onclick="toggleEdit()">Edit</button>
     <span class="close-calendar" onclick="closeCalendar()">✖</span>
     <div class="calendar-header">
       <button class="month-nav" onclick="changeMonth(-1)">‹</button>
@@ -328,6 +318,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     <div class="calendar-grid" id="calendarGrid"></div>
     <div class="calendar-actions">
       <button onclick="closeCalendar()">Back</button>
+      <button class="edit" onclick="toggleEdit()">Edit</button>
       <button class="primary" onclick="confirmAppointment()">Continue</button>
     </div>
   </div>
@@ -357,7 +348,7 @@ let currentMonth = new Date();
 let selectedStudent = null;
 let selectedUrgency = null;
 let pendingDate = null;
-let editMode = false; // view-only by default
+let editMode = false;
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -489,6 +480,7 @@ function renderCalendar(){
 
     const list=document.createElement("div");
     list.className="appt-list";
+
     appts.filter(a=>a.date===key).forEach(a=>{
       const dot=document.createElement("div");
       dot.className=`dot ${a.urgency}`;
@@ -498,7 +490,6 @@ function renderCalendar(){
       list.appendChild(dot);
       list.appendChild(name);
     });
-    cell.appendChild(list);
 
     if(pendingDate===key && selectedUrgency && selectedStudent){
       const previewDot=document.createElement("div");
@@ -509,6 +500,8 @@ function renderCalendar(){
       list.appendChild(previewDot);
       list.appendChild(previewName);
     }
+
+    cell.appendChild(list);
 
     cell.onclick=()=>{
       if(editMode){
@@ -587,6 +580,3 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
-
-
-
