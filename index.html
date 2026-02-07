@@ -173,7 +173,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   bottom:4px;
 }
 
-/* ✅ Red face open frown (filled) */
+/* ✅ Red face open frown (not filled) */
 .red-face.sad .mouth {
   width:22px;
   height:12px;
@@ -182,7 +182,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   border-radius:50%;
   transform:translateX(-50%);
   bottom:4px;
-  background:#3b3b3b;
 }
 
 .red-face { background:#ff5a4e; }
@@ -245,9 +244,17 @@ green { background:green; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
-      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
-      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
+
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">
+        SCHOOL
+      </div>
+
+      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">
+        Students
+      </button>
+
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
+
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -256,6 +263,7 @@ green { background:green; }
         </button>
         <div class="bell-dropdown" id="bellDropdown"></div>
       </div>
+
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -314,8 +322,20 @@ green { background:green; }
   </div>
 </div>
 
+<!-- CALENDAR -->
+<div class="calendar-overlay" id="calendarOverlay">
+  <div class="calendar-box">
+    <span class="close-calendar" onclick="closeCalendar()">✖</span>
+    <div class="calendar-header">
+      <button class="month-nav" onclick="changeMonth(-1)">‹</button>
+      <h3 id="monthLabel"></h3>
+      <button class="month-nav" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+</div>
+
 <script>
-/* ---------- LOGIN + CALENDAR + ALERTS + TOGGLES ---------- */
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -395,7 +415,7 @@ function renderCalendar(){
   calendarGrid.innerHTML="";
   const y=currentMonth.getFullYear(), m=currentMonth.getMonth();
   monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
-  const weekdays = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   weekdays.forEach(d=>{ const w=document.createElement("div"); w.className="calendar-weekday"; w.textContent=d; calendarGrid.appendChild(w); });
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
@@ -434,6 +454,7 @@ function checkNotifications(){
   const todayDate=new Date();
   const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
   const apptToday=appointments.filter(a=>a.date===todayKey);
+
   bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
   bellDropdown.innerHTML="";
   if(crisisStudents.length===0 && apptToday.length===0){
@@ -454,7 +475,7 @@ function checkNotifications(){
 }
 notifBell.onclick=(e)=>{
   e.stopPropagation();
-  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none":"flex";
+  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
   bellDot.style.display="none";
 };
 document.addEventListener('click',()=>bellDropdown.style.display="none");
@@ -462,10 +483,11 @@ bellDropdown.addEventListener('click',e=>e.stopPropagation());
 
 setInterval(checkNotifications,5000);
 checkNotifications();
-window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); }
+window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
 </body>
 </html>
+
 
 
 
