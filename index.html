@@ -461,10 +461,15 @@ function renderCalendar(){
       }
     });
 
-    if(pendingDate===key && selectedUrgency){
+    if(pendingDate===key && selectedUrgency && selectedStudent){
       const previewDot=document.createElement("div");
       previewDot.className=`dot ${urgencyToColor(selectedUrgency)}`;
       cell.appendChild(previewDot);
+
+      const previewName=document.createElement("div");
+      previewName.className="appt-name";
+      previewName.textContent=selectedStudent;
+      cell.appendChild(previewName);
     }
 
     cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
@@ -535,11 +540,3 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
