@@ -63,7 +63,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   cursor:pointer;
 }
 .notif-icon { font-size:16px; }
-.notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
+notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
 .notif-badge {
   width:8px; height:8px; border-radius:50%;
   background:#ff3b30; display:none;
@@ -138,6 +138,17 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .eye.left { left:13px; }
 .eye.right { right:13px; }
 
+/* Red eyes as > < */
+.red-face .eye {
+  width:9px;
+  height:2px;
+  background:#3b3b3b;
+  border-radius:2px;
+  top:16px;
+}
+.red-face .eye.left { left:11px; transform:rotate(25deg); }
+.red-face .eye.right { right:11px; transform:rotate(-25deg); }
+
 .mouth {
   position:absolute;
   left:50%;
@@ -173,7 +184,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   bottom:4px;
 }
 
-/* ✅ Red face open frown (not filled) */
+/* Red face open frown (not filled) */
 .red-face.sad .mouth {
   width:22px;
   height:12px;
@@ -186,15 +197,15 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
-.yellow-face { background:#ffe31a; }
-.green-face { background:#a9cf4f; }
+yellow-face { background:#ffe31a; }
+green-face { background:#a9cf4f; }
 
 .toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:420px; border-radius:14px; position:relative; }
-.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
@@ -227,9 +238,7 @@ green { background:green; }
 <div id="dashboardScreen">
   <header class="dashboard-header">
     <div class="dashboard-title" style="display:flex; align-items:center; gap:12px; font-size:20px;">
-      <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0070c9;">
-        LOGO
-      </div>
+      <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0070c9;">LOGO</div>
       <div style="display:flex; flex-direction:column; line-height:1.1;">
         <div>
           <span style="font-weight:700; color:#0f172a;">TapOut!</span>
@@ -244,17 +253,9 @@ green { background:green; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
-
-      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">
-        SCHOOL
-      </div>
-
-      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">
-        Students
-      </button>
-
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
+      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
       <button class="calendar-btn" onclick="openCalendar()">📅</button>
-
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -263,7 +264,6 @@ green { background:green; }
         </button>
         <div class="bell-dropdown" id="bellDropdown"></div>
       </div>
-
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
@@ -487,6 +487,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
