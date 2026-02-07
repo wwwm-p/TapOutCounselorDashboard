@@ -525,7 +525,6 @@ function renderCalendar(){
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
   for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
-
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
   for(let d=1; d<=daysInMonth; d++){
@@ -548,6 +547,7 @@ function renderCalendar(){
     });
 
     cell.onclick=()=>addAppt(key);
+    cell.ondblclick=()=>removeAppt(key);
     calendarGrid.appendChild(cell);
   }
 }
@@ -562,6 +562,24 @@ function addAppt(date){
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
   checkNotifications();
+}
+
+function removeAppt(date){
+  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
+  let idx = -1;
+
+  if(selectedStudent){
+    idx = appts.findIndex(a=>a.date===date && a.name===selectedStudent);
+  }
+  if(idx === -1){
+    idx = appts.map((a,i)=>({a,i})).filter(x=>x.a.date===date).map(x=>x.i).pop();
+  }
+  if(idx !== -1){
+    appts.splice(idx,1);
+    localStorage.setItem("appointments",JSON.stringify(appts));
+    renderCalendar();
+    checkNotifications();
+  }
 }
 
 function urgencyToColor(u){
@@ -613,6 +631,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
