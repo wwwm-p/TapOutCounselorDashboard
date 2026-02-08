@@ -185,6 +185,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </style>
 </head>
 <body>
+
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -233,7 +234,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
   </header>
 
-  <!-- URGENCY ROWS -->
   <div class="urgency-row" id="red-row"><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
   <div class="urgency-row" id="orange-row"><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
   <div class="urgency-row" id="yellow-row"><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
@@ -465,7 +465,7 @@ function checkNotifications(){
   });
   apptToday.forEach(a=>{
     const div=document.createElement("div");
-    div.textContent="📅 Appointment today";
+    div.textContent=`📅 Appointment today: ${a.name || ""}`;
     bellDropdown.appendChild(div);
   });
 }
@@ -483,6 +483,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
