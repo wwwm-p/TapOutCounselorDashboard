@@ -78,9 +78,21 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 /* ---------- URGENCY ROWS ---------- */
 .urgency-row {
+  position:relative;
   display:flex; gap:16px; margin:20px; padding:16px;
   background:#fff; border-radius:12px; border-left:6px solid;
   align-items:flex-start;
+}
+.urgency-dot {
+  position:absolute;
+  top:10px;
+  right:12px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ff3b30;
+  box-shadow:0 0 0 2px #fff;
+  display:none;
 }
 #red-row { border-color:red; }
 #orange-row { border-color:orange; }
@@ -235,10 +247,22 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
   </header>
 
-  <div class="urgency-row" id="red-row"><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
-  <div class="urgency-row" id="orange-row"><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
-  <div class="urgency-row" id="yellow-row"><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
-  <div class="urgency-row" id="green-row"><div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="red-row">
+    <span class="urgency-dot" id="dot-red"></span>
+    <div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div>
+  </div>
+  <div class="urgency-row" id="orange-row">
+    <span class="urgency-dot" id="dot-orange"></span>
+    <div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div>
+  </div>
+  <div class="urgency-row" id="yellow-row">
+    <span class="urgency-dot" id="dot-yellow"></span>
+    <div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div>
+  </div>
+  <div class="urgency-row" id="green-row">
+    <span class="urgency-dot" id="dot-green"></span>
+    <div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div>
+  </div>
 </div>
 
 <!-- MESSAGE MODAL -->
@@ -273,6 +297,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
+// Full JS logic (login + alerts + toggles + scheduling + notes + unread dots)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -281,17 +306,20 @@ const searchBar = document.getElementById("searchBar");
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
-
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-const editBtn = document.getElementById("editBtn");
-const continueBtn = document.getElementById("continueBtn");
-
 const messageOverlay = document.getElementById("messageOverlay");
 const modalTitle = document.getElementById("modalTitle");
 const modalBody = document.getElementById("modalBody");
 const modalMeta = document.getElementById("modalMeta");
+const editBtn = document.getElementById("editBtn");
+const continueBtn = document.getElementById("continueBtn");
+
+const dotRed = document.getElementById("dot-red");
+const dotOrange = document.getElementById("dot-orange");
+const dotYellow = document.getElementById("dot-yellow");
+const dotGreen = document.getElementById("dot-green");
 
 const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
 let currentMonth = new Date();
@@ -325,6 +353,12 @@ function getMsgId(m, idx){
 
 function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
+
+  dotRed.style.display = "none";
+  dotOrange.style.display = "none";
+  dotYellow.style.display = "none";
+  dotGreen.style.display = "none";
+
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
@@ -340,6 +374,11 @@ function loadMessages(){
     const dateTime = m.dateTime || m.time || "Unknown time";
     const displayName = `${m.firstName} ${m.lastName || ""} (Grade ${m.grade})`;
     const notes = m.notes || "";
+
+    if(rowId === "red-row") dotRed.style.display = "block";
+    if(rowId === "orange-row") dotOrange.style.display = "block";
+    if(rowId === "yellow-row") dotYellow.style.display = "block";
+    if(rowId === "green-row") dotGreen.style.display = "block";
 
     const card = document.createElement("div");
     card.className="message-card";
@@ -514,6 +553,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
