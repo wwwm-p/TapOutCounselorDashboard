@@ -124,10 +124,25 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
-yellow-face { background:#ffe31a; }
-green-face { background:#a9cf4f; }
+.yellow-face { background:#ffe31a; }
+.green-face { background:#a9cf4f; }
 
-toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
+/* Toggle button modern */
+.toggle-btn {
+  padding:8px 18px;
+  border-radius:999px;
+  border:1px solid #e6e6e6;
+  background:#ffffff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  font-weight:600;
+  cursor:pointer;
+  transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+.toggle-btn:hover {
+  transform:translateY(-1px);
+  border:1px solid #0070c9;
+  box-shadow:0 8px 18px rgba(0,112,201,0.2);
+}
 
 /* ---------- MESSAGE MODAL ---------- */
 .message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; }
@@ -159,14 +174,14 @@ toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; bac
 .appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
 .pending { outline:2px solid #0070c9; }
 
-calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
-calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
-calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
+.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
+.calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
+.calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
 
-red { background:red; }
-orange { background:orange; }
-yellow { background:gold; }
-green { background:green; }
+.red { background:red; }
+.orange { background:orange; }
+.yellow { background:gold; }
+.green { background:green; }
 </style>
 </head>
 <body>
@@ -346,7 +361,7 @@ function openMessage(title, dateTime, body, urgency, msgId){
   pendingDate = null;
   modalTitle.textContent = title;
   modalMeta.textContent = `Sent: ${dateTime}`;
-  modalBody.innerHTML = body;   // 👈 use HTML so Notes is under Reason
+  modalBody.innerHTML = body;
   messageOverlay.style.display = "flex";
 }
 
@@ -468,6 +483,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
