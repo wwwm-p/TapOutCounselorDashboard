@@ -174,9 +174,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
 .pending { outline:2px solid #0070c9; }
 
-.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
+.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; gap:10px; }
 .calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
 .calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
+.calendar-actions .edit{ border-color:#0ea5e9; background:#e0f2fe; color:#075985; }
 
 .red { background:red; }
 .orange { background:orange; }
@@ -265,7 +266,8 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     <div class="calendar-grid" id="calendarGrid"></div>
     <div class="calendar-actions">
       <button onclick="closeCalendar()">Back</button>
-      <button class="primary" onclick="confirmAppointment()">Continue</button>
+      <button class="edit" id="editBtn" style="display:none;">Edit</button>
+      <button class="primary" id="continueBtn" onclick="confirmAppointment()" style="display:none;">Continue</button>
     </div>
   </div>
 </div>
@@ -279,9 +281,13 @@ const searchBar = document.getElementById("searchBar");
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
+
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
+const editBtn = document.getElementById("editBtn");
+const continueBtn = document.getElementById("continueBtn");
+
 const messageOverlay = document.getElementById("messageOverlay");
 const modalTitle = document.getElementById("modalTitle");
 const modalBody = document.getElementById("modalBody");
@@ -293,6 +299,7 @@ let pendingDate = null;
 let selectedStudent = null;
 let selectedUrgency = null;
 let selectedKey = null;
+let calendarMode = "view";
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -368,10 +375,31 @@ function openMessage(title, dateTime, body, urgency, msgId){
 function closeMessage(){ messageOverlay.style.display="none"; }
 messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
 
-function goToCalendarSchedule(){ closeMessage(); openCalendar(); }
-function openCalendarViewOnly(){ pendingDate = null; openCalendar(); }
-function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
-function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; }
+function goToCalendarSchedule(){
+  closeMessage();
+  calendarMode = "schedule";
+  openCalendar();
+}
+
+function openCalendarViewOnly(){
+  calendarMode = "view";
+  pendingDate = null;
+  openCalendar();
+}
+
+function openCalendar(){
+  calendarOverlay.style.display="flex";
+  if(calendarMode === "schedule"){
+    continueBtn.style.display = "inline-block";
+    editBtn.style.display = "none";
+  } else {
+    continueBtn.style.display = "none";
+    editBtn.style.display = "inline-block";
+  }
+  renderCalendar();
+}
+
+function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; calendarMode="view"; }
 
 function toggleMessages(id){
   const box=document.querySelector(`#${id} .messages`);
@@ -415,12 +443,15 @@ function renderCalendar(){
       }
     });
 
-    cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
+    if(calendarMode==="schedule"){
+      cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
+    }
     calendarGrid.appendChild(cell);
   }
 }
 
 function confirmAppointment(){
+  if(calendarMode !== "schedule") return;
   if(!selectedStudent || !selectedUrgency || !pendingDate || !selectedKey){
     alert("Select a date first.");
     return;
@@ -483,6 +514,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
