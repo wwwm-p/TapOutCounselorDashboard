@@ -272,7 +272,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
-// Full JS logic (login + alerts + toggles + scheduling)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -281,18 +280,15 @@ const searchBar = document.getElementById("searchBar");
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
-
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-
 const messageOverlay = document.getElementById("messageOverlay");
 const modalTitle = document.getElementById("modalTitle");
 const modalBody = document.getElementById("modalBody");
 const modalMeta = document.getElementById("modalMeta");
 
 const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
-
 let currentMonth = new Date();
 let pendingDate = null;
 let selectedStudent = null;
@@ -314,6 +310,7 @@ function showDashboard(){
   loadMessages();
   checkNotifications();
 }
+
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
 function getMsgId(m, idx){
@@ -325,11 +322,14 @@ function loadMessages(){
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
+  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  const scheduledKeys = new Set(appts.map(a => a.key));
 
   data.forEach((m, idx)=>{
-    if(m.counselor !== counselor) return;
-    const rowId = map[m.urgency] || "green-row";
     const msgId = getMsgId(m, idx);
+    if(m.counselor !== counselor) return;
+    if(scheduledKeys.has(msgId)) return; // Hide once scheduled
+    const rowId = map[m.urgency] || "green-row";
     const dateTime = m.dateTime || m.time || "Unknown time";
     const displayName = `${m.firstName} ${m.lastName || ""} (Grade ${m.grade})`;
 
@@ -357,6 +357,7 @@ function openMessage(title, dateTime, body, urgency, msgId){
   modalBody.textContent = body;
   messageOverlay.style.display = "flex";
 }
+
 function closeMessage(){ messageOverlay.style.display="none"; }
 messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
 
@@ -422,6 +423,7 @@ function confirmAppointment(){
   appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent, key: selectedKey});
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
+  loadMessages(); // remove scheduled from dashboard
   checkNotifications();
   closeCalendar();
 }
@@ -474,3 +476,4 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
