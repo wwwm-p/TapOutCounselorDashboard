@@ -124,10 +124,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
-.yellow-face { background:#ffe31a; }
-.green-face { background:#a9cf4f; }
+yellow-face { background:#ffe31a; }
+green-face { background:#a9cf4f; }
 
-.toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
+toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
 /* ---------- MESSAGE MODAL ---------- */
 .message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; }
@@ -159,18 +159,17 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
 .pending { outline:2px solid #0070c9; }
 
-.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
-.calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
-.calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
+calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
+calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
+calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
 
-.red { background:red; }
-.orange { background:orange; }
-.yellow { background:gold; }
-.green { background:green; }
+red { background:red; }
+orange { background:orange; }
+yellow { background:gold; }
+green { background:green; }
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -184,7 +183,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 <!-- DASHBOARD -->
 <div id="dashboardScreen">
-  <!-- HEADER -->
   <header class="dashboard-header">
     <div class="dashboard-title" style="display:flex; align-items:center; gap:12px; font-size:20px;">
       <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0070c9;">LOGO</div>
@@ -258,7 +256,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
-// Full JS logic (login + alerts + toggles + scheduling + notes)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -331,7 +328,13 @@ function loadMessages(){
       <span class="notes-preview">${notes ? "Notes: " + notes : ""}</span>
       <div class="message-meta">Sent: ${dateTime}</div>
     `;
-    card.onclick = () => openMessage(displayName, dateTime, `Reason: ${m.reason}\nNotes: ${notes || "None"}`, m.urgency, msgId);
+    card.onclick = () => openMessage(
+      displayName,
+      dateTime,
+      `<strong>Reason:</strong> ${m.reason}<br><strong>Notes:</strong> ${notes || "None"}`,
+      m.urgency,
+      msgId
+    );
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
 }
@@ -343,7 +346,7 @@ function openMessage(title, dateTime, body, urgency, msgId){
   pendingDate = null;
   modalTitle.textContent = title;
   modalMeta.textContent = `Sent: ${dateTime}`;
-  modalBody.textContent = body;
+  modalBody.innerHTML = body;   // 👈 use HTML so Notes is under Reason
   messageOverlay.style.display = "flex";
 }
 
@@ -465,6 +468,7 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
 
 
