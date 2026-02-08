@@ -198,7 +198,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -247,22 +246,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
   </header>
 
-  <div class="urgency-row" id="red-row">
-    <span class="urgency-dot" id="dot-red"></span>
-    <div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div>
-  </div>
-  <div class="urgency-row" id="orange-row">
-    <span class="urgency-dot" id="dot-orange"></span>
-    <div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div>
-  </div>
-  <div class="urgency-row" id="yellow-row">
-    <span class="urgency-dot" id="dot-yellow"></span>
-    <div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div>
-  </div>
-  <div class="urgency-row" id="green-row">
-    <span class="urgency-dot" id="dot-green"></span>
-    <div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div>
-  </div>
+  <div class="urgency-row" id="red-row"><span class="urgency-dot" id="dot-red"></span><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="orange-row"><span class="urgency-dot" id="dot-orange"></span><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="yellow-row"><span class="urgency-dot" id="dot-yellow"></span><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="green-row"><span class="urgency-dot" id="dot-green"></span><div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
 </div>
 
 <!-- MESSAGE MODAL -->
@@ -297,7 +284,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
-// Full JS logic (login + alerts + toggles + scheduling + notes + unread dots)
+// Full JS logic (login + alerts + toggles + scheduling + notes + unread dots + live updates)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -550,9 +537,25 @@ bellDropdown.addEventListener('click',e=>e.stopPropagation());
 setInterval(checkNotifications,5000);
 checkNotifications();
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
+
+// Real-time updates
+window.addEventListener("storage", (e) => {
+  if(e.key === "studentMessages" || e.key === "appointments"){
+    loadMessages();
+    checkNotifications();
+    renderCalendar();
+  }
+});
+
+// Poll fallback
+setInterval(() => {
+  loadMessages();
+  checkNotifications();
+}, 3000);
 </script>
 </body>
 </html>
+
 
 
 
