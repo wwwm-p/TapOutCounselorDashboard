@@ -143,8 +143,8 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
-yellow-face { background:#ffe31a; }
-green-face { background:#a9cf4f; }
+.yellow-face { background:#ffe31a; }
+.green-face { background:#a9cf4f; }
 
 .toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
@@ -176,7 +176,6 @@ green-face { background:#a9cf4f; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .appt-list { display:flex; flex-direction:column; align-items:center; gap:2px; width:100%; }
 .appt-name { font-size:10px; text-align:center; font-weight:600; color:#1f2937; white-space:nowrap; }
-
 .pending { outline:2px solid #0070c9; }
 
 .calendar-actions { margin-top:12px; display:flex; gap:10px; justify-content:flex-start; }
@@ -238,6 +237,7 @@ green { background:green; }
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
+  <div class="messages"></div>
 </div>
 
 <!-- CALENDAR -->
@@ -262,12 +262,19 @@ green { background:green; }
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
+
 let currentMonth = new Date();
 let editMode = false;
 let pendingDate = null;
+let selectedStudent = null;
+let selectedUrgency = null;
 
-function openCalendarViewOnly(){ editMode = false; pendingDate = null; openCalendar(); }
-function toggleEdit(){ editMode = !editMode; if(!editMode) pendingDate = null; renderCalendar(); }
+function openCalendarViewOnly(){
+  editMode = false;
+  pendingDate = null;
+  openCalendar();
+}
+function toggleEdit(){ editMode = !editMode; if(!editMode) pendingDate=null; renderCalendar(); }
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; editMode=false; }
 function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
@@ -281,12 +288,7 @@ function renderCalendar(){
 
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
-
-  for(let i=0;i<firstDay;i++){
-    const empty=document.createElement("div");
-    empty.className="calendar-day calendar-empty";
-    calendarGrid.appendChild(empty);
-  }
+  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
 
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
@@ -311,10 +313,32 @@ function renderCalendar(){
     });
 
     cell.appendChild(list);
+
+    cell.onclick=()=>{
+      if(editMode){
+        pendingDate = key;
+        renderCalendar();
+      }
+    };
     calendarGrid.appendChild(cell);
   }
+}
+function confirmAppointment(){
+  if(!editMode){ alert("Calendar is view-only. Tap Edit to make changes."); return; }
+  if(!selectedStudent || !selectedUrgency || !pendingDate){ alert("Select a date first."); return; }
+  let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  appts = appts.filter(a=>a.name !== selectedStudent);
+  appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent});
+  localStorage.setItem("appointments",JSON.stringify(appts));
+  renderCalendar();
+  closeCalendar();
+}
+function urgencyToColor(u){
+  if(u==="I’m in Crisis") return "red";
+  if(u==="I’m Not Coping Well") return "orange";
+  if(u==="Feeling a Little Off") return "yellow";
+  return "green";
 }
 </script>
 </body>
 </html>
-
