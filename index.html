@@ -159,6 +159,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
     <label>Username</label>
@@ -169,6 +170,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   </form>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboardScreen">
   <header class="dashboard-header">
     <div class="dashboard-title" style="display:flex; align-items:center; gap:12px; font-size:20px;">
@@ -205,7 +207,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
   </header>
 
-  <!-- URGENCY ROWS (same as before) -->
+  <!-- URGENCY ROWS -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-left">
       <div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div>
@@ -213,6 +215,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
     <div class="messages"></div>
   </div>
+
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div>
@@ -220,6 +223,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
     <div class="messages"></div>
   </div>
+
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div>
@@ -227,6 +231,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
     <div class="messages"></div>
   </div>
+
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div>
@@ -267,6 +272,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
+// Full JS logic (login + alerts + toggles + scheduling)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -275,9 +281,11 @@ const searchBar = document.getElementById("searchBar");
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
+
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
+
 const messageOverlay = document.getElementById("messageOverlay");
 const modalTitle = document.getElementById("modalTitle");
 const modalBody = document.getElementById("modalBody");
@@ -293,7 +301,7 @@ let selectedKey = null;
 
 loginForm.onsubmit = e => {
   e.preventDefault();
-  if(counselors[username.value] === password.value){
+  if(counselors[username.value]===password.value){
     localStorage.setItem("loggedInCounselor", username.value);
     showDashboard();
   } else alert("Invalid login");
@@ -306,7 +314,6 @@ function showDashboard(){
   loadMessages();
   checkNotifications();
 }
-
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
 function getMsgId(m, idx){
@@ -350,20 +357,11 @@ function openMessage(title, dateTime, body, urgency, msgId){
   modalBody.textContent = body;
   messageOverlay.style.display = "flex";
 }
-
 function closeMessage(){ messageOverlay.style.display="none"; }
 messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
 
-function goToCalendarSchedule(){
-  closeMessage();
-  openCalendar();
-}
-
-function openCalendarViewOnly(){
-  pendingDate = null;
-  openCalendar();
-}
-
+function goToCalendarSchedule(){ closeMessage(); openCalendar(); }
+function openCalendarViewOnly(){ pendingDate = null; openCalendar(); }
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; }
 
@@ -375,10 +373,7 @@ function toggleMessages(id){
   btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
-function changeMonth(delta){
-  currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1);
-  renderCalendar();
-}
+function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
 
 function renderCalendar(){
   calendarGrid.innerHTML="";
@@ -389,12 +384,7 @@ function renderCalendar(){
 
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
-
-  for(let i=0;i<firstDay;i++){
-    const empty=document.createElement("div");
-    empty.className="calendar-day calendar-empty";
-    calendarGrid.appendChild(empty);
-  }
+  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
 
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
@@ -484,5 +474,3 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
-
-
