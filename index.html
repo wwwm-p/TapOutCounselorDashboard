@@ -31,13 +31,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   box-shadow:0 4px 14px rgba(0,0,0,0.06);
 }
 .search-icon { font-size:16px; opacity:0.7; }
-.search-input {
-  border:none;
-  outline:none;
-  background:transparent;
-  font-size:16px;
-  width:220px;
-}
+.search-input { border:none; outline:none; background:transparent; font-size:16px; width:220px; }
 
 /* ---------- BUTTONS ---------- */
 .calendar-btn {
@@ -52,42 +46,25 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 /* ---------- NOTIFICATIONS ---------- */
 .notif-wrap { position:relative; }
 .notif-btn {
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 14px;
-  border-radius:999px;
-  border:1px solid #e6e6e6;
-  background:#ffffff;
-  box-shadow:0 4px 14px rgba(0,0,0,0.06);
-  cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+  padding:8px 14px; border-radius:999px;
+  border:1px solid #e6e6e6; background:#ffffff;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer;
 }
 .notif-icon { font-size:16px; }
 .notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
 .notif-badge {
   width:8px; height:8px; border-radius:50%;
-  background:#ff3b30; display:none;
-  box-shadow:0 0 0 2px #fff;
+  background:#ff3b30; display:none; box-shadow:0 0 0 2px #fff;
 }
 .bell-dropdown {
-  position:absolute;
-  top:48px;
-  right:0;
-  background:#fff;
-  border:1px solid #e6e6e6;
-  border-radius:12px;
-  width:280px;
-  display:none;
-  flex-direction:column;
-  box-shadow:0 10px 24px rgba(0,0,0,0.15);
-  z-index:1000;
-  font-size:14px;
-  overflow:hidden;
+  position:absolute; top:48px; right:0;
+  background:#fff; border:1px solid #e6e6e6;
+  border-radius:12px; width:280px; display:none;
+  flex-direction:column; box-shadow:0 10px 24px rgba(0,0,0,0.15);
+  z-index:1000; font-size:14px; overflow:hidden;
 }
-.bell-dropdown div {
-  padding:12px 14px;
-  border-bottom:1px solid #f0f0f0;
-}
+.bell-dropdown div { padding:12px 14px; border-bottom:1px solid #f0f0f0; }
 .bell-dropdown div:last-child { border-bottom:none; }
 .bell-dropdown div:hover { background:#f7f7f7; }
 
@@ -116,13 +93,9 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .message-card {
   width:220px; padding:8px 10px; font-size:14px;
   background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
-  cursor:pointer;
-  transition:transform 0.15s ease, box-shadow 0.2s ease;
+  cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease;
 }
-.message-card:hover {
-  transform:translateY(-2px);
-  box-shadow:0 6px 14px rgba(0,0,0,0.08);
-}
+.message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 
 /* ---------- FACE STYLE ---------- */
@@ -148,6 +121,16 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .toggle-btn { padding:6px 18px; border-radius:20px; border:2px solid #0070c9; background:#fff; color:#0070c9; cursor:pointer; }
 
+/* ---------- MESSAGE MODAL ---------- */
+.message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; }
+.message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
+.message-modal h3 { margin:0 0 8px 0; }
+.message-modal .modal-body { background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px; line-height:1.5; font-size:15px; color:#1f2937; max-height:50vh; overflow:auto; }
+.message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
+.modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
+.modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
+.modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
+
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:420px; border-radius:14px; position:relative; }
@@ -162,6 +145,11 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
+.pending { outline:2px solid #0070c9; }
+
+.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; }
+.calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
+.calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
 
 .red { background:red; }
 .orange { background:orange; }
@@ -198,7 +186,9 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
-      <button class="calendar-btn" onclick="openCalendar()">📅</button>
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
+      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
+      <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -211,7 +201,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
     </div>
   </header>
 
-  <!-- Urgency Rows -->
+  <!-- URGENCY ROWS -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -257,7 +247,20 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   </div>
 </div>
 
-<!-- Calendar -->
+<!-- MESSAGE MODAL -->
+<div class="message-overlay" id="messageOverlay">
+  <div class="message-modal">
+    <h3 id="modalTitle">Message</h3>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <button onclick="closeMessage()">Back</button>
+      <button class="primary" onclick="goToCalendarSchedule()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
   <div class="calendar-box">
     <span class="close-calendar" onclick="closeCalendar()">✖</span>
@@ -267,6 +270,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
       <button class="month-nav" onclick="changeMonth(1)">›</button>
     </div>
     <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="calendar-actions">
+      <button onclick="closeCalendar()">Back</button>
+      <button class="primary" onclick="confirmAppointment()">Continue</button>
+    </div>
   </div>
 </div>
 
@@ -284,9 +291,18 @@ const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 
+const messageOverlay = document.getElementById("messageOverlay");
+const modalTitle = document.getElementById("modalTitle");
+const modalBody = document.getElementById("modalBody");
+const modalMeta = document.getElementById("modalMeta");
+
 const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
 
 let currentMonth = new Date();
+let pendingDate = null;
+let selectedStudent = null;
+let selectedUrgency = null;
+let selectedKey = null;
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -306,29 +322,63 @@ function showDashboard(){
 
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
+function getMsgId(m, idx){
+  return m.msgId || m.messageId || m.id || m.time || m.dateTime || `msg-${idx}`;
+}
+
 function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
 
-  data.forEach(m=>{
+  data.forEach((m, idx)=>{
     if(m.counselor !== counselor) return;
     const rowId = map[m.urgency] || "green-row";
-    const card = document.createElement("div");
-    card.className = "message-card";
+    const msgId = getMsgId(m, idx);
     const dateTime = m.dateTime || m.time || "Unknown time";
-    const notes = m.notes ? `<br><em>Notes: ${m.notes}</em>` : "";
+    const displayName = `${m.firstName} ${m.lastName || ""} (Grade ${m.grade})`;
+
+    const card = document.createElement("div");
+    card.className="message-card";
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName || ""}</strong><br>
       Grade: ${m.grade}<br>
       ${m.reason}<br>
       <div class="message-meta">Sent: ${dateTime}</div>
-      ${notes}
+      ${m.notes ? "<em>Notes:</em> " + m.notes : ""}
     `;
+    card.onclick = () => openMessage(displayName, dateTime, `${m.firstName} ${m.lastName || ""}`, m.urgency, msgId);
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
 }
+
+function openMessage(title, dateTime, body, urgency, msgId){
+  selectedStudent = title;
+  selectedUrgency = urgency;
+  selectedKey = msgId;
+  pendingDate = null;
+  modalTitle.textContent = title;
+  modalMeta.textContent = `Sent: ${dateTime}`;
+  modalBody.textContent = body;
+  messageOverlay.style.display = "flex";
+}
+
+function closeMessage(){ messageOverlay.style.display="none"; }
+messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
+
+function goToCalendarSchedule(){
+  closeMessage();
+  openCalendar();
+}
+
+function openCalendarViewOnly(){
+  pendingDate = null;
+  openCalendar();
+}
+
+function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
+function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; }
 
 function toggleMessages(id){
   const box=document.querySelector(`#${id} .messages`);
@@ -338,10 +388,10 @@ function toggleMessages(id){
   btn.textContent = hide?"Show Messages":"Hide Messages";
 }
 
-function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
-function closeCalendar(){ calendarOverlay.style.display="none"; }
-
-function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
+function changeMonth(delta){
+  currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1);
+  renderCalendar();
+}
 
 function renderCalendar(){
   calendarGrid.innerHTML="";
@@ -349,36 +399,83 @@ function renderCalendar(){
   monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
   const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
   weekdays.forEach(d=>{ const w=document.createElement("div"); w.className="calendar-weekday"; w.textContent=d; calendarGrid.appendChild(w); });
+
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
-  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
+
+  for(let i=0;i<firstDay;i++){
+    const empty=document.createElement("div");
+    empty.className="calendar-day calendar-empty";
+    calendarGrid.appendChild(empty);
+  }
+
+  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
+
   for(let d=1; d<=daysInMonth; d++){
+    const key=`${y}-${m}-${d}`;
     const cell=document.createElement("div");
     cell.className="calendar-day";
+    if(pendingDate===key) cell.classList.add("pending");
     cell.innerHTML=`<strong>${d}</strong>`;
+
+    appts.filter(a=>a.date===key).forEach(a=>{
+      const dot=document.createElement("div");
+      dot.className=`dot ${a.urgency}`;
+      cell.appendChild(dot);
+
+      if(a.name){
+        const name=document.createElement("div");
+        name.className="appt-name";
+        name.textContent=a.name;
+        cell.appendChild(name);
+      }
+    });
+
+    cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
     calendarGrid.appendChild(cell);
   }
 }
 
+function confirmAppointment(){
+  if(!selectedStudent || !selectedUrgency || !pendingDate || !selectedKey){
+    alert("Select a date first.");
+    return;
+  }
+  let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  appts = appts.filter(a=>a.key !== selectedKey);
+  appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent, key: selectedKey});
+  localStorage.setItem("appointments",JSON.stringify(appts));
+  renderCalendar();
+  checkNotifications();
+  closeCalendar();
+}
+
+function urgencyToColor(u){
+  if(u==="I’m in Crisis") return "red";
+  if(u==="I’m Not Coping Well") return "orange";
+  if(u==="Feeling a Little Off") return "yellow";
+  return "green";
+}
+
 function checkNotifications(){
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const students = JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const crisisStudents = students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
+  const counselor=localStorage.getItem("loggedInCounselor");
+  const students=JSON.parse(localStorage.getItem("studentMessages")||"[]");
+  const appointments=JSON.parse(localStorage.getItem("appointments")||"[]");
+  const crisisStudents=students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
 
   bellDot.style.display = crisisStudents.length ? "block" : "none";
-  bellDropdown.innerHTML = "";
+  bellDropdown.innerHTML="";
   if(crisisStudents.length===0){
-    const div = document.createElement("div");
-    div.textContent = "No notifications";
+    const div=document.createElement("div");
+    div.textContent="No notifications";
     bellDropdown.appendChild(div);
   }
   crisisStudents.forEach(s=>{
-    const div = document.createElement("div");
-    div.textContent = `🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
+    const div=document.createElement("div");
+    div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
     bellDropdown.appendChild(div);
   });
 }
-
 notifBell.onclick=(e)=>{
   e.stopPropagation();
   bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
@@ -393,6 +490,3 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
-
-
-
