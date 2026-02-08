@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -232,72 +234,7 @@ green { background:green; }
       <div class="profile-bubble" id="profileBubble" onclick="logout()"></div>
     </div>
   </header>
-
-  <!-- URGENCY ROWS -->
-  <div class="urgency-row" id="red-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face red-face sad">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <h2>High Urgency</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="orange-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face orange-face sad">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <h2>Medium-High</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="yellow-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face yellow-face neutral">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <h2>Medium-Low</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="green-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face green-face">
-          <div class="eye left"></div><div class="eye right"></div><div class="mouth"></div>
-        </div>
-        <h2>Low Urgency</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-</div>
-
-<!-- MESSAGE MODAL -->
-<div class="message-overlay" id="messageOverlay">
-  <div class="message-modal">
-    <h3 id="modalTitle">Message</h3>
-    <div class="modal-meta" id="modalMeta"></div>
-    <div class="modal-body" id="modalBody"></div>
-    <div class="modal-actions">
-      <button onclick="closeMessage()">Back</button>
-      <button class="primary" onclick="goToCalendarSchedule()">Continue</button>
-    </div>
-  </div>
+  <div class="messages"></div>
 </div>
 
 <!-- CALENDAR -->
@@ -318,109 +255,15 @@ green { background:green; }
 </div>
 
 <script>
-const loginForm = document.getElementById("loginForm");
-const loginScreen = document.getElementById("loginScreen");
-const dashboardScreen = document.getElementById("dashboardScreen");
-const profileBubble = document.getElementById("profileBubble");
-const searchBar = document.getElementById("searchBar");
-const bellDot = document.getElementById("bellDot");
-const bellDropdown = document.getElementById("bellDropdown");
-const notifBell = document.getElementById("notifBell");
-
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-
-const messageOverlay = document.getElementById("messageOverlay");
-const modalTitle = document.getElementById("modalTitle");
-const modalBody = document.getElementById("modalBody");
-const modalMeta = document.getElementById("modalMeta");
-
-const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
 
 let currentMonth = new Date();
 let pendingDate = null;
 let selectedStudent = null;
 let selectedUrgency = null;
 let selectedKey = null;
-
-loginForm.onsubmit = e => {
-  e.preventDefault();
-  if(counselors[username.value] === password.value){
-    localStorage.setItem("loggedInCounselor", username.value);
-    showDashboard();
-  } else alert("Invalid login");
-};
-
-function showDashboard(){
-  loginScreen.style.display="none";
-  dashboardScreen.style.display="block";
-  profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
-  loadMessages();
-  checkNotifications();
-}
-
-function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
-
-function getMsgId(m, idx){
-  return m.msgId || m.messageId || m.id || m.time || m.dateTime || `msg-${idx}`;
-}
-
-function loadMessages(){
-  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
-
-  data.forEach((m, idx)=>{
-    if(m.counselor !== counselor) return;
-    const rowId = map[m.urgency] || "green-row";
-    const card = document.createElement("div");
-    card.className = "message-card";
-
-    const dateTime = m.dateTime || m.time || "Unknown time";
-    const notes = m.notes ? m.notes : "";
-    const msgId = getMsgId(m, idx);
-    const displayName = `${m.firstName} ${m.lastName || ""} (Grade ${m.grade})`;
-
-    const fullMessage = `
-${m.firstName} ${m.lastName || ""}
-Grade: ${m.grade}
-Reason: ${m.reason}
-Notes: ${notes || "None"}
-Sent: ${dateTime}
-    `.trim();
-
-    card.innerHTML = `
-      <strong>${m.firstName} ${m.lastName || ""}</strong><br>
-      Grade: ${m.grade}<br>
-      ${m.reason}<br>
-      <div class="message-meta">Sent: ${dateTime}</div>
-      ${m.notes ? "<em>Notes:</em> " + m.notes : ""}
-    `;
-    card.onclick = () => openMessage(displayName, dateTime, fullMessage, m.urgency, msgId);
-
-    document.querySelector(`#${rowId} .messages`).appendChild(card);
-  });
-}
-
-function openMessage(title, dateTime, body, urgency, msgId){
-  selectedStudent = title;
-  selectedUrgency = urgency;
-  selectedKey = msgId;
-  pendingDate = null;
-  modalTitle.textContent = title;
-  modalMeta.textContent = `Sent: ${dateTime}`;
-  modalBody.textContent = body;
-  messageOverlay.style.display = "flex";
-}
-function closeMessage(){ messageOverlay.style.display = "none"; }
-messageOverlay.addEventListener("click", (e) => { if(e.target === messageOverlay) closeMessage(); });
-
-function goToCalendarSchedule(){
-  closeMessage();
-  openCalendar();
-}
 
 function openCalendarViewOnly(){
   pendingDate = null;
@@ -429,20 +272,6 @@ function openCalendarViewOnly(){
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; }
 
-searchBar.oninput = () => {
-  const q = searchBar.value.toLowerCase();
-  document.querySelectorAll(".message-card").forEach(c => c.style.display = c.textContent.toLowerCase().includes(q)?"block":"none");
-};
-
-function toggleMessages(id){
-  const box=document.querySelector(`#${id} .messages`);
-  const btn=document.querySelector(`#${id} .toggle-btn`);
-  const hide = box.style.display!=="none";
-  box.style.display = hide?"none":"flex";
-  btn.textContent = hide?"Show Messages":"Hide Messages";
-}
-
-/* Calendar */
 function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
 
 function renderCalendar(){
@@ -469,6 +298,7 @@ function renderCalendar(){
       const dot=document.createElement("div");
       dot.className=`dot ${a.urgency}`;
       cell.appendChild(dot);
+
       if(a.name){
         const name=document.createElement("div");
         name.className="appt-name";
@@ -495,7 +325,6 @@ function confirmAppointment(){
   appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent, key: selectedKey});
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
-  checkNotifications();
   closeCalendar();
 }
 
@@ -505,46 +334,6 @@ function urgencyToColor(u){
   if(u==="Feeling a Little Off") return "yellow";
   return "green";
 }
-
-/* Notifications */
-function checkNotifications(){
-  const counselor=localStorage.getItem("loggedInCounselor");
-  const students=JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const appointments=JSON.parse(localStorage.getItem("appointments")||"[]");
-  const crisisStudents=students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
-  const todayDate=new Date();
-  const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
-  const apptToday=appointments.filter(a=>a.date===todayKey);
-
-  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
-  bellDropdown.innerHTML="";
-  if(crisisStudents.length===0 && apptToday.length===0){
-    const div=document.createElement("div");
-    div.textContent="No notifications";
-    bellDropdown.appendChild(div);
-  }
-  crisisStudents.forEach(s=>{
-    const div=document.createElement("div");
-    div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
-    bellDropdown.appendChild(div);
-  });
-  apptToday.forEach(a=>{
-    const div=document.createElement("div");
-    div.textContent="📅 Appointment today";
-    bellDropdown.appendChild(div);
-  });
-}
-notifBell.onclick=(e)=>{
-  e.stopPropagation();
-  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
-  bellDot.style.display="none";
-};
-document.addEventListener('click',()=>bellDropdown.style.display="none");
-bellDropdown.addEventListener('click',e=>e.stopPropagation());
-
-setInterval(checkNotifications,5000);
-checkNotifications();
-window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
 </body>
 </html>
