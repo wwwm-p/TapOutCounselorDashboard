@@ -98,6 +98,14 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 
+/* Notes preview (single line) */
+.notes-preview{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
 /* ---------- FACE STYLE ---------- */
 .face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
 .eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
@@ -125,7 +133,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; }
 .message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
 .message-modal h3 { margin:0 0 8px 0; }
-.message-modal .modal-body { background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px; line-height:1.5; font-size:15px; color:#1f2937; max-height:50vh; overflow:auto; }
+.message-modal .modal-body { background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px; line-height:1.5; font-size:15px; color:#1f2937; max-height:50vh; overflow:auto; white-space:pre-wrap; }
 .message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
 .modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
 .modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
@@ -208,37 +216,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   </header>
 
   <!-- URGENCY ROWS -->
-  <div class="urgency-row" id="red-row">
-    <div class="urgency-left">
-      <div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div>
-      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="orange-row">
-    <div class="urgency-left">
-      <div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div>
-      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="yellow-row">
-    <div class="urgency-left">
-      <div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div>
-      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
-
-  <div class="urgency-row" id="green-row">
-    <div class="urgency-left">
-      <div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div>
-      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
-    </div>
-    <div class="messages"></div>
-  </div>
+  <div class="urgency-row" id="red-row"><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>High Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="orange-row"><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-High</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="yellow-row"><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Medium-Low</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="green-row"><div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
 </div>
 
 <!-- MESSAGE MODAL -->
@@ -272,6 +253,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
+// Full JS logic (login + alerts + toggles + scheduling + notes)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -328,10 +310,12 @@ function loadMessages(){
   data.forEach((m, idx)=>{
     const msgId = getMsgId(m, idx);
     if(m.counselor !== counselor) return;
-    if(scheduledKeys.has(msgId)) return; // Hide once scheduled
+    if(scheduledKeys.has(msgId)) return;
+
     const rowId = map[m.urgency] || "green-row";
     const dateTime = m.dateTime || m.time || "Unknown time";
     const displayName = `${m.firstName} ${m.lastName || ""} (Grade ${m.grade})`;
+    const notes = m.notes || "";
 
     const card = document.createElement("div");
     card.className="message-card";
@@ -339,10 +323,10 @@ function loadMessages(){
       <strong>${m.firstName} ${m.lastName || ""}</strong><br>
       Grade: ${m.grade}<br>
       ${m.reason}<br>
+      <span class="notes-preview">${notes ? "Notes: " + notes : ""}</span>
       <div class="message-meta">Sent: ${dateTime}</div>
-      ${m.notes ? "<em>Notes:</em> " + m.notes : ""}
     `;
-    card.onclick = () => openMessage(displayName, dateTime, `${m.firstName} ${m.lastName || ""}`, m.urgency, msgId);
+    card.onclick = () => openMessage(displayName, dateTime, `Reason: ${m.reason}\nNotes: ${notes || "None"}`, m.urgency, msgId);
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
 }
@@ -423,7 +407,7 @@ function confirmAppointment(){
   appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent, key: selectedKey});
   localStorage.setItem("appointments",JSON.stringify(appts));
   renderCalendar();
-  loadMessages(); // remove scheduled from dashboard
+  loadMessages();
   checkNotifications();
   closeCalendar();
 }
@@ -476,4 +460,5 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
