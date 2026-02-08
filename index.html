@@ -180,8 +180,8 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red { background:red; }
 .orange { background:orange; }
-.yellow { background:gold; }
-.green { background:green; }
+yellow { background:gold; }
+green { background:green; }
 </style>
 </head>
 <body>
@@ -326,6 +326,7 @@ const searchBar = document.getElementById("searchBar");
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
+
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
@@ -336,11 +337,11 @@ const modalBody = document.getElementById("modalBody");
 const modalMeta = document.getElementById("modalMeta");
 
 const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
-let currentMonth = new Date();
 
+let currentMonth = new Date();
+let pendingDate = null;
 let selectedStudent = null;
 let selectedUrgency = null;
-let pendingDate = null;
 let selectedKey = null;
 
 loginForm.onsubmit = e => {
@@ -348,9 +349,7 @@ loginForm.onsubmit = e => {
   if(counselors[username.value] === password.value){
     localStorage.setItem("loggedInCounselor", username.value);
     showDashboard();
-  } else {
-    alert("Invalid login");
-  }
+  } else alert("Invalid login");
 };
 
 function showDashboard(){
@@ -375,7 +374,6 @@ function loadMessages(){
 
   data.forEach((m, idx)=>{
     if(m.counselor !== counselor) return;
-
     const rowId = map[m.urgency] || "green-row";
     const card = document.createElement("div");
     card.className = "message-card";
@@ -400,8 +398,8 @@ Sent: ${dateTime}
       <div class="message-meta">Sent: ${dateTime}</div>
       ${m.notes ? "<em>Notes:</em> " + m.notes : ""}
     `;
-
     card.onclick = () => openMessage(displayName, dateTime, fullMessage, m.urgency, msgId);
+
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
 }
@@ -416,7 +414,6 @@ function openMessage(title, dateTime, body, urgency, msgId){
   modalBody.textContent = body;
   messageOverlay.style.display = "flex";
 }
-
 function closeMessage(){ messageOverlay.style.display = "none"; }
 messageOverlay.addEventListener("click", (e) => { if(e.target === messageOverlay) closeMessage(); });
 
@@ -429,7 +426,6 @@ function openCalendarViewOnly(){
   pendingDate = null;
   openCalendar();
 }
-
 function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); }
 function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; }
 
@@ -458,12 +454,7 @@ function renderCalendar(){
 
   const firstDay=new Date(y,m,1).getDay();
   const daysInMonth=new Date(y,m+1,0).getDate();
-
-  for(let i=0;i<firstDay;i++){
-    const empty=document.createElement("div");
-    empty.className="calendar-day calendar-empty";
-    calendarGrid.appendChild(empty);
-  }
+  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
 
   const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
 
@@ -478,7 +469,6 @@ function renderCalendar(){
       const dot=document.createElement("div");
       dot.className=`dot ${a.urgency}`;
       cell.appendChild(dot);
-
       if(a.name){
         const name=document.createElement("div");
         name.className="appt-name";
@@ -558,4 +548,5 @@ window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboar
 </script>
 </body>
 </html>
+
 
