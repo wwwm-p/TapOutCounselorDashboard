@@ -198,6 +198,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </style>
 </head>
 <body>
+
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -538,7 +539,7 @@ setInterval(checkNotifications,5000);
 checkNotifications();
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 
-// Real-time updates
+// Live updates
 window.addEventListener("storage", (e) => {
   if(e.key === "studentMessages" || e.key === "appointments"){
     loadMessages();
@@ -546,15 +547,11 @@ window.addEventListener("storage", (e) => {
     renderCalendar();
   }
 });
-
-// Poll fallback
-setInterval(() => {
-  loadMessages();
-  checkNotifications();
-}, 3000);
+setInterval(() => { loadMessages(); checkNotifications(); }, 3000);
 </script>
 </body>
 </html>
+
 
 
 
