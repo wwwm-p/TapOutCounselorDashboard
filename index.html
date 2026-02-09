@@ -178,11 +178,10 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
-.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; align-items:stretch; }
-.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; min-height:72px; box-sizing:border-box; }
-.calendar-day strong { margin-bottom:2px; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
+.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; min-height:48px; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
-.calendar-empty { background:transparent; cursor:default; min-height:72px; }
+.calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
 .appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
 .pending { outline:2px solid #0070c9; }
@@ -627,6 +626,7 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
 
 
