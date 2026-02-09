@@ -157,24 +157,25 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 }
 
 /* ---------- MESSAGE MODAL ---------- */
-.message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; }
-message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
-message-modal h3 { margin:0 0 8px 0; }
-message-modal .modal-body {
+.message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; opacity:0; transition:opacity 0.2s ease; }
+.message-overlay.show { display:flex; opacity:1; }
+.message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
+.message-modal h3 { margin:0 0 8px 0; }
+.message-modal .modal-body {
   background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px;
   line-height:1.5; font-size:15px; color:#1f2937;
   max-height:50vh; overflow:auto; white-space:normal; word-break:break-word;
 }
-message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
+.message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
 .modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
-modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
-modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
+.modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
+.modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
 
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
 .calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.calendar-header h3 { margin:0; text-align:center; flex:1; }
+calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
@@ -445,10 +446,10 @@ function openMessage(title, dateTime, body, urgency, msgId){
   modalTitle.textContent = title;
   modalMeta.textContent = `Sent: ${dateTime}`;
   modalBody.innerHTML = body;
-  messageOverlay.style.display = "flex";
+  messageOverlay.classList.add("show");
 }
 
-function closeMessage(){ messageOverlay.style.display="none"; }
+function closeMessage(){ messageOverlay.classList.remove("show"); }
 messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
 
 function goToCalendarSchedule(){
@@ -687,6 +688,7 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
 
 
