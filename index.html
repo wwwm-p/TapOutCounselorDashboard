@@ -150,7 +150,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   cursor:pointer;
   transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease;
 }
-.toggle-btn:hover {
+toggle-btn:hover {
   transform:translateY(-1px);
   border:1px solid #0070c9;
   box-shadow:0 8px 18px rgba(0,112,201,0.2);
@@ -174,7 +174,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
 .calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.calendar-header h3 { margin:0; text-align:center; flex:1; }
+calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
@@ -192,13 +192,13 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .pending { outline:2px solid #0070c9; }
 
 .calendar-actions { margin-top:12px; display:flex; justify-content:space-between; gap:10px; }
-.calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
+calendar-actions button{ padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#fff; cursor:pointer; font-weight:600; }
 .calendar-actions .primary{ border-color:#0070c9; background:#0070c9; color:#fff; }
 .calendar-actions .edit{ border-color:#0ea5e9; background:#e0f2fe; color:#075985; }
 
 .red { background:red; }
 .orange { background:orange; }
-yellow { background:gold; }
+.yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
@@ -504,28 +504,30 @@ function renderCalendar(){
     if(expandedDate===key) cell.classList.add("expanded");
     cell.innerHTML=`<strong>${d}</strong>`;
 
-    appts.filter(a=>a.date===key).forEach((a, idx)=>{
-      if(a.name){
-        const name=document.createElement("button");
-        name.type = "button";
-        name.className="appt-pill";
-        const dot=document.createElement("div");
-        dot.className=`dot ${a.urgency}`;
-        const label=document.createElement("span");
-        label.textContent=a.name;
-        name.appendChild(dot);
-        name.appendChild(label);
-        name.dataset.apptId = getApptId(a, idx);
-        if(selectedApptId === name.dataset.apptId) name.classList.add("active");
-        name.onclick = (e) => {
-          e.stopPropagation();
-          if(!editMode) return;
-          selectedApptId = name.dataset.apptId;
-          renderCalendar();
-        };
-        cell.appendChild(name);
-      }
-    });
+    if(expandedDate !== key){
+      appts.filter(a=>a.date===key).forEach((a, idx)=>{
+        if(a.name){
+          const name=document.createElement("button");
+          name.type = "button";
+          name.className="appt-pill";
+          const dot=document.createElement("div");
+          dot.className=`dot ${a.urgency}`;
+          const label=document.createElement("span");
+          label.textContent=a.name;
+          name.appendChild(dot);
+          name.appendChild(label);
+          name.dataset.apptId = getApptId(a, idx);
+          if(selectedApptId === name.dataset.apptId) name.classList.add("active");
+          name.onclick = (e) => {
+            e.stopPropagation();
+            if(!editMode) return;
+            selectedApptId = name.dataset.apptId;
+            renderCalendar();
+          };
+          cell.appendChild(name);
+        }
+      });
+    }
 
     if(calendarMode==="schedule"){
       cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
@@ -667,6 +669,7 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
 
 
