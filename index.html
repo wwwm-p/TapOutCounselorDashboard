@@ -180,6 +180,11 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .month-nav:hover { background:#0070c9; color:white; }
 .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
 .calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
+.calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
+.calendar-day.expanded strong { align-self:center; }
+.day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
+.day-detail-item { display:flex; align-items:center; gap:6px; }
+.day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
@@ -193,14 +198,16 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red { background:red; }
 .orange { background:orange; }
-.yellow { background:gold; }
+yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
 .calendar-box.editing .calendar-day { cursor:copy; }
 .calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
 .appt-pill {
-  display:block;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   width:100%;
   border-radius:10px;
   padding:2px 4px;
@@ -214,6 +221,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
   text-align:center;
   line-height:1.15;
 }
+.appt-pill .dot { margin:0 0 2px 0; }
 .appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
@@ -338,6 +346,7 @@ let selectedKey = null;
 let calendarMode = "view";
 let editMode = false;
 let selectedApptId = null;
+let expandedDate = null;
 
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -446,10 +455,11 @@ function openCalendar(){
     editBtn.style.display = "inline-block";
   }
   setEditMode(false);
+  expandedDate = null;
   renderCalendar();
 }
 
-function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; calendarMode="view"; setEditMode(false); }
+function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; calendarMode="view"; setEditMode(false); expandedDate=null; }
 
 function toggleMessages(id){
   const box=document.querySelector(`#${id} .messages`);
@@ -466,6 +476,7 @@ function setEditMode(on){
   selectedApptId = null;
   calendarBox.classList.toggle("editing", editMode);
   editBtn.textContent = editMode ? "Done" : "Edit";
+  if(editMode) expandedDate = null;
 }
 
 function getApptId(a, idx){
@@ -490,17 +501,20 @@ function renderCalendar(){
     const cell=document.createElement("div");
     cell.className="calendar-day";
     if(pendingDate===key) cell.classList.add("pending");
+    if(expandedDate===key) cell.classList.add("expanded");
     cell.innerHTML=`<strong>${d}</strong>`;
 
     appts.filter(a=>a.date===key).forEach((a, idx)=>{
-      const dot=document.createElement("div");
-      dot.className=`dot ${a.urgency}`;
-      cell.appendChild(dot);
       if(a.name){
         const name=document.createElement("button");
         name.type = "button";
         name.className="appt-pill";
-        name.textContent=a.name;
+        const dot=document.createElement("div");
+        dot.className=`dot ${a.urgency}`;
+        const label=document.createElement("span");
+        label.textContent=a.name;
+        name.appendChild(dot);
+        name.appendChild(label);
         name.dataset.apptId = getApptId(a, idx);
         if(selectedApptId === name.dataset.apptId) name.classList.add("active");
         name.onclick = (e) => {
@@ -520,6 +534,31 @@ function renderCalendar(){
         if(!selectedApptId) return;
         moveAppointment(selectedApptId, key);
       };
+    } else {
+      cell.onclick=()=>{
+        expandedDate = (expandedDate === key) ? null : key;
+        renderCalendar();
+      };
+    }
+
+    if(expandedDate === key){
+      const dayAppts = appts.filter(a=>a.date===key);
+      if(dayAppts.length){
+        const details=document.createElement("div");
+        details.className="day-details";
+        dayAppts.forEach((a)=>{
+          const item=document.createElement("div");
+          item.className="day-detail-item";
+          const dot=document.createElement("div");
+          dot.className=`dot ${a.urgency}`;
+          const label=document.createElement("span");
+          label.textContent = a.name || "Appointment";
+          item.appendChild(dot);
+          item.appendChild(label);
+          details.appendChild(item);
+        });
+        cell.appendChild(details);
+      }
     }
 
     calendarGrid.appendChild(cell);
@@ -628,6 +667,7 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
 
 
