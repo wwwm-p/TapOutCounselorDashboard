@@ -198,7 +198,6 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -285,49 +284,28 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 </div>
 
 <script>
-// Full JS logic (login + alerts + toggles + scheduling + notes + unread dots + live updates + edit move)
-const loginForm = document.getElementById("loginForm");
-const loginScreen = document.getElementById("loginScreen");
-const dashboardScreen = document.getElementById("dashboardScreen");
-const profileBubble = document.getElementById("profileBubble");
-const searchBar = document.getElementById("searchBar");
-const bellDot = document.getElementById("bellDot");
-const bellDropdown = document.getElementById("bellDropdown");
-const notifBell = document.getElementById("notifBell");
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
-const messageOverlay = document.getElementById("messageOverlay");
-const modalTitle = document.getElementById("modalTitle");
-const modalBody = document.getElementById("modalBody");
-const modalMeta = document.getElementById("modalMeta");
 const editBtn = document.getElementById("editBtn");
 const continueBtn = document.getElementById("continueBtn");
 
-const dotRed = document.getElementById("dot-red");
-const dotOrange = document.getElementById("dot-orange");
-const dotYellow = document.getElementById("dot-yellow");
-const dotGreen = document.getElementById("dot-green");
-
-const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
-let currentMonth = new Date();
-let pendingDate = null;
-let selectedStudent = null;
-let selectedUrgency = null;
-let selectedKey = null;
 let calendarMode = "view";
-let movingAppt = null;
+let movingKey = null;
+let pendingDate = null;
+let currentMonth = new Date();
 
 editBtn.onclick = () => {
   if(calendarMode === "edit"){
-    // Done
-    if(movingAppt && pendingDate){
-      moveAppointment(movingAppt, pendingDate);
+    if(movingKey && pendingDate){
+      let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+      appts = appts.map(a => a.key === movingKey ? {...a, date: pendingDate} : a);
+      localStorage.setItem("appointments", JSON.stringify(appts));
     }
     calendarMode = "view";
-    movingAppt = null;
-    pendingDate = null;
     editBtn.textContent = "Edit";
+    movingKey = null;
+    pendingDate = null;
   } else {
     calendarMode = "edit";
     editBtn.textContent = "Done";
@@ -335,22 +313,14 @@ editBtn.onclick = () => {
   renderCalendar();
 };
 
-function moveAppointment(apptKey, newDate){
-  let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  appts = appts.map(a => a.key === apptKey ? {...a, date:newDate} : a);
-  localStorage.setItem("appointments", JSON.stringify(appts));
-}
-
 function openCalendarViewOnly(){
   calendarMode = "view";
-  pendingDate = null;
   openCalendar();
 }
 
 function openCalendar(){
   calendarOverlay.style.display="flex";
   continueBtn.style.display = (calendarMode==="schedule") ? "inline-block" : "none";
-  editBtn.style.display = "inline-block";
   renderCalendar();
 }
 
@@ -378,30 +348,31 @@ function renderCalendar(){
       const dot=document.createElement("div");
       dot.className=`dot ${a.urgency}`;
       cell.appendChild(dot);
-      if(a.name){
-        const name=document.createElement("div");
-        name.className="appt-name";
-        name.textContent=a.name;
+
+      const name=document.createElement("div");
+      name.className="appt-name";
+      name.textContent=a.name;
+      if(calendarMode==="edit"){
         name.onclick = () => {
-          if(calendarMode==="edit"){
-            movingAppt = a.key;
-            pendingDate = key;
-            renderCalendar();
-          }
+          movingKey = a.key;
+          pendingDate = key;
+          renderCalendar();
         };
-        cell.appendChild(name);
       }
+      cell.appendChild(name);
     });
 
-    if(calendarMode==="edit" || calendarMode==="schedule"){
+    if(calendarMode==="edit"){
       cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
     }
+
     calendarGrid.appendChild(cell);
   }
 }
 </script>
 </body>
 </html>
+
 
 
 
