@@ -5,7 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TapOut! – Counselor Dashboard</title>
 <style>
-body { margin:0; font-family:sans-serif; background:#fffcf5; }
+body { margin:0; font-family:sans-serif; background:#fffcf5; color:#0f172a; }
+body.dark {
+  background:#0b1220;
+  color:#e5e7eb;
+}
+body.dark .dashboard-header { background:#0f172a; }
+body.dark .search-wrap,
+body.dark .notif-btn,
+body.dark .calendar-btn,
+body.dark .message-modal,
+body.dark .calendar-box,
+body.dark .login-box,
+body.dark .urgency-row,
+body.dark .profile-dropdown,
+body.dark .bell-dropdown,
+body.dark .message-modal .modal-body {
+  background:#0f172a;
+  color:#e5e7eb;
+  border-color:#1f2937;
+}
+body.dark .search-input { color:#e5e7eb; }
+body.dark .search-icon { opacity:0.85; }
+body.dark .notif-label { color:#e5e7eb; }
+body.dark .bell-dropdown div:hover { background:#111827; }
+body.dark .message-modal .modal-body { background:#0b1220; }
+body.dark .message-card { background:#111827; border-color:#1f2937; }
+body.dark .toggle-btn,
+body.dark .calendar-actions button,
+body.dark .profile-dropdown button,
+body.dark .login-box input {
+  background:#111827;
+  color:#e5e7eb;
+  border-color:#1f2937;
+}
+body.dark .profile-bubble { background:#0f8de0; }
+body.dark .calendar-day { background:#111827; }
+body.dark .calendar-weekday { color:#cbd5f5; }
+body.dark .calendar-day.expanded { background:#0f172a; }
+body.dark .appt-pill { background:#0b1220; border-color:#1f2937; color:#e5e7eb; }
+body.dark .day-details { color:#e5e7eb; }
 
 /* ---------- LOGIN ---------- */
 .login-wrapper { display:flex; justify-content:center; align-items:center; height:100vh; }
@@ -200,7 +239,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
 .calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.calendar-header h3 { margin:0; text-align:center; flex:1; }
+calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
@@ -209,8 +248,8 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 .calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
 .calendar-day.expanded strong { align-self:center; }
 .day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-.day-detail-item { display:flex; align-items:center; gap:6px; }
-.day-detail-item .dot { margin:0; }
+day-detail-item { display:flex; align-items:center; gap:6px; }
+day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
@@ -241,13 +280,13 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 }
 
 .red { background:red; }
-.orange { background:orange; }
+orange { background:orange; }
 yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
 .calendar-box.editing .calendar-day { cursor:copy; }
-.calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
+calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
 .appt-pill {
   display:flex;
   flex-direction:column;
@@ -266,7 +305,7 @@ yellow { background:gold; }
   line-height:1.15;
 }
 .appt-pill .dot { margin:0 0 2px 0; }
-.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
 <body>
@@ -317,7 +356,8 @@ yellow { background:gold; }
       <div class="profile-wrap" id="profileWrap">
         <div class="profile-bubble" id="profileBubble"></div>
         <div class="profile-dropdown" id="profileDropdown">
-          <button type="button" id="weeklyAnalyticsBtn">Analytics</button>
+          <button type="button" id="darkModeBtn">Dark Mode</button>
+          <button type="button" id="weeklyAnalyticsBtn">Weekly Analytics</button>
           <button type="button" id="signOutBtn">Sign Out</button>
         </div>
       </div>
@@ -373,6 +413,7 @@ const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
 const profileWrap = document.getElementById("profileWrap");
 const profileDropdown = document.getElementById("profileDropdown");
+const darkModeBtn = document.getElementById("darkModeBtn");
 const weeklyAnalyticsBtn = document.getElementById("weeklyAnalyticsBtn");
 const signOutBtn = document.getElementById("signOutBtn");
 const calendarOverlay = document.getElementById("calendarOverlay");
@@ -715,6 +756,17 @@ profileDropdown.addEventListener("click", (e) => e.stopPropagation());
 signOutBtn.onclick = () => logout();
 weeklyAnalyticsBtn.onclick = () => {};
 
+function setDarkMode(on){
+  document.body.classList.toggle("dark", on);
+  darkModeBtn.textContent = on ? "Light Mode" : "Dark Mode";
+  localStorage.setItem("darkMode", on ? "1" : "0");
+}
+darkModeBtn.onclick = () => {
+  const isDark = document.body.classList.contains("dark");
+  setDarkMode(!isDark);
+};
+setDarkMode(localStorage.getItem("darkMode") === "1");
+
 setInterval(checkNotifications,5000);
 checkNotifications();
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
@@ -736,4 +788,5 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
