@@ -242,7 +242,7 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
 
 .red { background:red; }
 .orange { background:orange; }
-.yellow { background:gold; }
+yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
@@ -317,7 +317,8 @@ body { margin:0; font-family:sans-serif; background:#fffcf5; }
       <div class="profile-wrap" id="profileWrap">
         <div class="profile-bubble" id="profileBubble"></div>
         <div class="profile-dropdown" id="profileDropdown">
-          <button type="button" id="signInBtn">Sign Out</button>
+          <button type="button" id="weeklyAnalyticsBtn">Analytics</button>
+          <button type="button" id="signOutBtn">Sign Out</button>
         </div>
       </div>
     </div>
@@ -372,7 +373,8 @@ const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
 const profileWrap = document.getElementById("profileWrap");
 const profileDropdown = document.getElementById("profileDropdown");
-const signInBtn = document.getElementById("signInBtn");
+const weeklyAnalyticsBtn = document.getElementById("weeklyAnalyticsBtn");
+const signOutBtn = document.getElementById("signOutBtn");
 const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarBox = document.getElementById("calendarBox");
 const calendarGrid = document.getElementById("calendarGrid");
@@ -710,7 +712,8 @@ profileWrap.addEventListener("click", (e) => {
   profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
 });
 profileDropdown.addEventListener("click", (e) => e.stopPropagation());
-signInBtn.onclick = () => logout();
+signOutBtn.onclick = () => logout();
+weeklyAnalyticsBtn.onclick = () => {};
 
 setInterval(checkNotifications,5000);
 checkNotifications();
@@ -733,3 +736,4 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
