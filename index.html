@@ -276,19 +276,10 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 .modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
 
 /* ---------- CALENDAR ---------- */
-.calendar-overlay {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:2000;
-  padding:24px;
-}
+.calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
-.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.calendar-header h3 { margin:0; text-align:center; flex:1; }
+calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
@@ -297,7 +288,7 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 .calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
 .calendar-day.expanded strong { align-self:center; }
 .day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-.day-detail-item { display:flex; align-items:center; gap:6px; }
+day-detail-item { display:flex; align-items:center; gap:6px; }
 day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
@@ -329,8 +320,8 @@ day-detail-item .dot { margin:0; }
 }
 
 .red { background:red; }
-.orange { background:orange; }
-.yellow { background:gold; }
+orange { background:orange; }
+yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
@@ -393,9 +384,9 @@ appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.
       </div>
       <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
       <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
-      <button class="calendar-btn" type="button" onclick="openCalendarViewOnly()">📅</button>
+      <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
       <div class="notif-wrap">
-        <button class="notif-btn" id="notifBell" type="button">
+        <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
           <span class="notif-label">Alerts</span>
           <span class="notif-badge" id="bellDot"></span>
@@ -451,6 +442,7 @@ appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.
 </div>
 
 <script>
+// Full JS logic (login + alerts + toggles + scheduling + notes + unread dots + live updates)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -518,6 +510,21 @@ function normalizeUrgencyColor(value){
   return allowed.includes(value) ? value : "green";
 }
 
+function ensureAppointmentKeys(){
+  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  let changed = false;
+  appts.forEach((a, idx)=>{
+    if(!a.key){
+      a.key = `appt-${a.date}-${idx}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+      changed = true;
+    }
+  });
+  if(changed){
+    localStorage.setItem("appointments", JSON.stringify(appts));
+  }
+  return appts;
+}
+
 function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
 
@@ -560,7 +567,6 @@ function loadMessages(){
     const statusDot = document.createElement("span");
     statusDot.className = readMap[msgId] ? "message-read" : "message-unread";
     card.appendChild(statusDot);
-
     card.onclick = () => openMessage(
       displayName,
       dateTime,
@@ -651,7 +657,7 @@ function renderCalendar(){
   const daysInMonth=new Date(y,m+1,0).getDate();
   for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
 
-  const appts=JSON.parse(localStorage.getItem("appointments")||"[]");
+  const appts = ensureAppointmentKeys();
 
   for(let d=1; d<=daysInMonth; d++){
     const key=`${y}-${m}-${d}`;
@@ -727,7 +733,7 @@ function renderCalendar(){
 }
 
 function moveAppointment(apptId, newDate){
-  let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  let appts = ensureAppointmentKeys();
   let idx = -1;
   for(let i=0;i<appts.length;i++){
     if(getApptId(appts[i], i) === apptId){
@@ -852,5 +858,6 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
 
