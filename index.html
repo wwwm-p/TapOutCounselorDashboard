@@ -202,6 +202,17 @@ body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; 
   box-shadow:0 0 0 2px #fff;
 }
 body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
+.message-read {
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#3b82f6;
+  box-shadow:0 0 0 2px #fff;
+}
+body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 
 /* Notes preview single line */
 .notes-preview{
@@ -254,7 +265,7 @@ body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
 .message-overlay.show { display:flex; opacity:1; }
 .message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
 .message-modal h3 { margin:0 0 8px 0; }
-.message-modal .modal-body {
+message-modal .modal-body {
   background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px;
   line-height:1.5; font-size:15px; color:#1f2937;
   max-height:50vh; overflow:auto; white-space:normal; word-break:break-word;
@@ -286,8 +297,8 @@ body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
 .calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
 .calendar-day.expanded strong { align-self:center; }
 .day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-.day-detail-item { display:flex; align-items:center; gap:6px; }
-.day-detail-item .dot { margin:0; }
+day-detail-item { display:flex; align-items:center; gap:6px; }
+day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
@@ -318,13 +329,13 @@ body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
 }
 
 .red { background:red; }
-.orange { background:orange; }
-.yellow { background:gold; }
+orange { background:orange; }
+yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
 .calendar-box.editing .calendar-day { cursor:copy; }
-.calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
+calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
 .appt-pill {
   display:flex;
   flex-direction:column;
@@ -343,7 +354,7 @@ body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
   line-height:1.15;
 }
 .appt-pill .dot { margin:0 0 2px 0; }
-.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
 <body>
@@ -541,11 +552,10 @@ function loadMessages(){
       <span class="notes-preview">${notes ? "Notes: " + notes : ""}</span>
       <div class="message-meta">Sent: ${dateTime}</div>
     `;
-    if(!readMap[msgId]){
-      const unreadDot = document.createElement("span");
-      unreadDot.className = "message-unread";
-      card.appendChild(unreadDot);
-    }
+    const statusDot = document.createElement("span");
+    statusDot.className = readMap[msgId] ? "message-read" : "message-unread";
+    card.appendChild(statusDot);
+
     card.onclick = () => openMessage(
       displayName,
       dateTime,
@@ -835,3 +845,4 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
