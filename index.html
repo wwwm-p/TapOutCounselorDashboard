@@ -265,7 +265,7 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 .message-overlay.show { display:flex; opacity:1; }
 .message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
 .message-modal h3 { margin:0 0 8px 0; }
-message-modal .modal-body {
+.message-modal .modal-body {
   background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px;
   line-height:1.5; font-size:15px; color:#1f2937;
   max-height:50vh; overflow:auto; white-space:normal; word-break:break-word;
@@ -297,7 +297,7 @@ message-modal .modal-body {
 .calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
 .calendar-day.expanded strong { align-self:center; }
 .day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-day-detail-item { display:flex; align-items:center; gap:6px; }
+.day-detail-item { display:flex; align-items:center; gap:6px; }
 day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
@@ -329,8 +329,8 @@ day-detail-item .dot { margin:0; }
 }
 
 .red { background:red; }
-orange { background:orange; }
-yellow { background:gold; }
+.orange { background:orange; }
+.yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
@@ -513,6 +513,11 @@ function getMsgId(m, idx){
   return m.msgId || m.messageId || m.id || m.time || m.dateTime || `msg-${idx}`;
 }
 
+function normalizeUrgencyColor(value){
+  const allowed = ["red","orange","yellow","green"];
+  return allowed.includes(value) ? value : "green";
+}
+
 function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
 
@@ -659,11 +664,12 @@ function renderCalendar(){
     if(expandedDate !== key){
       appts.filter(a=>a.date===key).forEach((a, idx)=>{
         if(a.name){
+          const urgencyColor = normalizeUrgencyColor(a.urgency);
           const name=document.createElement("button");
           name.type = "button";
           name.className="appt-pill";
           const dot=document.createElement("div");
-          dot.className=`dot ${a.urgency}`;
+          dot.className=`dot ${urgencyColor}`;
           const label=document.createElement("span");
           label.textContent=a.name;
           name.appendChild(dot);
@@ -701,10 +707,11 @@ function renderCalendar(){
         const details=document.createElement("div");
         details.className="day-details";
         dayAppts.forEach((a)=>{
+          const urgencyColor = normalizeUrgencyColor(a.urgency);
           const item=document.createElement("div");
           item.className="day-detail-item";
           const dot=document.createElement("div");
-          dot.className=`dot ${a.urgency}`;
+          dot.className=`dot ${urgencyColor}`;
           const label=document.createElement("span");
           label.textContent = a.name || "Appointment";
           item.appendChild(dot);
@@ -845,4 +852,5 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
