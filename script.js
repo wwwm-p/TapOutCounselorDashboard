@@ -13,6 +13,9 @@ const calendarOverlay = document.getElementById("calendarOverlay");
 const calendarGrid = document.getElementById("calendarGrid");
 const monthLabel = document.getElementById("monthLabel");
 
+let lastNotifCheck = new Date().toISOString(); // for optimized notifications
+const today = new Date();
+
 /* ---------- LOGIN ---------- */
 loginForm.onsubmit = e => {
   e.preventDefault();
@@ -27,7 +30,8 @@ async function sisLogin(user, pass){
       body: JSON.stringify({username:user, password:pass})
     });
     const data = await res.json();
-    if(data.success){
+    if(data.success && data.token){
+      localStorage.setItem("token", data.token);
       localStorage.setItem("loggedInCounselor", user);
       showDashboard();
     } else {
@@ -42,19 +46,25 @@ async function sisLogin(user, pass){
 function showDashboard(){
   loginScreen.style.display="none";
   dashboardScreen.style.display="block";
-  profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
+  const user = localStorage.getItem("loggedInCounselor") || "NA";
+  profileBubble.textContent = user.slice(0,2).toUpperCase();
   loadMessages();
   checkNotifications();
 }
 
-function logout(){ 
+async function logout(){ 
+  try {
+    await fetch("/api/logout", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    });
+  } catch(e){ console.error(e); }
+  localStorage.removeItem("token");
   localStorage.removeItem("loggedInCounselor"); 
   location.reload(); 
 }
 
 /* ---------- CALENDAR ---------- */
-const today = new Date();
-
 function openCalendar(){ 
   calendarOverlay.style.display="flex"; 
   renderCalendar(); 
@@ -65,7 +75,9 @@ function closeCalendar(){
 
 async function fetchAppointmentsFromSIS(){
   try {
-    const res = await fetch("/api/appointments");
+    const res = await fetch("/api/appointments", {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    });
     return await res.json();
   } catch(err){
     console.error(err);
@@ -81,7 +93,7 @@ async function renderCalendar(){
   const appts = await fetchAppointmentsFromSIS();
 
   for(let d=1; d<=new Date(y,m+1,0).getDate(); d++){
-    const key = `${y}-${m}-${d}`;
+    const key = `${y}-${m+1}-${d}`; // month+1 to fix zero-based month
     const cell = document.createElement("div");
     cell.className="calendar-day";
     cell.innerHTML=`<strong>${d}</strong>`;
@@ -102,7 +114,10 @@ async function addAppt(date){
   try {
     await fetch("/api/appointments", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: {
+        "Content-Type":"application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      },
       body: JSON.stringify({date, urgency})
     });
     await renderCalendar();
@@ -114,9 +129,11 @@ async function addAppt(date){
 }
 
 /* ---------- MESSAGES ---------- */
-async function fetchMessagesFromSIS(counselorId){
+async function fetchMessagesFromSIS(){
   try {
-    const res = await fetch(`/api/messages?counselor=${counselorId}`);
+    const res = await fetch(`/api/messages`, {
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    });
     return await res.json();
   } catch(err){
     console.error(err);
@@ -126,20 +143,19 @@ async function fetchMessagesFromSIS(counselorId){
 
 async function loadMessages(){
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const data = await fetchMessagesFromSIS(counselor);
+  const data = await fetchMessagesFromSIS();
   const map = {
-    "I’m in Crisis":"red-row",
-    "I’m Not Coping Well":"orange-row",
-    "Feeling a Little Off":"yellow-row",
-    "I’m Doing Fine – Just Curious":"green-row"
+    "red":"red-row",
+    "orange":"orange-row",
+    "yellow":"yellow-row",
+    "green":"green-row"
   };
 
   data.forEach(m=>{
     const card = document.createElement("div");
     card.className="message-card";
 
-    const sentAt = m.dateTime || "Unknown time";
+    const sentAt = m.dateTime ? new Date(m.dateTime).toLocaleString() : "Unknown time";
 
     card.innerHTML = `
       <strong>${m.firstName} ${m.lastName || ""}</strong><br>
@@ -171,34 +187,35 @@ function toggleMessages(id){
 
 /* ---------- NOTIFICATIONS ---------- */
 async function checkNotifications(){
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const students = await fetchMessagesFromSIS(counselor);
-  const appointments = await fetchAppointmentsFromSIS();
+  try {
+    const students = await fetchMessagesFromSIS();
+    const appointments = await fetchAppointmentsFromSIS();
 
-  const crisisStudents = students.filter(s => s.urgency==="I’m in Crisis");
-  const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-  const apptToday = appointments.filter(a => a.date===todayKey);
+    const crisisStudents = students.filter(s => s.urgency==="red");
+    const todayKey = `${today.getFullYear()}-${today.getMonth()+1}-${today.getDate()}`;
+    const apptToday = appointments.filter(a => a.date===todayKey);
 
-  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
+    bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
 
-  bellDropdown.innerHTML = "";
-  if(!crisisStudents.length && !apptToday.length){
-    const div = document.createElement("div");
-    div.textContent = "No notifications";
-    bellDropdown.appendChild(div);
-  }
+    bellDropdown.innerHTML = "";
+    if(!crisisStudents.length && !apptToday.length){
+      const div = document.createElement("div");
+      div.textContent = "No notifications";
+      bellDropdown.appendChild(div);
+    }
 
-  crisisStudents.forEach(s=>{
-    const div = document.createElement("div");
-    div.textContent = `🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
-    bellDropdown.appendChild(div);
-  });
+    crisisStudents.forEach(s=>{
+      const div = document.createElement("div");
+      div.textContent = `🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
+      bellDropdown.appendChild(div);
+    });
 
-  apptToday.forEach(a=>{
-    const div = document.createElement("div");
-    div.textContent = `📅 Appointment today`;
-    bellDropdown.appendChild(div);
-  });
+    apptToday.forEach(a=>{
+      const div = document.createElement("div");
+      div.textContent = `📅 Appointment today`;
+      bellDropdown.appendChild(div);
+    });
+  } catch(e){ console.error(e); }
 }
 
 notifBell.onclick = () => {
@@ -206,21 +223,11 @@ notifBell.onclick = () => {
   bellDot.style.display="none";
 }
 
-setInterval(async()=>{ await checkNotifications(); }, 5000);
+setInterval(checkNotifications, 5000);
 
 /* ---------- INITIAL ---------- */
 window.onload = async ()=>{
-  if(localStorage.getItem("loggedInCounselor")){
+  if(localStorage.getItem("token")){
     showDashboard();
   }
 };
-
-
-
-
-
-
-
-
-
-
