@@ -278,8 +278,8 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 /* ---------- CALENDAR ---------- */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
-calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-calendar-header h3 { margin:0; text-align:center; flex:1; }
+.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.calendar-header h3 { margin:0; text-align:center; flex:1; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
 .month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .month-nav:hover { background:#0070c9; color:white; }
@@ -288,8 +288,8 @@ calendar-header h3 { margin:0; text-align:center; flex:1; }
 .calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
 .calendar-day.expanded strong { align-self:center; }
 .day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-day-detail-item { display:flex; align-items:center; gap:6px; }
-day-detail-item .dot { margin:0; }
+.day-detail-item { display:flex; align-items:center; gap:6px; }
+.day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
 .calendar-empty { background:transparent; cursor:default; }
 .dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
@@ -320,13 +320,13 @@ day-detail-item .dot { margin:0; }
 }
 
 .red { background:red; }
-orange { background:orange; }
-yellow { background:gold; }
+.orange { background:orange; }
+.yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
 .calendar-box.editing .calendar-day { cursor:copy; }
-calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
+.calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
 .appt-pill {
   display:flex;
   flex-direction:column;
@@ -345,7 +345,7 @@ calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
   line-height:1.15;
 }
 .appt-pill .dot { margin:0 0 2px 0; }
-appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
 <body>
@@ -442,7 +442,6 @@ appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.
 </div>
 
 <script>
-// Full JS logic (login + alerts + toggles + scheduling + notes + unread dots + live updates)
 const loginForm = document.getElementById("loginForm");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
@@ -466,6 +465,8 @@ const modalBody = document.getElementById("modalBody");
 const modalMeta = document.getElementById("modalMeta");
 const editBtn = document.getElementById("editBtn");
 const continueBtn = document.getElementById("continueBtn");
+const username = document.getElementById("username");
+const password = document.getElementById("password");
 
 const dotRed = document.getElementById("dot-red");
 const dotOrange = document.getElementById("dot-orange");
@@ -483,13 +484,31 @@ let editMode = false;
 let selectedApptId = null;
 let expandedDate = null;
 
-loginForm.onsubmit = e => {
+// ----------------- Authentication -----------------
+loginForm.onsubmit = async e => {
   e.preventDefault();
-  if(counselors[username.value]===password.value){
-    localStorage.setItem("loggedInCounselor", username.value);
-    showDashboard();
-  } else alert("Invalid login");
+  const usernameVal = username.value;
+  const passwordVal = password.value;
+  try {
+    const res = await sisLogin(usernameVal, passwordVal); // placeholder
+    if(res.success){
+      localStorage.setItem("loggedInCounselor", res.counselorId);
+      showDashboard();
+    } else alert("Invalid login");
+  } catch(err){
+    console.error(err);
+    alert("Login failed");
+  }
 };
+
+async function sisLogin(usernameVal, passwordVal){
+  // TODO: Replace with actual SIS API call
+  // Example: POST /api/authenticate {username, password}
+  if(counselors[usernameVal] && counselors[usernameVal] === passwordVal){
+    return {success:true, counselorId:usernameVal};
+  }
+  return {success:false};
+}
 
 function showDashboard(){
   loginScreen.style.display="none";
@@ -500,10 +519,6 @@ function showDashboard(){
 }
 
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
-
-function getMsgId(m, idx){
-  return m.msgId || m.messageId || m.id || m.time || m.dateTime || `msg-${idx}`;
-}
 
 function normalizeUrgencyColor(value){
   const allowed = ["red","orange","yellow","green"];
@@ -525,55 +540,82 @@ function ensureAppointmentKeys(){
   return appts;
 }
 
-function loadMessages(){
-  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
+// ----------------- Fetch Messages -----------------
+async function fetchMessages(counselorId){
+  // TODO: Replace with SIS API call
+  const data = [
+    {studentId:"s1", firstName:"John", lastName:"Doe", grade:"10", reason:"I’m in Crisis", urgency:"I’m in Crisis", notes:"Needs immediate attention", dateTime:"2026-02-15 10:12", counselor:counselorId},
+    {studentId:"s2", firstName:"Jane", lastName:"Smith", grade:"11", reason:"Feeling a Little Off", urgency:"Feeling a Little Off", notes:"", dateTime:"2026-02-15 11:00", counselor:counselorId}
+  ];
+  localStorage.setItem("studentMessages", JSON.stringify(data));
+  return data;
+}
 
-  dotRed.style.display = "none";
-  dotOrange.style.display = "none";
-  dotYellow.style.display = "none";
-  dotGreen.style.display = "none";
+async function markMessageRead(msgId){
+  // TODO: Replace with SIS API call
+  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
+  readMap[msgId] = true;
+  localStorage.setItem("readMessages", JSON.stringify(readMap));
+  return true;
+}
 
+// ----------------- Fetch & Save Appointments -----------------
+async function fetchAppointments(){
+  // TODO: Replace with SIS API call
+  const data = [
+    {key:"appt-1", date:"2026-02-15", name:"John Doe", urgency:"red"}
+  ];
+  const existing = JSON.parse(localStorage.getItem("appointments")||"[]");
+  if(existing.length === 0){
+    localStorage.setItem("appointments", JSON.stringify(data));
+    return data;
+  }
+  return existing;
+}
+
+async function saveAppointment({studentId, urgency, date, msgId}){
+  // TODO: Replace with SIS API call
+  return {success:true};
+}
+
+// ----------------- Dashboard Data -----------------
+async function loadMessages(){
   const counselor = localStorage.getItem("loggedInCounselor");
-  const data = JSON.parse(localStorage.getItem("studentMessages")||"[]");
+  const data = await fetchMessages(counselor);
+  const appointments = await fetchAppointments();
+  const scheduledKeys = new Set(appointments.map(a=>a.key));
+
+  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
+  [dotRed,dotOrange,dotYellow,dotGreen].forEach(d=>d.style.display="none");
+
   const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  const scheduledKeys = new Set(appts.map(a => a.key));
 
-  data.forEach((m, idx)=>{
-    const msgId = getMsgId(m, idx);
-    if(m.counselor !== counselor) return;
-    if(scheduledKeys.has(msgId)) return;
-
+  data.forEach((m)=>{
+    if(scheduledKeys.has(m.studentId)) return;
     const rowId = map[m.urgency] || "green-row";
-    const dateTime = m.dateTime || m.time || "Unknown time";
-    const displayName = `${m.firstName} ${m.lastName || ""} (Grade ${m.grade})`;
-    const notes = m.notes || "";
-
-    if(rowId === "red-row") dotRed.style.display = "block";
-    if(rowId === "orange-row") dotOrange.style.display = "block";
-    if(rowId === "yellow-row") dotYellow.style.display = "block";
-    if(rowId === "green-row") dotGreen.style.display = "block";
+    if(rowId==="red-row") dotRed.style.display="block";
+    if(rowId==="orange-row") dotOrange.style.display="block";
+    if(rowId==="yellow-row") dotYellow.style.display="block";
+    if(rowId==="green-row") dotGreen.style.display="block";
 
     const card = document.createElement("div");
     card.className="message-card";
     card.innerHTML = `
-      <strong>${m.firstName} ${m.lastName || ""}</strong><br>
+      <strong>${m.firstName} ${m.lastName}</strong><br>
       Grade: ${m.grade}<br>
       ${m.reason}<br>
-      <span class="notes-preview">${notes ? "Notes: " + notes : ""}</span>
-      <div class="message-meta">Sent: ${dateTime}</div>
+      <span class="notes-preview">${m.notes ? "Notes: "+m.notes : ""}</span>
+      <div class="message-meta">Sent: ${m.dateTime}</div>
     `;
     const statusDot = document.createElement("span");
-    statusDot.className = readMap[msgId] ? "message-read" : "message-unread";
+    statusDot.className = readMap[m.studentId] ? "message-read" : "message-unread";
     card.appendChild(statusDot);
-    card.onclick = () => openMessage(
-      displayName,
-      dateTime,
-      `<strong>Reason:</strong> ${m.reason}<br><strong>Notes:</strong> ${notes || "None"}`,
-      m.urgency,
-      msgId
-    );
+    card.onclick = async ()=>{
+      await markMessageRead(m.studentId);
+      openMessage(`${m.firstName} ${m.lastName}`, m.dateTime, `<strong>Reason:</strong> ${m.reason}<br><strong>Notes:</strong> ${m.notes || "None"}`, m.urgency, m.studentId);
+      loadMessages();
+    };
     document.querySelector(`#${rowId} .messages`).appendChild(card);
   });
 }
@@ -583,10 +625,6 @@ function openMessage(title, dateTime, body, urgency, msgId){
   selectedUrgency = urgency;
   selectedKey = msgId;
   pendingDate = null;
-  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
-  readMap[msgId] = true;
-  localStorage.setItem("readMessages", JSON.stringify(readMap));
-  loadMessages();
   modalTitle.textContent = title;
   modalMeta.textContent = `Sent: ${dateTime}`;
   modalBody.innerHTML = body;
@@ -755,56 +793,47 @@ editBtn.onclick = () => {
   renderCalendar();
 };
 
-function confirmAppointment(){
-  if(calendarMode !== "schedule") return;
+// ----------------- Schedule Appointment -----------------
+async function confirmAppointment(){
+  if(calendarMode!=="schedule") return;
   if(!selectedStudent || !selectedUrgency || !pendingDate || !selectedKey){
     alert("Select a date first.");
     return;
   }
-  let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  appts = appts.filter(a=>a.key !== selectedKey);
-  appts.push({date: pendingDate, urgency: urgencyToColor(selectedUrgency), name: selectedStudent, key: selectedKey});
-  localStorage.setItem("appointments",JSON.stringify(appts));
-  renderCalendar();
-  loadMessages();
-  checkNotifications();
-  closeCalendar();
+  const res = await saveAppointment({studentId:selectedKey, urgency:selectedUrgency, date:pendingDate, msgId:selectedKey});
+  if(res.success){
+    let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+    appts = appts.filter(a=>a.key !== selectedKey);
+    appts.push({date: pendingDate, urgency: normalizeUrgencyColor(selectedUrgency), name: selectedStudent, key: selectedKey});
+    localStorage.setItem("appointments", JSON.stringify(appts));
+    pendingDate=null;
+    closeCalendar();
+    loadMessages();
+    renderCalendar();
+  } else alert("Failed to schedule appointment.");
 }
 
-function urgencyToColor(u){
-  if(u==="I’m in Crisis") return "red";
-  if(u==="I’m Not Coping Well") return "orange";
-  if(u==="Feeling a Little Off") return "yellow";
-  return "green";
-}
-
-function checkNotifications(){
+// ----------------- Notifications -----------------
+async function checkNotifications(){
   const counselor=localStorage.getItem("loggedInCounselor");
-  const students=JSON.parse(localStorage.getItem("studentMessages")||"[]");
-  const appointments=JSON.parse(localStorage.getItem("appointments")||"[]");
-  const crisisStudents=students.filter(s=>s.counselor===counselor && s.urgency==="I’m in Crisis");
+  const students=await fetchMessages(counselor);
+  const appointments=await fetchAppointments();
+  const crisisStudents=students.filter(s=>s.urgency==="I’m in Crisis");
   const todayDate=new Date();
   const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
   const apptToday=appointments.filter(a=>a.date===todayKey);
 
-  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
+  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block":"none";
   bellDropdown.innerHTML="";
   if(crisisStudents.length===0 && apptToday.length===0){
     const div=document.createElement("div");
     div.textContent="No notifications";
     bellDropdown.appendChild(div);
   }
-  crisisStudents.forEach(s=>{
-    const div=document.createElement("div");
-    div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
-    bellDropdown.appendChild(div);
-  });
-  apptToday.forEach(a=>{
-    const div=document.createElement("div");
-    div.textContent=`📅 Appointment today: ${a.name || ""}`;
-    bellDropdown.appendChild(div);
-  });
+  crisisStudents.forEach(s=>{ const div=document.createElement("div"); div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName}`; bellDropdown.appendChild(div); });
+  apptToday.forEach(a=>{ const div=document.createElement("div"); div.textContent=`📅 Appointment today: ${a.name}`; bellDropdown.appendChild(div); });
 }
+
 notifBell.onclick=(e)=>{
   e.stopPropagation();
   profileDropdown.style.display = "none";
@@ -837,27 +866,16 @@ darkModeBtn.onclick = () => {
 };
 setDarkMode(localStorage.getItem("darkMode") === "1");
 
+searchBar.oninput = () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(q) ? "block" : "none";
+  });
+};
+
 setInterval(checkNotifications,5000);
-checkNotifications();
+window.addEventListener("storage",()=>{ loadMessages(); renderCalendar(); });
 window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
-
-// Real-time updates
-window.addEventListener("storage", (e) => {
-  if(e.key === "studentMessages" || e.key === "appointments"){
-    loadMessages();
-    checkNotifications();
-    renderCalendar();
-  }
-});
-
-// Poll fallback
-setInterval(() => {
-  loadMessages();
-  checkNotifications();
-}, 3000);
 </script>
 </body>
 </html>
-
-
-
