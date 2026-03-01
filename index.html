@@ -7,47 +7,73 @@
 <style>
 body { margin:0; font-family:sans-serif; background:#fffcf5; color:#0f172a; }
 body.dark { background:#0b1220; color:#e5e7eb; }
-body.dark .dashboard-header, body.dark .search-wrap, body.dark .notif-btn, body.dark .calendar-btn,
-body.dark .message-modal, body.dark .calendar-box, body.dark .login-box,
-body.dark .urgency-row, body.dark .profile-dropdown, body.dark .bell-dropdown,
-body.dark .message-modal .modal-body { background:#0f1720; color:#e5e7eb; border-color:#1f2937; }
+body.dark .dashboard-header { background:#0f172a; }
+body.dark .search-wrap, body.dark .notif-btn, body.dark .calendar-btn, body.dark .message-modal,
+body.dark .calendar-box, body.dark .login-box, body.dark .urgency-row, body.dark .profile-dropdown,
+body.dark .bell-dropdown, body.dark .message-modal .modal-body { background:#0f172a; color:#e5e7eb; border-color:#1f2937; }
 body.dark .search-input { color:#e5e7eb; }
 body.dark .search-icon { opacity:0.85; }
 body.dark .notif-label { color:#e5e7eb; }
+body.dark .bell-dropdown div:hover { background:#111827; }
+body.dark .message-modal .modal-body { background:#0b1220; }
+body.dark .message-card { background:#111827; border-color:#1f2937; }
+body.dark .toggle-btn, body.dark .calendar-actions button, body.dark .profile-dropdown button,
+body.dark .login-box input { background:#111827; color:#e5e7eb; border-color:#1f2937; }
+body.dark .profile-bubble { background:#0f8de0; }
+body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dashboard-title { color:#ffffff; }
 
-/* LOGIN */
+/* ---------- LOGIN ---------- */
 .login-wrapper { display:flex; justify-content:center; align-items:center; height:100vh; }
 .login-box { background:#fff; padding:40px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:400px; }
 .login-box label { font-weight:bold; margin-top:15px; display:block; }
 .login-box input { width:100%; padding:10px; margin-top:6px; font-size:16px; border-radius:6px; border:1px solid #ccc; }
 .login-box button { margin-top:25px; float:right; padding:10px 25px; font-size:16px; background:#0070c9; color:white; border:none; border-radius:6px; cursor:pointer; }
 
-/* DASHBOARD */
+/* ---------- DASHBOARD ---------- */
 #dashboardScreen { display:none; }
 .dashboard-header { background:#87CEFA; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
 .header-right { display:flex; align-items:center; gap:10px; }
 
-/* SEARCH */
+/* ---------- SEARCH ---------- */
 .search-wrap { display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #e6e6e6; border-radius:999px; padding:8px 14px; box-shadow:0 4px 14px rgba(0,0,0,0.06); }
 .search-icon { font-size:16px; opacity:0.7; }
 .search-input { border:none; outline:none; background:transparent; font-size:16px; width:220px; }
 
-/* BUTTONS */
+/* ---------- BUTTONS ---------- */
 .calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .calendar-btn:hover { background:#0070c9; color:white; }
 
-/* URGENCY ROWS */
+/* ---------- NOTIFICATIONS ---------- */
+.notif-wrap { position:relative; }
+.notif-btn { display:flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; }
+.notif-icon { font-size:16px; }
+.notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
+.notif-badge { width:8px; height:8px; border-radius:50%; background:#ff3b30; display:none; box-shadow:0 0 0 2px #fff; }
+.bell-dropdown { position:absolute; top:48px; right:0; background:#fff; border:1px solid #e6e6e6; border-radius:12px; width:280px; display:none; flex-direction:column; box-shadow:0 10px 24px rgba(0,0,0,0.15); z-index:1000; font-size:14px; overflow:hidden; }
+.bell-dropdown div { padding:12px 14px; border-bottom:1px solid #f0f0f0; cursor:pointer; }
+.bell-dropdown div:last-child { border-bottom:none; }
+.bell-dropdown div:hover { background:#f7f7f7; }
+
+/* ---------- PROFILE ---------- */
+.profile-bubble { width:42px; height:42px; border-radius:50%; background:#0070c9; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; }
+.profile-wrap { position:relative; }
+.profile-dropdown { position:absolute; top:52px; right:0; background:#ffffff; border:1px solid #e6e6e6; border-radius:12px; min-width:180px; box-shadow:0 12px 28px rgba(15,23,42,0.18); padding:10px; display:none; z-index:1200; }
+.profile-dropdown button { width:100%; padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; transition:transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
+.profile-dropdown button:hover { transform:translateY(-1px); border-color:#0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.18); }
+
+/* ---------- URGENCY ROWS ---------- */
 .urgency-row { position:relative; display:flex; gap:16px; margin:20px; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
 #red-row { border-color:red; } #orange-row { border-color:orange; } #yellow-row { border-color:gold; } #green-row { border-color:green; }
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
 .messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
-.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; cursor:pointer; position:relative; }
+.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease; position:relative; }
 .message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
+.message-unread { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; }
 .notes-preview { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-/* FACE STYLE */
+/* ---------- FACE STYLE ---------- */
 .face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
 .eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
 .eye.left { left:13px; }
@@ -60,23 +86,14 @@ body.dark .notif-label { color:#e5e7eb; }
 .red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
 .red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
 
-/* Toggle button */
+/* Toggle button modern */
 .toggle-btn { padding:8px 18px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-weight:600; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease; }
 .toggle-btn:hover { transform:translateY(-1px); border:1px solid #0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.2); }
 
-/* CALENDAR */
-.calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
-.calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
-.close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
-.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.month-nav:hover { background:#0070c9; color:white; }
-.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
-.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
-.calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
-.day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-.appt-pill { display:flex; flex-direction:column; align-items:center; width:100%; border-radius:10px; padding:2px 4px; font-size:10px; font-weight:600; background:#ffffff; border:1px solid #e5e7eb; margin-top:4px; cursor:pointer; text-align:center; line-height:1.15; }
-.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+/* Calendar modal */
+.calendar-modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; border-radius:12px; width:400px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.2); z-index:2000; }
+.calendar-modal input, .calendar-modal textarea { width:100%; padding:8px; margin:8px 0; border-radius:6px; border:1px solid #ccc; }
+.calendar-modal button { margin-top:10px; padding:8px 16px; border:none; border-radius:6px; background:#0070c9; color:#fff; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -103,6 +120,10 @@ body.dark .notif-label { color:#e5e7eb; }
           <span style="color:#94a3b8; font-weight:600;">—</span>
           <span style="font-weight:500; color:#334155;">Counselor Dashboard</span>
         </div>
+        <span style="font-size:11px; color:#64748b; margin-top:2px;">
+          Your School Name Here
+          <span style="margin-left:6px; color:#94a3b8;">• Current Term Here</span>
+        </span>
       </div>
     </div>
     <div class="header-right">
@@ -110,7 +131,30 @@ body.dark .notif-label { color:#e5e7eb; }
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
-      <button class="calendar-btn" onclick="openCalendar()">📅</button>
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
+      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
+
+      <!-- Notification -->
+      <div class="notif-wrap">
+        <button class="notif-btn">
+          <span class="notif-icon">🔔</span>
+          <span class="notif-label">Alerts</span>
+          <span class="notif-badge" id="bellDot"></span>
+        </button>
+        <div class="bell-dropdown" id="notifDropdown">
+          <div>No notifications</div>
+        </div>
+      </div>
+
+      <!-- Profile -->
+      <div class="profile-wrap">
+        <div class="profile-bubble">AB</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <button id="darkModeBtn">Toggle Dark Mode</button>
+          <button id="weeklyAnalyticsBtn">Weekly Analytics</button>
+          <button id="signOutBtn">Sign Out</button>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -123,8 +167,9 @@ body.dark .notif-label { color:#e5e7eb; }
       </div>
       <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages" id="redMessages"></div>
   </div>
+
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -133,8 +178,9 @@ body.dark .notif-label { color:#e5e7eb; }
       </div>
       <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages" id="orangeMessages"></div>
   </div>
+
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -143,8 +189,9 @@ body.dark .notif-label { color:#e5e7eb; }
       </div>
       <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages" id="yellowMessages"></div>
   </div>
+
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -153,101 +200,110 @@ body.dark .notif-label { color:#e5e7eb; }
       </div>
       <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages" id="greenMessages"></div>
   </div>
-</div>
 
-<!-- CALENDAR -->
-<div class="calendar-overlay" id="calendarOverlay">
-  <div class="calendar-box">
-    <span class="close-calendar" onclick="closeCalendar()">✖</span>
-    <div class="calendar-header">
-      <button class="month-nav" onclick="changeMonth(-1)">‹</button>
-      <h3 id="monthLabel"></h3>
-      <button class="month-nav" onclick="changeMonth(1)">›</button>
-    </div>
-    <div class="calendar-grid" id="calendarGrid"></div>
+  <!-- Calendar Modal -->
+  <div class="calendar-modal" id="calendarModal">
+    <h3>Appointment / Notes</h3>
+    <input type="date" id="calendarDate">
+    <textarea id="calendarNotes" placeholder="Add notes..."></textarea>
+    <button onclick="saveCalendar()">Save</button>
+    <button onclick="closeCalendar()">Cancel</button>
   </div>
 </div>
 
 <script>
-const loginForm=document.getElementById("loginForm");
-const loginScreen=document.getElementById("loginScreen");
-const dashboardScreen=document.getElementById("dashboardScreen");
-const calendarOverlay=document.getElementById("calendarOverlay");
-const calendarGrid=document.getElementById("calendarGrid");
-const monthLabel=document.getElementById("monthLabel");
-
-let currentMonth=new Date();
-let appointments=[];
-let selectedStudent=null;
-
-loginForm.addEventListener("submit", e=>{
+// ----------------- Login -----------------
+document.getElementById('loginForm').addEventListener('submit', async e=>{
   e.preventDefault();
-  loginScreen.style.display="none";
-  dashboardScreen.style.display="block";
-  loadMessages();
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('dashboardScreen').style.display='block';
+  await loadAllMessages();
 });
 
+// ----------------- Dropdowns -----------------
+function closeAllDropdowns(){
+  document.getElementById('notifDropdown').style.display='none';
+  document.getElementById('profileDropdown').style.display='none';
+}
+document.addEventListener('click', function(e){
+  const notifBtn = document.querySelector('.notif-btn');
+  const notifDropdown = document.getElementById('notifDropdown');
+  const profileBtn = document.querySelector('.profile-bubble');
+  const profileDropdown = document.getElementById('profileDropdown');
+  if(notifBtn.contains(e.target)){
+    const isOpen = notifDropdown.style.display==='flex';
+    closeAllDropdowns();
+    notifDropdown.style.display=isOpen?'none':'flex';
+  } else if(profileBtn.contains(e.target)){
+    const isOpen = profileDropdown.style.display==='flex';
+    closeAllDropdowns();
+    profileDropdown.style.display=isOpen?'none':'flex';
+  } else closeAllDropdowns();
+});
+
+// ----------------- Message toggle -----------------
 function toggleMessages(rowId){
   const row=document.getElementById(rowId);
   const msgs=row.querySelector('.messages');
   const btn=row.querySelector('.toggle-btn');
   if(!msgs.style.display || msgs.style.display==='flex'){
-    msgs.style.display='none'; btn.textContent='Show Messages';
-  } else { msgs.style.display='flex'; btn.textContent='Hide Messages'; }
-}
-
-// Load sample messages
-function loadMessages(){
-  const rows=['red-row','orange-row','yellow-row','green-row'];
-  const sample=[['Student A','Needs immediate attention'],['Student B','Parent contacted'],['Student C','Counselor follow-up'],['Student D','Check-in advised'],['Student E','General observation']];
-  rows.forEach((rowId,i)=>{
-    const msgs=document.getElementById(rowId).querySelector('.messages');
-    msgs.innerHTML='';
-    if(i<sample.length){
-      const card=document.createElement('div'); card.className='message-card';
-      card.innerHTML=`<strong>${sample[i][0]}</strong><div class="message-meta">${sample[i][1]}</div>`;
-      card.onclick=()=>{ selectedStudent=sample[i][0]; openCalendar(); };
-      msgs.appendChild(card);
-    }
-  });
-}
-
-// Calendar
-function openCalendar(){ calendarOverlay.style.display='flex'; renderCalendar(); }
-function closeCalendar(){ calendarOverlay.style.display='none'; selectedStudent=null; }
-function changeMonth(delta){ currentMonth.setMonth(currentMonth.getMonth()+delta); renderCalendar(); }
-
-function renderCalendar(){
-  calendarGrid.innerHTML="";
-  monthLabel.textContent=currentMonth.toLocaleString('default',{month:'long', year:'numeric'});
-  const firstDay=new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
-  const lastDay=new Date(currentMonth.getFullYear(), currentMonth.getMonth()+1,0);
-  const startOffset=firstDay.getDay();
-  for(let i=0;i<startOffset;i++){ calendarGrid.appendChild(document.createElement("div")); }
-  for(let d=1;d<=lastDay.getDate();d++){
-    const day=document.createElement("div"); day.className="calendar-day"; day.textContent=d;
-    const dateKey=`${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${d}`;
-    const appts=appointments.filter(a=>a.date===dateKey);
-    appts.forEach(a=>{
-      const pill=document.createElement("div"); pill.className="appt-pill"; pill.textContent=a.student; pill.onclick=(e)=>{ e.stopPropagation(); editAppointment(a); };
-      day.appendChild(pill);
-    });
-    day.onclick=()=>{ addAppointment(dateKey); };
-    calendarGrid.appendChild(day);
+    msgs.style.display='none';
+    btn.textContent='Show Messages';
+  } else {
+    msgs.style.display='flex';
+    btn.textContent='Hide Messages';
   }
 }
 
-function addAppointment(date){
-  const student=selectedStudent || prompt("Student name for appointment");
-  if(student){ appointments.push({date, student}); renderCalendar(); selectedStudent=null; }
+// ----------------- Dark mode -----------------
+document.getElementById('darkModeBtn').addEventListener('click',()=>document.body.classList.toggle('dark'));
+
+// ----------------- Sign out -----------------
+document.getElementById('signOutBtn').addEventListener('click',()=>{
+  document.getElementById('dashboardScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+});
+
+// ----------------- Calendar -----------------
+function openCalendar(date='', notes=''){
+  document.getElementById('calendarModal').style.display='block';
+  document.getElementById('calendarDate').value=date;
+  document.getElementById('calendarNotes').value=notes;
+}
+function closeCalendar(){ document.getElementById('calendarModal').style.display='none'; }
+async function saveCalendar(){
+  const date = document.getElementById('calendarDate').value;
+  const notes = document.getElementById('calendarNotes').value;
+  // Send to Neon via Vercel API
+  await fetch('/api/saveNotes', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({date, notes})
+  });
+  closeCalendar();
+  await loadAllMessages();
 }
 
-function editAppointment(app){
-  const newName=prompt("Edit student", app.student);
-  if(newName){ app.student=newName; renderCalendar(); }
+// ----------------- Load Messages from API -----------------
+async function loadAllMessages(){
+  const res = await fetch('/api/getMessages');
+  const data = await res.json();
+  for(const level of ['red','orange','yellow','green']){
+    const container = document.getElementById(level+'Messages');
+    container.innerHTML='';
+    if(data[level]){
+      data[level].forEach(m=>{
+        const card=document.createElement('div');
+        card.className='message-card';
+        card.innerHTML=`<strong>${m.student}</strong><div class="message-meta">${m.note}</div>`;
+        card.onclick=()=>openCalendar(m.date || '', m.note);
+        container.appendChild(card);
+      });
+    }
+  }
 }
 </script>
 </body>
 </html>
+
