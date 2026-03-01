@@ -90,10 +90,9 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
 .toggle-btn { padding:8px 18px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-weight:600; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease; }
 .toggle-btn:hover { transform:translateY(-1px); border:1px solid #0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.2); }
 
-/* Calendar modal */
-.calendar-modal { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; border-radius:12px; width:400px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.2); z-index:2000; }
-.calendar-modal input, .calendar-modal textarea { width:100%; padding:8px; margin:8px 0; border-radius:6px; border:1px solid #ccc; }
-.calendar-modal button { margin-top:10px; padding:8px 16px; border:none; border-radius:6px; background:#0070c9; color:#fff; cursor:pointer; }
+/* Editable notes input */
+.message-card textarea { width:100%; font-size:13px; margin-top:4px; border-radius:4px; border:1px solid #ccc; padding:4px; }
+.message-card .save-btn { margin-top:4px; padding:4px 8px; font-size:12px; border:none; border-radius:4px; background:#0070c9; color:white; cursor:pointer; }
 </style>
 </head>
 <body>
@@ -158,7 +157,7 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
     </div>
   </header>
 
-  <!-- Urgency rows -->
+  <!-- URGENCY ROWS (hardcoded, keeps layout) -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -167,7 +166,9 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
       </div>
       <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     </div>
-    <div class="messages" id="redMessages"></div>
+    <div class="messages" id="red-messages">
+      <!-- Messages loaded dynamically from Neon -->
+    </div>
   </div>
 
   <div class="urgency-row" id="orange-row">
@@ -178,7 +179,7 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
       </div>
       <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     </div>
-    <div class="messages" id="orangeMessages"></div>
+    <div class="messages" id="orange-messages"></div>
   </div>
 
   <div class="urgency-row" id="yellow-row">
@@ -189,7 +190,7 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
       </div>
       <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     </div>
-    <div class="messages" id="yellowMessages"></div>
+    <div class="messages" id="yellow-messages"></div>
   </div>
 
   <div class="urgency-row" id="green-row">
@@ -200,26 +201,17 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
       </div>
       <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     </div>
-    <div class="messages" id="greenMessages"></div>
-  </div>
-
-  <!-- Calendar Modal -->
-  <div class="calendar-modal" id="calendarModal">
-    <h3>Appointment / Notes</h3>
-    <input type="date" id="calendarDate">
-    <textarea id="calendarNotes" placeholder="Add notes..."></textarea>
-    <button onclick="saveCalendar()">Save</button>
-    <button onclick="closeCalendar()">Cancel</button>
+    <div class="messages" id="green-messages"></div>
   </div>
 </div>
 
 <script>
 // ----------------- Login -----------------
-document.getElementById('loginForm').addEventListener('submit', async e=>{
+document.getElementById('loginForm').addEventListener('submit', e=>{
   e.preventDefault();
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('dashboardScreen').style.display='block';
-  await loadAllMessages();
+  loadMessages(); // fetch messages on login
 });
 
 // ----------------- Dropdowns -----------------
@@ -227,11 +219,13 @@ function closeAllDropdowns(){
   document.getElementById('notifDropdown').style.display='none';
   document.getElementById('profileDropdown').style.display='none';
 }
+
 document.addEventListener('click', function(e){
   const notifBtn = document.querySelector('.notif-btn');
   const notifDropdown = document.getElementById('notifDropdown');
   const profileBtn = document.querySelector('.profile-bubble');
   const profileDropdown = document.getElementById('profileDropdown');
+
   if(notifBtn.contains(e.target)){
     const isOpen = notifDropdown.style.display==='flex';
     closeAllDropdowns();
@@ -240,7 +234,9 @@ document.addEventListener('click', function(e){
     const isOpen = profileDropdown.style.display==='flex';
     closeAllDropdowns();
     profileDropdown.style.display=isOpen?'none':'flex';
-  } else closeAllDropdowns();
+  } else {
+    closeAllDropdowns();
+  }
 });
 
 // ----------------- Message toggle -----------------
@@ -258,7 +254,9 @@ function toggleMessages(rowId){
 }
 
 // ----------------- Dark mode -----------------
-document.getElementById('darkModeBtn').addEventListener('click',()=>document.body.classList.toggle('dark'));
+document.getElementById('darkModeBtn').addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+});
 
 // ----------------- Sign out -----------------
 document.getElementById('signOutBtn').addEventListener('click',()=>{
@@ -266,44 +264,49 @@ document.getElementById('signOutBtn').addEventListener('click',()=>{
   document.getElementById('loginScreen').style.display='flex';
 });
 
-// ----------------- Calendar -----------------
-function openCalendar(date='', notes=''){
-  document.getElementById('calendarModal').style.display='block';
-  document.getElementById('calendarDate').value=date;
-  document.getElementById('calendarNotes').value=notes;
-}
-function closeCalendar(){ document.getElementById('calendarModal').style.display='none'; }
-async function saveCalendar(){
-  const date = document.getElementById('calendarDate').value;
-  const notes = document.getElementById('calendarNotes').value;
-  // Send to Neon via Vercel API
-  await fetch('/api/saveNotes', {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({date, notes})
-  });
-  closeCalendar();
-  await loadAllMessages();
-}
+// ----------------- Load messages from Neon -----------------
+async function loadMessages(){
+  try {
+    const res = await fetch('/api/getMessages'); // create this in Vercel
+    const data = await res.json();
 
-// ----------------- Load Messages from API -----------------
-async function loadAllMessages(){
-  const res = await fetch('/api/getMessages');
-  const data = await res.json();
-  for(const level of ['red','orange','yellow','green']){
-    const container = document.getElementById(level+'Messages');
-    container.innerHTML='';
-    if(data[level]){
-      data[level].forEach(m=>{
-        const card=document.createElement('div');
-        card.className='message-card';
-        card.innerHTML=`<strong>${m.student}</strong><div class="message-meta">${m.note}</div>`;
-        card.onclick=()=>openCalendar(m.date || '', m.note);
+    const categories = ['red', 'orange', 'yellow', 'green'];
+    categories.forEach(cat => {
+      const container = document.getElementById(cat + '-messages');
+      container.innerHTML = ''; // clear old messages
+      data[cat].forEach(msg => {
+        const card = document.createElement('div');
+        card.className = 'message-card';
+        card.innerHTML = `
+          <strong>${msg.student}</strong>
+          <div class="message-meta">${msg.meta}</div>
+          <textarea placeholder="Notes">${msg.notes || ''}</textarea>
+          <button class="save-btn" onclick="saveNote('${msg.id}', this)">Save</button>
+        `;
         container.appendChild(card);
       });
-    }
+    });
+  } catch(err){
+    console.error(err);
+  }
+}
+
+// ----------------- Save notes -----------------
+async function saveNote(id, btn){
+  const card = btn.parentElement;
+  const notes = card.querySelector('textarea').value;
+  try {
+    await fetch('/api/saveNote', { // create this in Vercel
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({id, notes})
+    });
+    btn.textContent = 'Saved!';
+    setTimeout(()=>btn.textContent='Save', 1500);
+  } catch(err){
+    console.error(err);
   }
 }
 </script>
 </body>
 </html>
-
