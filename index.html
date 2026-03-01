@@ -7,88 +7,67 @@
 <style>
 body { margin:0; font-family:sans-serif; background:#fffcf5; color:#0f172a; }
 body.dark { background:#0b1220; color:#e5e7eb; }
-body.dark .dashboard-header { background:#0f172a; }
-body.dark .search-wrap, body.dark .notif-btn, body.dark .calendar-btn, body.dark .message-modal,
-body.dark .calendar-box, body.dark .login-box, body.dark .urgency-row, body.dark .profile-dropdown,
-body.dark .bell-dropdown, body.dark .message-modal .modal-body { background:#0f172a; color:#e5e7eb; border-color:#1f2937; }
-body.dark .search-input { color:#e5e7eb; }
-body.dark .search-icon { opacity:0.85; }
-body.dark .notif-label { color:#e5e7eb; }
-body.dark .bell-dropdown div:hover { background:#111827; }
-body.dark .message-modal .modal-body { background:#0b1220; }
-body.dark .message-card { background:#111827; border-color:#1f2937; }
-body.dark .toggle-btn, body.dark .calendar-actions button, body.dark .profile-dropdown button,
-body.dark .login-box input { background:#111827; color:#e5e7eb; border-color:#1f2937; }
-body.dark .profile-bubble { background:#0f8de0; }
-body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dashboard-title { color:#ffffff; }
-
 /* ---------- LOGIN ---------- */
 .login-wrapper { display:flex; justify-content:center; align-items:center; height:100vh; }
 .login-box { background:#fff; padding:40px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:400px; }
 .login-box label { font-weight:bold; margin-top:15px; display:block; }
 .login-box input { width:100%; padding:10px; margin-top:6px; font-size:16px; border-radius:6px; border:1px solid #ccc; }
 .login-box button { margin-top:25px; float:right; padding:10px 25px; font-size:16px; background:#0070c9; color:white; border:none; border-radius:6px; cursor:pointer; }
-
 /* ---------- DASHBOARD ---------- */
 #dashboardScreen { display:none; }
 .dashboard-header { background:#87CEFA; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
 .header-right { display:flex; align-items:center; gap:10px; }
-
 /* ---------- SEARCH ---------- */
 .search-wrap { display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #e6e6e6; border-radius:999px; padding:8px 14px; box-shadow:0 4px 14px rgba(0,0,0,0.06); }
 .search-icon { font-size:16px; opacity:0.7; }
 .search-input { border:none; outline:none; background:transparent; font-size:16px; width:220px; }
-
 /* ---------- BUTTONS ---------- */
 .calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .calendar-btn:hover { background:#0070c9; color:white; }
-
-/* ---------- NOTIFICATIONS ---------- */
-.notif-wrap { position:relative; }
-.notif-btn { display:flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; }
-.notif-icon { font-size:16px; }
-.notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
-.notif-badge { width:8px; height:8px; border-radius:50%; background:#ff3b30; display:none; box-shadow:0 0 0 2px #fff; }
-.bell-dropdown { position:absolute; top:48px; right:0; background:#fff; border:1px solid #e6e6e6; border-radius:12px; width:280px; display:none; flex-direction:column; box-shadow:0 10px 24px rgba(0,0,0,0.15); z-index:1000; font-size:14px; overflow:hidden; }
-.bell-dropdown div { padding:12px 14px; border-bottom:1px solid #f0f0f0; }
-.bell-dropdown div:last-child { border-bottom:none; }
-.bell-dropdown div:hover { background:#f7f7f7; }
-
-/* ---------- PROFILE ---------- */
-.profile-bubble { width:42px; height:42px; border-radius:50%; background:#0070c9; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; }
-.profile-wrap { position:relative; }
-.profile-dropdown { position:absolute; top:52px; right:0; background:#ffffff; border:1px solid #e6e6e6; border-radius:12px; min-width:180px; box-shadow:0 12px 28px rgba(15,23,42,0.18); padding:10px; display:none; z-index:1200; }
-.profile-dropdown button { width:100%; padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; transition:transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease; }
-.profile-dropdown button:hover { transform:translateY(-1px); border-color:#0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.18); }
-
 /* ---------- URGENCY ROWS ---------- */
 .urgency-row { position:relative; display:flex; gap:16px; margin:20px; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
-#red-row { border-color:red; } #orange-row { border-color:orange; } #yellow-row { border-color:gold; } #green-row { border-color:green; }
+.urgency-dot { position:absolute; top:10px; right:12px; width:10px; height:10px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; display:none; }
+#red-row { border-color:red; }
+#orange-row { border-color:orange; }
+#yellow-row { border-color:gold; }
+#green-row { border-color:green; }
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
 .messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
-.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease; position:relative; }
-.message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
+.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; cursor:pointer; position:relative; }
+.message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); transition:transform 0.15s ease, box-shadow 0.2s ease; }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
-.message-unread { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; }
-.notes-preview { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-
-/* ---------- FACE STYLE ---------- */
-.face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
-.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
-.eye.left { left:13px; }
-.eye.right { right:13px; }
-.mouth { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:22px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; }
-.sad .mouth { transform:translateX(-50%) rotate(180deg); }
-.neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
-.green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
-.orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
-.red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
-.red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
-
-/* Toggle button modern */
-.toggle-btn { padding:8px 18px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-weight:600; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease; }
+.message-unread, .message-read { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; box-shadow:0 0 0 2px #fff; }
+.message-unread { background:#ff3b30; }
+.message-read { background:#3b82f6; }
+/* Toggle button */
+.toggle-btn { padding:8px 18px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-weight:600; cursor:pointer; }
 .toggle-btn:hover { transform:translateY(-1px); border:1px solid #0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.2); }
+/* ---------- MESSAGE MODAL ---------- */
+.message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; opacity:0; transition:opacity 0.2s ease; }
+.message-overlay.show { display:flex; opacity:1; }
+.message-modal { width:min(620px,92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
+.message-modal .modal-body { max-height:50vh; overflow:auto; padding:14px; background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; line-height:1.5; font-size:15px; color:#1f2937; }
+.modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
+.modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
+.modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
+/* ---------- CALENDAR ---------- */
+.calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
+.calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
+.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
+.month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.month-nav:hover { background:#0070c9; color:white; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
+.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
+.calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
+.day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
+.day-detail-item { display:flex; align-items:center; gap:6px; }
+.dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
+.appt-pill { display:flex; flex-direction:column; align-items:center; width:100%; border-radius:10px; padding:2px 4px; font-size:10px; font-weight:600; background:#ffffff; border:1px solid #e5e7eb; margin-top:4px; cursor:pointer; white-space:normal; text-align:center; line-height:1.15; }
+.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+/* Colors */
+.red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
 </style>
 </head>
 <body>
@@ -126,145 +105,129 @@ body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dash
         <span class="search-icon">🔍</span>
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
-      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
-      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
-
-      <!-- Notification -->
-      <div class="notif-wrap">
-        <button class="notif-btn">
-          <span class="notif-icon">🔔</span>
-          <span class="notif-label">Alerts</span>
-          <span class="notif-badge" id="bellDot"></span>
-        </button>
-        <div class="bell-dropdown" id="notifDropdown">
-          <div>No notifications</div>
-        </div>
-      </div>
-
-      <!-- Profile -->
-      <div class="profile-wrap">
-        <div class="profile-bubble">AB</div>
-        <div class="profile-dropdown" id="profileDropdown">
-          <button id="darkModeBtn">Toggle Dark Mode</button>
-          <button id="weeklyAnalyticsBtn">Weekly Analytics</button>
-          <button id="signOutBtn">Sign Out</button>
-        </div>
-      </div>
+      <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
     </div>
   </header>
 
-  <!-- Urgency rows with sample messages -->
-  <div class="urgency-row" id="red-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Crisis</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
-    </div>
-    <div class="messages">
-      <div class="message-card"><strong>Student A</strong><div class="message-meta">Needs immediate attention</div></div>
-      <div class="message-card"><strong>Student B</strong><div class="message-meta">Parent contacted</div></div>
+  <div class="urgency-row" id="red-row"><span class="urgency-dot" id="dot-red"></span><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"></div><h2>Crisis</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="orange-row"><span class="urgency-dot" id="dot-orange"></span><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"></div><h2>Elevated Risk</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="yellow-row"><span class="urgency-dot" id="dot-yellow"></span><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"></div><h2>Moderate</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
+  <div class="urgency-row" id="green-row"><span class="urgency-dot" id="dot-green"></span><div class="urgency-left"><div class="urgency-header"><div class="face green-face"></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
+</div>
+
+<!-- MESSAGE MODAL -->
+<div class="message-overlay" id="messageOverlay">
+  <div class="message-modal">
+    <h3 id="modalTitle">Message</h3>
+    <div class="modal-meta" id="modalMeta"></div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-actions">
+      <button onclick="closeMessage()">Back</button>
+      <button class="primary" onclick="goToCalendarSchedule()">Continue</button>
     </div>
   </div>
+</div>
 
-  <div class="urgency-row" id="orange-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Elevated Risk</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
+<!-- CALENDAR -->
+<div class="calendar-overlay" id="calendarOverlay">
+  <div class="calendar-box" id="calendarBox">
+    <span class="close-calendar" onclick="closeCalendar()">✖</span>
+    <div class="calendar-header">
+      <button class="month-nav" onclick="changeMonth(-1)">‹</button>
+      <h3 id="monthLabel"></h3>
+      <button class="month-nav" onclick="changeMonth(1)">›</button>
     </div>
-    <div class="messages">
-      <div class="message-card"><strong>Student C</strong><div class="message-meta">Counselor follow-up required</div></div>
-    </div>
-  </div>
-
-  <div class="urgency-row" id="yellow-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Moderate</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
-    </div>
-    <div class="messages">
-      <div class="message-card"><strong>Student D</strong><div class="message-meta">Check-in advised</div></div>
-    </div>
-  </div>
-
-  <div class="urgency-row" id="green-row">
-    <div class="urgency-left">
-      <div class="urgency-header">
-        <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-        <h2>Low Urgency</h2>
-      </div>
-      <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
-    </div>
-    <div class="messages">
-      <div class="message-card"><strong>Student E</strong><div class="message-meta">General observation</div></div>
+    <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="calendar-actions">
+      <button onclick="closeCalendar()">Back</button>
+      <button class="primary" id="continueBtn" style="display:none;" onclick="confirmAppointment()">Continue</button>
     </div>
   </div>
 </div>
 
 <script>
-// ----------------- Login -----------------
-document.getElementById('loginForm').addEventListener('submit', e=>{
-  e.preventDefault();
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('dashboardScreen').style.display='block';
-});
+// ----------------- Variables -----------------
+const loginForm=document.getElementById("loginForm");
+const loginScreen=document.getElementById("loginScreen");
+const dashboardScreen=document.getElementById("dashboardScreen");
+const calendarOverlay=document.getElementById("calendarOverlay");
+const calendarGrid=document.getElementById("calendarGrid");
+const monthLabel=document.getElementById("monthLabel");
+const messageOverlay=document.getElementById("messageOverlay");
+const modalTitle=document.getElementById("modalTitle");
+const modalBody=document.getElementById("modalBody");
+const modalMeta=document.getElementById("modalMeta");
+const continueBtn=document.getElementById("continueBtn");
+const dotRed=document.getElementById("dot-red");
+const dotOrange=document.getElementById("dot-orange");
+const dotYellow=document.getElementById("dot-yellow");
+const dotGreen=document.getElementById("dot-green");
+const username=document.getElementById("username");
+const password=document.getElementById("password");
 
-// ----------------- Dropdowns -----------------
-function closeAllDropdowns(){
-  document.getElementById('notifDropdown').style.display='none';
-  document.getElementById('profileDropdown').style.display='none';
+const counselors={miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234"};
+let currentMonth=new Date(), pendingDate=null, selectedStudent=null, selectedUrgency=null, selectedKey=null, calendarMode="view";
+
+// ----------------- Authentication -----------------
+loginForm.onsubmit=async e=>{ e.preventDefault(); if(counselors[username.value]===password.value){ localStorage.setItem("loggedInCounselor",username.value); showDashboard(); } else alert("Invalid login"); }
+function showDashboard(){ loginScreen.style.display="none"; dashboardScreen.style.display="block"; loadMessages(); }
+function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
+
+// ----------------- Messages -----------------
+async function fetchMessages(){ return [
+  {studentId:"s1", firstName:"John", lastName:"Doe", grade:"10", reason:"In Crisis", urgency:"red", notes:"Immediate attention", dateTime:"2026-02-15 10:12"},
+  {studentId:"s2", firstName:"Jane", lastName:"Smith", grade:"11", reason:"Feeling Off", urgency:"yellow", notes:"", dateTime:"2026-02-15 11:00"}
+];}
+function loadMessages(){
+  fetchMessages().then(data=>{
+    document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
+    [dotRed,dotOrange,dotYellow,dotGreen].forEach(d=>d.style.display="none");
+    data.forEach(m=>{
+      const rowId=m.urgency+"-row";
+      if(rowId==="red-row") dotRed.style.display="block";
+      if(rowId==="orange-row") dotOrange.style.display="block";
+      if(rowId==="yellow-row") dotYellow.style.display="block";
+      if(rowId==="green-row") dotGreen.style.display="block";
+      const card=document.createElement("div");
+      card.className="message-card";
+      card.innerHTML=`<strong>${m.firstName} ${m.lastName}</strong><br>Grade: ${m.grade}<br>${m.reason}<br><span class="notes-preview">${m.notes}</span><div class="message-meta">Sent: ${m.dateTime}</div>`;
+      card.onclick=()=>{ openMessage(`${m.firstName} ${m.lastName}`,m.dateTime,m.notes,m.urgency,m.studentId); };
+      document.querySelector(`#${rowId} .messages`).appendChild(card);
+    });
+  });
 }
 
-document.addEventListener('click', function(e){
-  const notifBtn = document.querySelector('.notif-btn');
-  const notifDropdown = document.getElementById('notifDropdown');
-  const profileBtn = document.querySelector('.profile-bubble');
-  const profileDropdown = document.getElementById('profileDropdown');
+function openMessage(title,dateTime,body,urgency,msgId){ selectedStudent=title; selectedUrgency=urgency; selectedKey=msgId; pendingDate=null; modalTitle.textContent=title; modalMeta.textContent=dateTime; modalBody.innerHTML=body; messageOverlay.classList.add("show"); }
+function closeMessage(){ messageOverlay.classList.remove("show"); }
+function toggleMessages(id){ const box=document.querySelector(`#${id} .messages`); const btn=document.querySelector(`#${id} .toggle-btn`); const hide=box.style.display!=="none"; box.style.display=hide?"none":"flex"; btn.textContent=hide?"Show Messages":"Hide Messages"; }
 
-  if(notifBtn.contains(e.target)){
-    const isOpen = notifDropdown.style.display==='flex';
-    closeAllDropdowns();
-    notifDropdown.style.display=isOpen?'none':'flex';
-  } else if(profileBtn.contains(e.target)){
-    const isOpen = profileDropdown.style.display==='flex';
-    closeAllDropdowns();
-    profileDropdown.style.display=isOpen?'none':'flex';
-  } else {
-    closeAllDropdowns();
-  }
-});
-
-// ----------------- Message toggle -----------------
-function toggleMessages(rowId){
-  const row=document.getElementById(rowId);
-  const msgs=row.querySelector('.messages');
-  const btn=row.querySelector('.toggle-btn');
-  if(!msgs.style.display || msgs.style.display==='flex'){
-    msgs.style.display='none';
-    btn.textContent='Show Messages';
-  } else {
-    msgs.style.display='flex';
-    btn.textContent='Hide Messages';
+// ----------------- Calendar -----------------
+function openCalendarViewOnly(){ calendarMode="view"; pendingDate=null; openCalendar(); }
+function goToCalendarSchedule(){ closeMessage(); calendarMode="schedule"; openCalendar(); }
+function openCalendar(){ calendarOverlay.style.display="flex"; renderCalendar(); continueBtn.style.display=calendarMode==="schedule"?"inline-block":"none"; }
+function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; selectedStudent=null; selectedUrgency=null; selectedKey=null; }
+function changeMonth(delta){ currentMonth.setMonth(currentMonth.getMonth()+delta); renderCalendar(); }
+function renderCalendar(){
+  const firstDay=new Date(currentMonth.getFullYear(),currentMonth.getMonth(),1);
+  const lastDay=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+1,0);
+  monthLabel.textContent=currentMonth.toLocaleString('default',{month:'long',year:'numeric'});
+  calendarGrid.innerHTML="";
+  const startOffset=firstDay.getDay();
+  for(let i=0;i<startOffset;i++){ const blank=document.createElement("div"); calendarGrid.appendChild(blank); }
+  for(let d=1;d<=lastDay.getDate();d++){
+    const day=document.createElement("div");
+    day.className="calendar-day";
+    day.textContent=d;
+    day.onclick=()=>{ if(calendarMode==="schedule"){ pendingDate=new Date(currentMonth.getFullYear(),currentMonth.getMonth(),d); renderCalendar(); } };
+    if(pendingDate && pendingDate.getDate()===d && pendingDate.getMonth()===currentMonth.getMonth()) day.classList.add("expanded");
+    calendarGrid.appendChild(day);
   }
 }
+function confirmAppointment(){ if(!pendingDate) return alert("Select a date"); console.log(`Scheduled ${selectedStudent} on ${pendingDate}`); closeCalendar(); loadMessages(); }
 
-// ----------------- Dark mode -----------------
-document.getElementById('darkModeBtn').addEventListener('click',()=>{
-  document.body.classList.toggle('dark');
-});
-
-// ----------------- Sign out -----------------
-document.getElementById('signOutBtn').addEventListener('click',()=>{
-  document.getElementById('dashboardScreen').style.display='none';
-  document.getElementById('loginScreen').style.display='flex';
-});
+// ----------------- INIT -----------------
+if(localStorage.getItem("loggedInCounselor")) showDashboard();
 </script>
+
 </body>
 </html>
