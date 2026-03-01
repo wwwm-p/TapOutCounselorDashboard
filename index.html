@@ -15,28 +15,28 @@ body.dark .search-input { color:#e5e7eb; }
 body.dark .search-icon { opacity:0.85; }
 body.dark .notif-label { color:#e5e7eb; }
 
-/* ---------- LOGIN ---------- */
+/* LOGIN */
 .login-wrapper { display:flex; justify-content:center; align-items:center; height:100vh; }
 .login-box { background:#fff; padding:40px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:400px; }
 .login-box label { font-weight:bold; margin-top:15px; display:block; }
 .login-box input { width:100%; padding:10px; margin-top:6px; font-size:16px; border-radius:6px; border:1px solid #ccc; }
 .login-box button { margin-top:25px; float:right; padding:10px 25px; font-size:16px; background:#0070c9; color:white; border:none; border-radius:6px; cursor:pointer; }
 
-/* ---------- DASHBOARD ---------- */
+/* DASHBOARD */
 #dashboardScreen { display:none; }
 .dashboard-header { background:#87CEFA; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
 .header-right { display:flex; align-items:center; gap:10px; }
 
-/* ---------- SEARCH ---------- */
+/* SEARCH */
 .search-wrap { display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #e6e6e6; border-radius:999px; padding:8px 14px; box-shadow:0 4px 14px rgba(0,0,0,0.06); }
 .search-icon { font-size:16px; opacity:0.7; }
 .search-input { border:none; outline:none; background:transparent; font-size:16px; width:220px; }
 
-/* ---------- BUTTONS ---------- */
+/* BUTTONS */
 .calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 .calendar-btn:hover { background:#0070c9; color:white; }
 
-/* ---------- URGENCY ROWS ---------- */
+/* URGENCY ROWS */
 .urgency-row { position:relative; display:flex; gap:16px; margin:20px; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
 #red-row { border-color:red; } #orange-row { border-color:orange; } #yellow-row { border-color:gold; } #green-row { border-color:green; }
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
@@ -47,7 +47,7 @@ body.dark .notif-label { color:#e5e7eb; }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 .notes-preview { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
-/* ---------- FACE STYLE ---------- */
+/* FACE STYLE */
 .face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
 .eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
 .eye.left { left:13px; }
@@ -60,11 +60,11 @@ body.dark .notif-label { color:#e5e7eb; }
 .red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
 .red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
 
-/* Toggle button modern */
+/* Toggle button */
 .toggle-btn { padding:8px 18px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-weight:600; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease; }
 .toggle-btn:hover { transform:translateY(-1px); border:1px solid #0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.2); }
 
-/* ---------- CALENDAR ---------- */
+/* CALENDAR */
 .calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
 .calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
 .close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
@@ -75,7 +75,7 @@ body.dark .notif-label { color:#e5e7eb; }
 .calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
 .calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
 .day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-.appt-pill { display:flex; flex-direction:column; align-items:center; width:100%; border-radius:10px; padding:2px 4px; font-size:10px; font-weight:600; background:#ffffff; border:1px solid #e5e7eb; margin-top:4px; cursor:pointer; white-space:normal; text-align:center; line-height:1.15; }
+.appt-pill { display:flex; flex-direction:column; align-items:center; width:100%; border-radius:10px; padding:2px 4px; font-size:10px; font-weight:600; background:#ffffff; border:1px solid #e5e7eb; margin-top:4px; cursor:pointer; text-align:center; line-height:1.15; }
 .appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
@@ -103,10 +103,6 @@ body.dark .notif-label { color:#e5e7eb; }
           <span style="color:#94a3b8; font-weight:600;">—</span>
           <span style="font-weight:500; color:#334155;">Counselor Dashboard</span>
         </div>
-        <span style="font-size:11px; color:#64748b; margin-top:2px;">
-          Your School Name Here
-          <span style="margin-left:6px; color:#94a3b8;">• Current Term Here</span>
-        </span>
       </div>
     </div>
     <div class="header-right">
@@ -129,7 +125,6 @@ body.dark .notif-label { color:#e5e7eb; }
     </div>
     <div class="messages"></div>
   </div>
-
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -140,7 +135,6 @@ body.dark .notif-label { color:#e5e7eb; }
     </div>
     <div class="messages"></div>
   </div>
-
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -151,7 +145,6 @@ body.dark .notif-label { color:#e5e7eb; }
     </div>
     <div class="messages"></div>
   </div>
-
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -187,6 +180,7 @@ const monthLabel=document.getElementById("monthLabel");
 
 let currentMonth=new Date();
 let appointments=[];
+let selectedStudent=null;
 
 loginForm.addEventListener("submit", e=>{
   e.preventDefault();
@@ -204,10 +198,27 @@ function toggleMessages(rowId){
   } else { msgs.style.display='flex'; btn.textContent='Hide Messages'; }
 }
 
+// Load sample messages
+function loadMessages(){
+  const rows=['red-row','orange-row','yellow-row','green-row'];
+  const sample=[['Student A','Needs immediate attention'],['Student B','Parent contacted'],['Student C','Counselor follow-up'],['Student D','Check-in advised'],['Student E','General observation']];
+  rows.forEach((rowId,i)=>{
+    const msgs=document.getElementById(rowId).querySelector('.messages');
+    msgs.innerHTML='';
+    if(i<sample.length){
+      const card=document.createElement('div'); card.className='message-card';
+      card.innerHTML=`<strong>${sample[i][0]}</strong><div class="message-meta">${sample[i][1]}</div>`;
+      card.onclick=()=>{ selectedStudent=sample[i][0]; openCalendar(); };
+      msgs.appendChild(card);
+    }
+  });
+}
+
 // Calendar
 function openCalendar(){ calendarOverlay.style.display='flex'; renderCalendar(); }
-function closeCalendar(){ calendarOverlay.style.display='none'; }
+function closeCalendar(){ calendarOverlay.style.display='none'; selectedStudent=null; }
 function changeMonth(delta){ currentMonth.setMonth(currentMonth.getMonth()+delta); renderCalendar(); }
+
 function renderCalendar(){
   calendarGrid.innerHTML="";
   monthLabel.textContent=currentMonth.toLocaleString('default',{month:'long', year:'numeric'});
@@ -220,14 +231,23 @@ function renderCalendar(){
     const dateKey=`${currentMonth.getFullYear()}-${currentMonth.getMonth()}-${d}`;
     const appts=appointments.filter(a=>a.date===dateKey);
     appts.forEach(a=>{
-      const pill=document.createElement("div"); pill.className="appt-pill"; pill.textContent=a.student; pill.onclick=()=>editAppointment(a); day.appendChild(pill);
+      const pill=document.createElement("div"); pill.className="appt-pill"; pill.textContent=a.student; pill.onclick=(e)=>{ e.stopPropagation(); editAppointment(a); };
+      day.appendChild(pill);
     });
-    day.onclick=()=>addAppointment(dateKey);
+    day.onclick=()=>{ addAppointment(dateKey); };
     calendarGrid.appendChild(day);
   }
 }
-function addAppointment(date){ const student=prompt("Student name for appointment"); if(student){ appointments.push({date, student}); renderCalendar(); } }
-function editAppointment(app){ const newName=prompt("Edit student", app.student); if(newName) app.student=newName; renderCalendar(); }
+
+function addAppointment(date){
+  const student=selectedStudent || prompt("Student name for appointment");
+  if(student){ appointments.push({date, student}); renderCalendar(); selectedStudent=null; }
+}
+
+function editAppointment(app){
+  const newName=prompt("Edit student", app.student);
+  if(newName){ app.student=newName; renderCalendar(); }
+}
 </script>
 </body>
 </html>
