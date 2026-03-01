@@ -20,20 +20,7 @@ body.dark .message-card { background:#111827; border-color:#1f2937; }
 body.dark .toggle-btn, body.dark .calendar-actions button, body.dark .profile-dropdown button,
 body.dark .login-box input { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 body.dark .profile-bubble { background:#0f8de0; }
-body.dark .calendar-box { border:1px solid #ffffff; }
-body.dark .calendar-grid { gap:8px; }
-body.dark .calendar-day { background:#111827; border:1px solid rgba(255,255,255,0.45); box-shadow:0 0 0 1px rgba(255,255,255,0.08) inset; }
-body.dark .calendar-weekday { color:#ffffff; letter-spacing:0.3px; }
-body.dark .calendar-day.expanded { background:#0f172a; }
-body.dark .calendar-day.pending { outline:2px solid #ffffff; }
-body.dark .calendar-day strong { color:#ffffff; }
-body.dark .calendar-actions button { border-color:#ffffff; }
-body.dark .calendar-actions .primary { border-color:#ffffff; }
-body.dark .appt-pill { background:#0b1220; border-color:#1f2937; color:#e5e7eb; }
-body.dark .day-details { color:#e5e7eb; }
 body.dark .dashboard-title span, body.dark .dashboard-title div, body.dark .dashboard-title { color:#ffffff; }
-body.dark .dashboard-title [style*="color:#94a3b8"], body.dark .dashboard-title [style*="color:#64748b"],
-body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; }
 
 /* ---------- LOGIN ---------- */
 .login-wrapper { display:flex; justify-content:center; align-items:center; height:100vh; }
@@ -76,7 +63,6 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
 
 /* ---------- URGENCY ROWS ---------- */
 .urgency-row { position:relative; display:flex; gap:16px; margin:20px; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
-.urgency-dot { position:absolute; top:10px; right:12px; width:10px; height:10px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; display:none; }
 #red-row { border-color:red; } #orange-row { border-color:orange; } #yellow-row { border-color:gold; } #green-row { border-color:green; }
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
@@ -85,7 +71,6 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
 .message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 .message-unread { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; }
-.message-read { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#3b82f6; box-shadow:0 0 0 2px #fff; }
 .notes-preview { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 
 /* ---------- FACE STYLE ---------- */
@@ -160,7 +145,7 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
       <div class="profile-wrap">
         <div class="profile-bubble">AB</div>
         <div class="profile-dropdown" id="profileDropdown">
-          <button id="darkModeBtn">Dark Mode</button>
+          <button id="darkModeBtn">Toggle Dark Mode</button>
           <button id="weeklyAnalyticsBtn">Weekly Analytics</button>
           <button id="signOutBtn">Sign Out</button>
         </div>
@@ -168,7 +153,7 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
     </div>
   </header>
 
-  <!-- Urgency rows -->
+  <!-- Urgency rows with sample messages -->
   <div class="urgency-row" id="red-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -177,8 +162,12 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
       </div>
       <button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages">
+      <div class="message-card"><strong>Student A</strong><div class="message-meta">Needs immediate attention</div></div>
+      <div class="message-card"><strong>Student B</strong><div class="message-meta">Parent contacted</div></div>
+    </div>
   </div>
+
   <div class="urgency-row" id="orange-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -187,8 +176,11 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
       </div>
       <button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages">
+      <div class="message-card"><strong>Student C</strong><div class="message-meta">Counselor follow-up required</div></div>
+    </div>
   </div>
+
   <div class="urgency-row" id="yellow-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -197,8 +189,11 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
       </div>
       <button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages">
+      <div class="message-card"><strong>Student D</strong><div class="message-meta">Check-in advised</div></div>
+    </div>
   </div>
+
   <div class="urgency-row" id="green-row">
     <div class="urgency-left">
       <div class="urgency-header">
@@ -207,19 +202,21 @@ body.dark .dashboard-title [style*="color:#334155"], body.dark .dashboard-title 
       </div>
       <button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button>
     </div>
-    <div class="messages"></div>
+    <div class="messages">
+      <div class="message-card"><strong>Student E</strong><div class="message-meta">General observation</div></div>
+    </div>
   </div>
 </div>
 
 <script>
-// ----------------- Simple JS for login, dropdowns -----------------
+// ----------------- Login -----------------
 document.getElementById('loginForm').addEventListener('submit', e=>{
   e.preventDefault();
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('dashboardScreen').style.display='block';
 });
 
-// Dropdown toggles
+// ----------------- Dropdowns -----------------
 function closeAllDropdowns(){
   document.getElementById('notifDropdown').style.display='none';
   document.getElementById('profileDropdown').style.display='none';
@@ -244,7 +241,7 @@ document.addEventListener('click', function(e){
   }
 });
 
-// Toggle messages per row
+// ----------------- Message toggle -----------------
 function toggleMessages(rowId){
   const row=document.getElementById(rowId);
   const msgs=row.querySelector('.messages');
@@ -257,6 +254,17 @@ function toggleMessages(rowId){
     btn.textContent='Hide Messages';
   }
 }
+
+// ----------------- Dark mode -----------------
+document.getElementById('darkModeBtn').addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+});
+
+// ----------------- Sign out -----------------
+document.getElementById('signOutBtn').addEventListener('click',()=>{
+  document.getElementById('dashboardScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+});
 </script>
 </body>
 </html>
