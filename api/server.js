@@ -1,5 +1,6 @@
-// api.server.js
+// pages/api/server.js
 import { Pool } from 'pg';
+
 const pool = new Pool({ connectionString: process.env.NEON_DATABASE_URL });
 
 // -----------------------------
@@ -17,24 +18,16 @@ export default async function handler(req, res) {
       if (!username || !password) return res.status(400).json({ success: false, error: "Missing fields" });
 
       const result = await pool.query(
-        "SELECT * FROM counselors WHERE username=$1 AND active=TRUE",
+        "SELECT counselor_id, username, email, metadata FROM counselors WHERE username=$1 AND active=TRUE",
         [username]
       );
       const counselor = result.rows[0];
       if (!counselor) return res.status(401).json({ success: false, error: "User not found or inactive" });
 
-      // NOTE: For testing, password = username. Replace with hashed passwords in production
+      // NOTE: For testing only, password = username. Replace with hashed passwords in production
       if (password !== username) return res.status(401).json({ success: false, error: "Invalid password" });
 
-      return res.status(200).json({
-        success: true,
-        counselor: {
-          id: counselor.counselor_id,
-          username: counselor.username,
-          email: counselor.email,
-          metadata: counselor.metadata
-        }
-      });
+      return res.status(200).json({ success: true, counselor });
     }
 
     // -----------------------------
@@ -52,11 +45,10 @@ export default async function handler(req, res) {
         WHERE sca.counselor_id = $1
         ORDER BY u.last_name, u.first_name
       `, [counselor_id]);
-
       const students = studentsResult.rows;
       const studentIds = students.map(s => s.student_id);
 
-      // Fetch messages for assigned students
+      // Fetch messages
       let messages = [];
       if (studentIds.length > 0) {
         const messagesResult = await pool.query(`
@@ -65,7 +57,6 @@ export default async function handler(req, res) {
           WHERE counselor_id=$1 AND student_id = ANY($2)
           ORDER BY date_time DESC
         `, [counselor_id, studentIds]);
-
         messages = messagesResult.rows;
       }
 
@@ -78,7 +69,6 @@ export default async function handler(req, res) {
           WHERE counselor_id=$1 AND student_id = ANY($2)
           ORDER BY date_created DESC
         `, [counselor_id, studentIds]);
-
         notes = notesResult.rows;
       }
 
@@ -89,7 +79,7 @@ export default async function handler(req, res) {
     // 3️⃣ Add Message for a Student
     // -----------------------------
     if (action === "add-message" && req.method === "POST") {
-      const { student_id, counselor_id, notes, reason, urgency, crisis=false } = req.body;
+      const { student_id, counselor_id, notes="", reason, urgency, crisis=false } = req.body;
       if (!student_id || !counselor_id || !reason || !urgency) {
         return res.status(400).json({ success: false, error: "Missing required fields" });
       }
@@ -97,7 +87,7 @@ export default async function handler(req, res) {
       await pool.query(`
         INSERT INTO messages (student_id, counselor_id, notes, reason, urgency, crisis)
         VALUES ($1,$2,$3,$4,$5,$6)
-      `, [student_id, counselor_id, notes || "", reason, urgency, crisis]);
+      `, [student_id, counselor_id, notes, reason, urgency, crisis]);
 
       return res.status(200).json({ success: true });
     }
