@@ -1,3 +1,7 @@
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,75 +9,271 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TapOut! – Counselor Dashboard</title>
 <style>
-/* ---------- GLOBAL ---------- */
 body { margin:0; font-family:sans-serif; background:#fffcf5; color:#0f172a; }
-body.dark { background:#0b1220; color:#e5e7eb; }
-/* Dashboard dark overrides omitted for brevity, same as reference */
+body.dark {
+  background:#0b1220;
+  color:#e5e7eb;
+}
+body.dark .dashboard-header { background:#0f172a; }
+body.dark .search-wrap,
+body.dark .notif-btn,
+body.dark .calendar-btn,
+body.dark .message-modal,
+body.dark .calendar-box,
+body.dark .login-box,
+body.dark .urgency-row,
+body.dark .profile-dropdown,
+body.dark .bell-dropdown,
+body.dark .message-modal .modal-body {
+  background:#0f172a;
+  color:#e5e7eb;
+  border-color:#1f2937;
+}
+body.dark .search-input { color:#e5e7eb; }
+body.dark .search-icon { opacity:0.85; }
+body.dark .notif-label { color:#e5e7eb; }
+body.dark .bell-dropdown div:hover { background:#111827; }
+body.dark .message-modal .modal-body { background:#0b1220; }
+body.dark .message-card { background:#111827; border-color:#1f2937; }
+body.dark .toggle-btn,
+body.dark .calendar-actions button,
+body.dark .profile-dropdown button,
+body.dark .login-box input {
+  background:#111827;
+  color:#e5e7eb;
+  border-color:#1f2937;
+}
+body.dark .profile-bubble { background:#0f8de0; }
+body.dark .calendar-box { border:1px solid #ffffff; }
+body.dark .calendar-grid { gap:8px; }
+body.dark .calendar-day {
+  background:#111827;
+  border:1px solid rgba(255,255,255,0.45);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.08) inset;
+}
+body.dark .calendar-weekday { color:#ffffff; letter-spacing:0.3px; }
+body.dark .calendar-day.expanded { background:#0f172a; }
+body.dark .calendar-day.pending { outline:2px solid #ffffff; }
+body.dark .calendar-day strong { color:#ffffff; }
+body.dark .calendar-actions button { border-color:#ffffff; }
+body.dark .calendar-actions .primary { border-color:#ffffff; }
+body.dark .appt-pill { background:#0b1220; border-color:#1f2937; color:#e5e7eb; }
+body.dark .day-details { color:#e5e7eb; }
+body.dark .dashboard-title span,
+body.dark .dashboard-title div,
+body.dark .dashboard-title { color:#ffffff; }
+body.dark .dashboard-title [style*="color:#94a3b8"],
+body.dark .dashboard-title [style*="color:#64748b"],
+body.dark .dashboard-title [style*="color:#334155"],
+body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; }
+
+/* ---------- LOGIN ---------- */
 .login-wrapper { display:flex; justify-content:center; align-items:center; height:100vh; }
 .login-box { background:#fff; padding:40px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); width:400px; }
 .login-box label { font-weight:bold; margin-top:15px; display:block; }
 .login-box input { width:100%; padding:10px; margin-top:6px; font-size:16px; border-radius:6px; border:1px solid #ccc; }
 .login-box button { margin-top:25px; float:right; padding:10px 25px; font-size:16px; background:#0070c9; color:white; border:none; border-radius:6px; cursor:pointer; }
+
+/* ---------- DASHBOARD ---------- */
+#dashboardScreen { display:none; }
 .dashboard-header { background:#87CEFA; padding:15px 30px; display:flex; justify-content:space-between; align-items:center; }
 .header-right { display:flex; align-items:center; gap:10px; }
-.search-wrap { display:flex; align-items:center; gap:8px; background:#ffffff; border:1px solid #e6e6e6; border-radius:999px; padding:8px 14px; box-shadow:0 4px 14px rgba(0,0,0,0.06); }
+
+/* ---------- SEARCH ---------- */
+.search-wrap {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:#ffffff;
+  border:1px solid #e6e6e6;
+  border-radius:999px;
+  padding:8px 14px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06);
+}
 .search-icon { font-size:16px; opacity:0.7; }
 .search-input { border:none; outline:none; background:transparent; font-size:16px; width:220px; }
-.calendar-btn { width:42px; height:42px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+
+/* ---------- BUTTONS ---------- */
+.calendar-btn {
+  width:42px; height:42px; border-radius:50%;
+  border:2px solid #0070c9;
+  background:#fff; color:#0070c9;
+  font-size:18px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
 .calendar-btn:hover { background:#0070c9; color:white; }
+
+/* ---------- NOTIFICATIONS ---------- */
 .notif-wrap { position:relative; }
-.notif-btn { display:flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; }
+.notif-btn {
+  display:flex; align-items:center; gap:8px;
+  padding:8px 14px; border-radius:999px;
+  border:1px solid #e6e6e6; background:#ffffff;
+  box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer;
+}
 .notif-icon { font-size:16px; }
 .notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
-.notif-badge { width:8px; height:8px; border-radius:50%; background:#ff3b30; display:none; box-shadow:0 0 0 2px #fff; }
-.bell-dropdown { position:absolute; top:48px; right:0; background:#fff; border:1px solid #e6e6e6; border-radius:12px; width:280px; display:none; flex-direction:column; box-shadow:0 10px 24px rgba(0,0,0,0.15); z-index:1000; font-size:14px; overflow:hidden; }
+.notif-badge {
+  width:8px; height:8px; border-radius:50%;
+  background:#ff3b30; display:none; box-shadow:0 0 0 2px #fff;
+}
+.bell-dropdown {
+  position:absolute; top:48px; right:0;
+  background:#fff; border:1px solid #e6e6e6;
+  border-radius:12px; width:280px; display:none;
+  flex-direction:column; box-shadow:0 10px 24px rgba(0,0,0,0.15);
+  z-index:1000; font-size:14px; overflow:hidden;
+}
 .bell-dropdown div { padding:12px 14px; border-bottom:1px solid #f0f0f0; }
 .bell-dropdown div:last-child { border-bottom:none; }
 .bell-dropdown div:hover { background:#f7f7f7; }
-.profile-bubble { width:42px; height:42px; border-radius:50%; background:#0070c9; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; }
+
+/* ---------- PROFILE ---------- */
+.profile-bubble {
+  width:42px; height:42px; border-radius:50%;
+  background:#0070c9; color:white;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:bold; cursor:pointer;
+}
 .profile-wrap { position:relative; }
-.profile-dropdown { position:absolute; top:52px; right:0; background:#ffffff; border:1px solid #e6e6e6; border-radius:12px; min-width:180px; box-shadow:0 12px 28px rgba(15,23,42,0.18); padding:10px; display:none; z-index:1200; }
-.profile-dropdown button { width:100%; padding:10px 14px; border-radius:10px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; margin-bottom:6px; }
-.profile-dropdown button:hover { transform:translateY(-1px); border-color:#0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.18); }
+.profile-dropdown {
+  position:absolute; top:52px; right:0;
+  background:#ffffff; border:1px solid #e6e6e6;
+  border-radius:12px; min-width:180px;
+  box-shadow:0 12px 28px rgba(15,23,42,0.18);
+  padding:10px;
+  display:none;
+  z-index:1200;
+}
+.profile-dropdown button {
+  width:100%;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  background:#ffffff;
+  font-weight:600;
+  cursor:pointer;
+  transition:transform 0.12s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.profile-dropdown button:hover {
+  transform:translateY(-1px);
+  border-color:#0070c9;
+  box-shadow:0 8px 18px rgba(0,112,201,0.18);
+}
 
 /* ---------- URGENCY ROWS ---------- */
-.urgency-row { position:relative; display:flex; gap:16px; margin:20px; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
-.urgency-dot { position:absolute; top:10px; right:12px; width:10px; height:10px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; display:none; }
+.urgency-row {
+  position:relative;
+  display:flex; gap:16px; margin:20px; padding:16px;
+  background:#fff; border-radius:12px; border-left:6px solid;
+  align-items:flex-start;
+}
+.urgency-dot {
+  position:absolute;
+  top:10px;
+  right:12px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ff3b30;
+  box-shadow:0 0 0 2px #fff;
+  display:none;
+}
 #red-row { border-color:red; }
 #orange-row { border-color:orange; }
 #yellow-row { border-color:gold; }
 #green-row { border-color:green; }
+
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
 .messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
-.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease; position:relative; }
+.message-card {
+  width:220px; padding:8px 10px; font-size:14px;
+  background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
+  cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease;
+  position:relative;
+}
 .message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
-.message-unread { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; }
-.message-read { position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#3b82f6; box-shadow:0 0 0 2px #fff; }
-.notes-preview{ display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.message-unread {
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#ff3b30;
+  box-shadow:0 0 0 2px #fff;
+}
+body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
+.message-read {
+  position:absolute;
+  top:8px;
+  right:8px;
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#3b82f6;
+  box-shadow:0 0 0 2px #fff;
+}
+body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
+
+/* Notes preview single line */
+.notes-preview{
+  display:block;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* ---------- FACE STYLE ---------- */
 .face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
 .eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
 .eye.left { left:13px; }
 .eye.right { right:13px; }
-.mouth { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:22px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; }
+.mouth {
+  position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
+  width:22px; height:12px; border:4px solid #3b3b3b;
+  border-color:#3b3b3b transparent transparent transparent; border-radius:50%;
+}
 .sad .mouth { transform:translateX(-50%) rotate(180deg); }
 .neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
 .green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
+.orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
 .red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
+
 .red-face { background:#ff5a4e; }
 .orange-face { background:#ffb02e; }
 .yellow-face { background:#ffe31a; }
 .green-face { background:#a9cf4f; }
-.toggle-btn { padding:8px 18px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 12px rgba(0,0,0,0.06); font-weight:600; cursor:pointer; }
-.toggle-btn:hover { transform:translateY(-1px); border:1px solid #0070c9; box-shadow:0 8px 18px rgba(0,112,201,0.2); }
+
+/* Toggle button modern */
+.toggle-btn {
+  padding:8px 18px;
+  border-radius:999px;
+  border:1px solid #e6e6e6;
+  background:#ffffff;
+  box-shadow:0 4px 12px rgba(0,0,0,0.06);
+  font-weight:600;
+  cursor:pointer;
+  transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease;
+}
+.toggle-btn:hover {
+  transform:translateY(-1px);
+  border:1px solid #0070c9;
+  box-shadow:0 8px 18px rgba(0,112,201,0.2);
+}
 
 /* ---------- MESSAGE MODAL ---------- */
 .message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; opacity:0; transition:opacity 0.2s ease; }
 .message-overlay.show { display:flex; opacity:1; }
 .message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
 .message-modal h3 { margin:0 0 8px 0; }
-.message-modal .modal-body { background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px; line-height:1.5; font-size:15px; color:#1f2937; max-height:50vh; overflow:auto; }
+.message-modal .modal-body {
+  background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px;
+  line-height:1.5; font-size:15px; color:#1f2937;
+  max-height:50vh; overflow:auto; white-space:normal; word-break:break-word;
+}
 .message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
 .modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
 .modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
@@ -89,14 +289,70 @@ body.dark { background:#0b1220; color:#e5e7eb; }
 .month-nav:hover { background:#0070c9; color:white; }
 .calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
 .calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
+.calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
+.calendar-day.expanded strong { align-self:center; }
+.day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
+.day-detail-item { display:flex; align-items:center; gap:6px; }
+.day-detail-item .dot { margin:0; }
 .calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
-.appt-pill { display:flex; flex-direction:column; align-items:center; width:100%; border-radius:10px; padding:2px 4px; font-size:10px; font-weight:600; background:#ffffff; border:1px solid #e5e7eb; margin-top:4px; cursor:pointer; text-align:center; line-height:1.15; }
+.calendar-empty { background:transparent; cursor:default; }
+.dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
+.appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
+.pending { outline:2px solid #0070c9; }
+
+.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; gap:10px; }
+.calendar-actions button{
+  padding:10px 18px;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+  background:#ffffff;
+  cursor:pointer;
+  font-weight:600;
+  transition:transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow:0 4px 12px rgba(15,23,42,0.08);
+}
+.calendar-actions button:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(15,23,42,0.12); }
+.calendar-actions .primary{
+  border-color:#0070c9;
+  background:linear-gradient(180deg, #0f8de0, #0070c9);
+  color:#fff;
+}
+.calendar-actions .edit{
+  border-color:#94a3b8;
+  background:linear-gradient(180deg, #ffffff, #f1f5f9);
+  color:#0f172a;
+}
+
+.red { background:red; }
+.orange { background:orange; }
+.yellow { background:gold; }
+.green { background:green; }
+
+/* Edit mode affordances */
+.calendar-box.editing .calendar-day { cursor:copy; }
+.calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
+.appt-pill {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  border-radius:10px;
+  padding:2px 4px;
+  font-size:10px;
+  font-weight:600;
+  background:#ffffff;
+  border:1px solid #e5e7eb;
+  margin-top:4px;
+  cursor:pointer;
+  white-space:normal;
+  text-align:center;
+  line-height:1.15;
+}
 .appt-pill .dot { margin:0 0 2px 0; }
 .appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen" class="login-wrapper">
   <form id="loginForm" class="login-box">
@@ -109,23 +365,30 @@ body.dark { background:#0b1220; color:#e5e7eb; }
 </div>
 
 <!-- DASHBOARD -->
-<div id="dashboardScreen" style="display:none;">
+<div id="dashboardScreen">
   <header class="dashboard-header">
     <div class="dashboard-title" style="display:flex; align-items:center; gap:12px; font-size:20px;">
       <div style="width:34px; height:34px; border-radius:8px; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-weight:700; color:#0070c9;">LOGO</div>
       <div style="display:flex; flex-direction:column; line-height:1.1;">
-        <div><span style="font-weight:700; color:#0f172a;">TapOut!</span> <span style="color:#94a3b8; font-weight:600;">—</span> <span style="font-weight:500; color:#334155;">Counselor Dashboard</span></div>
-        <span style="font-size:11px; color:#64748b; margin-top:2px;">Your School Name <span style="margin-left:6px; color:#94a3b8;">• Current Term</span></span>
+        <div>
+          <span style="font-weight:700; color:#0f172a;">TapOut!</span>
+          <span style="color:#94a3b8; font-weight:600;">—</span>
+          <span style="font-weight:500; color:#334155;">Counselor Dashboard</span>
+        </div>
+        <span style="font-size:11px; color:#64748b; margin-top:2px;">
+          Your School Name Here
+          <span style="margin-left:6px; color:#94a3b8;">• Current Term Here</span>
+        </span>
       </div>
     </div>
     <div class="header-right">
-      <div class="search-wrap"><span class="search-icon">🔍</span><input id="searchBar" class="search-input" placeholder="Search students..." /></div>
-      <div class="profile-wrap" id="profileWrap"><div class="profile-bubble" id="profileBubble"></div>
-        <div class="profile-dropdown" id="profileDropdown">
-          <button type="button" id="darkModeBtn">Dark Mode</button>
-          <button type="button" id="signOutBtn">Sign Out</button>
-        </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
+      <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
+      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
+      <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
           <span class="notif-icon">🔔</span>
@@ -134,11 +397,17 @@ body.dark { background:#0b1220; color:#e5e7eb; }
         </button>
         <div class="bell-dropdown" id="bellDropdown"></div>
       </div>
-      <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
+      <div class="profile-wrap" id="profileWrap">
+        <div class="profile-bubble" id="profileBubble"></div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <button type="button" id="darkModeBtn">Dark Mode</button>
+          <button type="button" id="weeklyAnalyticsBtn">Weekly Analytics</button>
+          <button type="button" id="signOutBtn">Sign Out</button>
+        </div>
+      </div>
     </div>
   </header>
 
-  <!-- Urgency Rows -->
   <div class="urgency-row" id="red-row"><span class="urgency-dot" id="dot-red"></span><div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Crisis</h2></div><button class="toggle-btn" onclick="toggleMessages('red-row')">Hide Messages</button></div><div class="messages"></div></div>
   <div class="urgency-row" id="orange-row"><span class="urgency-dot" id="dot-orange"></span><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Elevated Risk</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
   <div class="urgency-row" id="yellow-row"><span class="urgency-dot" id="dot-yellow"></span><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Moderate</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
@@ -158,74 +427,459 @@ body.dark { background:#0b1220; color:#e5e7eb; }
   </div>
 </div>
 
-<!-- CALENDAR MODAL -->
+<!-- CALENDAR -->
 <div class="calendar-overlay" id="calendarOverlay">
-  <div class="calendar-box">
+  <div class="calendar-box" id="calendarBox">
     <span class="close-calendar" onclick="closeCalendar()">✖</span>
     <div class="calendar-header">
-      <button class="month-nav" onclick="prevMonth()">◀</button>
-      <h3 id="calendarMonth">Month</h3>
-      <button class="month-nav" onclick="nextMonth()">▶</button>
+      <button class="month-nav" onclick="changeMonth(-1)">‹</button>
+      <h3 id="monthLabel"></h3>
+      <button class="month-nav" onclick="changeMonth(1)">›</button>
     </div>
     <div class="calendar-grid" id="calendarGrid"></div>
+    <div class="calendar-actions">
+      <button onclick="closeCalendar()">Back</button>
+      <button class="edit" id="editBtn" style="display:none;">Edit</button>
+      <button class="primary" id="continueBtn" onclick="confirmAppointment()" style="display:none;">Continue</button>
+    </div>
   </div>
 </div>
 
 <script>
-// ---------- LOGIN ----------
-const loginScreen = document.getElementById('loginScreen');
-const dashboardScreen = document.getElementById('dashboardScreen');
-const loginForm = document.getElementById('loginForm');
+const loginForm = document.getElementById("loginForm");
+const loginScreen = document.getElementById("loginScreen");
+const dashboardScreen = document.getElementById("dashboardScreen");
+const profileBubble = document.getElementById("profileBubble");
+const searchBar = document.getElementById("searchBar");
+const bellDot = document.getElementById("bellDot");
+const bellDropdown = document.getElementById("bellDropdown");
+const notifBell = document.getElementById("notifBell");
+const profileWrap = document.getElementById("profileWrap");
+const profileDropdown = document.getElementById("profileDropdown");
+const darkModeBtn = document.getElementById("darkModeBtn");
+const weeklyAnalyticsBtn = document.getElementById("weeklyAnalyticsBtn");
+const signOutBtn = document.getElementById("signOutBtn");
+const calendarOverlay = document.getElementById("calendarOverlay");
+const calendarBox = document.getElementById("calendarBox");
+const calendarGrid = document.getElementById("calendarGrid");
+const monthLabel = document.getElementById("monthLabel");
+const messageOverlay = document.getElementById("messageOverlay");
+const modalTitle = document.getElementById("modalTitle");
+const modalBody = document.getElementById("modalBody");
+const modalMeta = document.getElementById("modalMeta");
+const editBtn = document.getElementById("editBtn");
+const continueBtn = document.getElementById("continueBtn");
+const username = document.getElementById("username");
+const password = document.getElementById("password");
 
-loginForm.addEventListener('submit', e => {
+const dotRed = document.getElementById("dot-red");
+const dotOrange = document.getElementById("dot-orange");
+const dotYellow = document.getElementById("dot-yellow");
+const dotGreen = document.getElementById("dot-green");
+
+const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
+let currentMonth = new Date();
+let pendingDate = null;
+let selectedStudent = null;
+let selectedUrgency = null;
+let selectedKey = null;
+let calendarMode = "view";
+let editMode = false;
+let selectedApptId = null;
+let expandedDate = null;
+
+// ----------------- Authentication -----------------
+loginForm.onsubmit = async e => {
   e.preventDefault();
-  loginScreen.style.display = 'none';
-  dashboardScreen.style.display = 'block';
+  const usernameVal = username.value;
+  const passwordVal = password.value;
+  try {
+    const res = await sisLogin(usernameVal, passwordVal); // placeholder
+    if(res.success){
+      localStorage.setItem("loggedInCounselor", res.counselorId);
+      showDashboard();
+    } else alert("Invalid login");
+  } catch(err){
+    console.error(err);
+    alert("Login failed");
+  }
+};
+
+async function sisLogin(usernameVal, passwordVal){
+  // TODO: Replace with actual SIS API call
+  // Example: POST /api/authenticate {username, password}
+  if(counselors[usernameVal] && counselors[usernameVal] === passwordVal){
+    return {success:true, counselorId:usernameVal};
+  }
+  return {success:false};
+}
+
+function showDashboard(){
+  loginScreen.style.display="none";
+  dashboardScreen.style.display="block";
+  profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
+  loadMessages();
+  checkNotifications();
+}
+
+function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
+
+function normalizeUrgencyColor(value){
+  const allowed = ["red","orange","yellow","green"];
+  return allowed.includes(value) ? value : "green";
+}
+
+function ensureAppointmentKeys(){
+  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+  let changed = false;
+  appts.forEach((a, idx)=>{
+    if(!a.key){
+      a.key = `appt-${a.date}-${idx}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
+      changed = true;
+    }
+  });
+  if(changed){
+    localStorage.setItem("appointments", JSON.stringify(appts));
+  }
+  return appts;
+}
+
+// ----------------- Fetch Messages -----------------
+async function fetchMessages(counselorId){
+  // TODO: Replace with SIS API call
+  const data = [
+    {studentId:"s1", firstName:"John", lastName:"Doe", grade:"10", reason:"I’m in Crisis", urgency:"I’m in Crisis", notes:"Needs immediate attention", dateTime:"2026-02-15 10:12", counselor:counselorId},
+    {studentId:"s2", firstName:"Jane", lastName:"Smith", grade:"11", reason:"Feeling a Little Off", urgency:"Feeling a Little Off", notes:"", dateTime:"2026-02-15 11:00", counselor:counselorId}
+  ];
+  localStorage.setItem("studentMessages", JSON.stringify(data));
+  return data;
+}
+
+async function markMessageRead(msgId){
+  // TODO: Replace with SIS API call
+  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
+  readMap[msgId] = true;
+  localStorage.setItem("readMessages", JSON.stringify(readMap));
+  return true;
+}
+
+// ----------------- Fetch & Save Appointments -----------------
+async function fetchAppointments(){
+  // TODO: Replace with SIS API call
+  const data = [
+    {key:"appt-1", date:"2026-02-15", name:"John Doe", urgency:"red"}
+  ];
+  const existing = JSON.parse(localStorage.getItem("appointments")||"[]");
+  if(existing.length === 0){
+    localStorage.setItem("appointments", JSON.stringify(data));
+    return data;
+  }
+  return existing;
+}
+
+async function saveAppointment({studentId, urgency, date, msgId}){
+  // TODO: Replace with SIS API call
+  return {success:true};
+}
+
+// ----------------- Dashboard Data -----------------
+async function loadMessages(){
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const data = await fetchMessages(counselor);
+  const appointments = await fetchAppointments();
+  const scheduledKeys = new Set(appointments.map(a=>a.key));
+
+  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
+  [dotRed,dotOrange,dotYellow,dotGreen].forEach(d=>d.style.display="none");
+
+  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
+  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
+
+  data.forEach((m)=>{
+    if(scheduledKeys.has(m.studentId)) return;
+    const rowId = map[m.urgency] || "green-row";
+    if(rowId==="red-row") dotRed.style.display="block";
+    if(rowId==="orange-row") dotOrange.style.display="block";
+    if(rowId==="yellow-row") dotYellow.style.display="block";
+    if(rowId==="green-row") dotGreen.style.display="block";
+
+    const card = document.createElement("div");
+    card.className="message-card";
+    card.innerHTML = `
+      <strong>${m.firstName} ${m.lastName}</strong><br>
+      Grade: ${m.grade}<br>
+      ${m.reason}<br>
+      <span class="notes-preview">${m.notes ? "Notes: "+m.notes : ""}</span>
+      <div class="message-meta">Sent: ${m.dateTime}</div>
+    `;
+    const statusDot = document.createElement("span");
+    statusDot.className = readMap[m.studentId] ? "message-read" : "message-unread";
+    card.appendChild(statusDot);
+    card.onclick = async ()=>{
+      await markMessageRead(m.studentId);
+      openMessage(`${m.firstName} ${m.lastName}`, m.dateTime, `<strong>Reason:</strong> ${m.reason}<br><strong>Notes:</strong> ${m.notes || "None"}`, m.urgency, m.studentId);
+      loadMessages();
+    };
+    document.querySelector(`#${rowId} .messages`).appendChild(card);
+  });
+}
+
+function openMessage(title, dateTime, body, urgency, msgId){
+  selectedStudent = title;
+  selectedUrgency = urgency;
+  selectedKey = msgId;
+  pendingDate = null;
+  modalTitle.textContent = title;
+  modalMeta.textContent = `Sent: ${dateTime}`;
+  modalBody.innerHTML = body;
+  messageOverlay.classList.add("show");
+}
+
+function closeMessage(){ messageOverlay.classList.remove("show"); }
+messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
+
+function goToCalendarSchedule(){
+  closeMessage();
+  calendarMode = "schedule";
+  openCalendar();
+}
+
+function openCalendarViewOnly(){
+  calendarMode = "view";
+  pendingDate = null;
+  openCalendar();
+}
+
+function openCalendar(){
+  calendarOverlay.style.display="flex";
+  if(calendarMode === "schedule"){
+    continueBtn.style.display = "inline-block";
+    editBtn.style.display = "none";
+  } else {
+    continueBtn.style.display = "none";
+    editBtn.style.display = "inline-block";
+  }
+  setEditMode(false);
+  expandedDate = null;
+  renderCalendar();
+}
+
+function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; calendarMode="view"; setEditMode(false); expandedDate=null; }
+
+function toggleMessages(id){
+  const box=document.querySelector(`#${id} .messages`);
+  const btn=document.querySelector(`#${id} .toggle-btn`);
+  const hide = box.style.display!=="none";
+  box.style.display = hide?"none":"flex";
+  btn.textContent = hide?"Show Messages":"Hide Messages";
+}
+
+function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
+
+function setEditMode(on){
+  editMode = on;
+  selectedApptId = null;
+  calendarBox.classList.toggle("editing", editMode);
+  editBtn.textContent = editMode ? "Done" : "Edit";
+  if(editMode) expandedDate = null;
+}
+
+function getApptId(a, idx){
+  return a.key || `${a.date}-${a.name || "appt"}-${idx}`;
+}
+
+function renderCalendar(){
+  calendarGrid.innerHTML="";
+  const y=currentMonth.getFullYear(), m=currentMonth.getMonth();
+  monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
+  const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  weekdays.forEach(d=>{ const w=document.createElement("div"); w.className="calendar-weekday"; w.textContent=d; calendarGrid.appendChild(w); });
+
+  const firstDay=new Date(y,m,1).getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
+
+  const appts = ensureAppointmentKeys();
+
+  for(let d=1; d<=daysInMonth; d++){
+    const key=`${y}-${m}-${d}`;
+    const cell=document.createElement("div");
+    cell.className="calendar-day";
+    if(pendingDate===key) cell.classList.add("pending");
+    if(expandedDate===key) cell.classList.add("expanded");
+    cell.innerHTML=`<strong>${d}</strong>`;
+
+    if(expandedDate !== key){
+      appts.filter(a=>a.date===key).forEach((a, idx)=>{
+        if(a.name){
+          const urgencyColor = normalizeUrgencyColor(a.urgency);
+          const name=document.createElement("button");
+          name.type = "button";
+          name.className="appt-pill";
+          const dot=document.createElement("div");
+          dot.className=`dot ${urgencyColor}`;
+          const label=document.createElement("span");
+          label.textContent=a.name;
+          name.appendChild(dot);
+          name.appendChild(label);
+          name.dataset.apptId = getApptId(a, idx);
+          if(selectedApptId === name.dataset.apptId) name.classList.add("active");
+          name.onclick = (e) => {
+            e.stopPropagation();
+            if(!editMode) return;
+            selectedApptId = name.dataset.apptId;
+            renderCalendar();
+          };
+          cell.appendChild(name);
+        }
+      });
+    }
+
+    if(calendarMode==="schedule"){
+      cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
+    } else if(editMode){
+      cell.onclick=()=>{
+        if(!selectedApptId) return;
+        moveAppointment(selectedApptId, key);
+      };
+    } else {
+      cell.onclick=()=>{
+        expandedDate = (expandedDate === key) ? null : key;
+        renderCalendar();
+      };
+    }
+
+    if(expandedDate === key){
+      const dayAppts = appts.filter(a=>a.date===key);
+      if(dayAppts.length){
+        const details=document.createElement("div");
+        details.className="day-details";
+        dayAppts.forEach((a)=>{
+          const urgencyColor = normalizeUrgencyColor(a.urgency);
+          const item=document.createElement("div");
+          item.className="day-detail-item";
+          const dot=document.createElement("div");
+          dot.className=`dot ${urgencyColor}`;
+          const label=document.createElement("span");
+          label.textContent = a.name || "Appointment";
+          item.appendChild(dot);
+          item.appendChild(label);
+          details.appendChild(item);
+        });
+        cell.appendChild(details);
+      }
+    }
+
+    calendarGrid.appendChild(cell);
+  }
+}
+
+function moveAppointment(apptId, newDate){
+  let appts = ensureAppointmentKeys();
+  let idx = -1;
+  for(let i=0;i<appts.length;i++){
+    if(getApptId(appts[i], i) === apptId){
+      idx = i;
+      break;
+    }
+  }
+  if(idx === -1) return;
+  appts[idx].date = newDate;
+  localStorage.setItem("appointments",JSON.stringify(appts));
+  selectedApptId = null;
+  renderCalendar();
+  checkNotifications();
+}
+
+editBtn.onclick = () => {
+  if(calendarMode !== "view") return;
+  setEditMode(!editMode);
+  renderCalendar();
+};
+
+// ----------------- Schedule Appointment -----------------
+async function confirmAppointment(){
+  if(calendarMode!=="schedule") return;
+  if(!selectedStudent || !selectedUrgency || !pendingDate || !selectedKey){
+    alert("Select a date first.");
+    return;
+  }
+  const res = await saveAppointment({studentId:selectedKey, urgency:selectedUrgency, date:pendingDate, msgId:selectedKey});
+  if(res.success){
+    let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
+    appts = appts.filter(a=>a.key !== selectedKey);
+    appts.push({date: pendingDate, urgency: normalizeUrgencyColor(selectedUrgency), name: selectedStudent, key: selectedKey});
+    localStorage.setItem("appointments", JSON.stringify(appts));
+    pendingDate=null;
+    closeCalendar();
+    loadMessages();
+    renderCalendar();
+  } else alert("Failed to schedule appointment.");
+}
+
+// ----------------- Notifications -----------------
+async function checkNotifications(){
+  const counselor=localStorage.getItem("loggedInCounselor");
+  const students=await fetchMessages(counselor);
+  const appointments=await fetchAppointments();
+  const crisisStudents=students.filter(s=>s.urgency==="I’m in Crisis");
+  const todayDate=new Date();
+  const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
+  const apptToday=appointments.filter(a=>a.date===todayKey);
+
+  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block":"none";
+  bellDropdown.innerHTML="";
+  if(crisisStudents.length===0 && apptToday.length===0){
+    const div=document.createElement("div");
+    div.textContent="No notifications";
+    bellDropdown.appendChild(div);
+  }
+  crisisStudents.forEach(s=>{ const div=document.createElement("div"); div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName}`; bellDropdown.appendChild(div); });
+  apptToday.forEach(a=>{ const div=document.createElement("div"); div.textContent=`📅 Appointment today: ${a.name}`; bellDropdown.appendChild(div); });
+}
+
+notifBell.onclick=(e)=>{
+  e.stopPropagation();
+  profileDropdown.style.display = "none";
+  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
+  bellDot.style.display="none";
+};
+document.addEventListener('click',()=>{
+  bellDropdown.style.display="none";
+  profileDropdown.style.display="none";
 });
+bellDropdown.addEventListener('click',e=>e.stopPropagation());
 
-// ---------- PROFILE & DARK MODE ----------
-const profileBubble = document.getElementById('profileBubble');
-const profileDropdown = document.getElementById('profileDropdown');
-profileBubble.innerText = 'C';
-profileBubble.addEventListener('click', ()=> { profileDropdown.style.display = profileDropdown.style.display==='flex'?'none':'flex'; });
-document.getElementById('darkModeBtn').addEventListener('click', ()=>{ document.body.classList.toggle('dark'); });
-
-// ---------- NOTIFICATIONS ----------
-const bellDot = document.getElementById('bellDot');
-const bellDropdown = document.getElementById('bellDropdown');
-const notifBell = document.getElementById('notifBell');
-notifBell.addEventListener('click', ()=> { bellDropdown.style.display = bellDropdown.style.display==='flex'?'none':'flex'; });
-
-// ---------- MESSAGE MODAL ----------
-const messageOverlay = document.getElementById('messageOverlay');
-function openMessage(message){ document.getElementById('modalTitle').innerText=message.title; document.getElementById('modalMeta').innerText=message.time; document.getElementById('modalBody').innerText=message.notes; messageOverlay.classList.add('show'); }
-function closeMessage(){ messageOverlay.classList.remove('show'); }
-function goToCalendarSchedule(){ closeMessage(); openCalendarSchedule(); }
-
-// ---------- CALENDAR ----------
-const calendarOverlay = document.getElementById('calendarOverlay');
-function openCalendarViewOnly(){ calendarOverlay.style.display='flex'; }
-function closeCalendar(){ calendarOverlay.style.display='none'; }
-function openCalendarSchedule(){ calendarOverlay.style.display='flex'; }
-
-// ---------- URGENCY ROW TOGGLE ----------
-function toggleMessages(rowId){ const row = document.getElementById(rowId); const msgs = row.querySelector('.messages'); msgs.style.display = msgs.style.display==='none'?'flex':'none'; }
-
-// ---------- SIMULATED STUDENT MESSAGES ----------
-const messages = [
-  {title:'Student A', notes:'Needs immediate support.', time:'Today 08:30', urgency:'red'},
-  {title:'Student B', notes:'Feeling stressed about exams.', time:'Today 09:10', urgency:'orange'},
-  {title:'Student C', notes:'Missed last class.', time:'Today 11:20', urgency:'yellow'},
-  {title:'Student D', notes:'Completed project successfully.', time:'Today 12:00', urgency:'green'}
-];
-messages.forEach(msg => {
-  const row = document.getElementById(msg.urgency+'-row').querySelector('.messages');
-  const card = document.createElement('div'); card.classList.add('message-card'); card.innerHTML=`<strong>${msg.title}</strong><span class="message-meta">${msg.time}</span><span class="notes-preview">${msg.notes}</span>`; card.addEventListener('click',()=>openMessage(msg)); row.appendChild(card);
-  document.getElementById('dot-'+msg.urgency).style.display='block';
-  bellDot.style.display='block';
-  const notifItem = document.createElement('div'); notifItem.innerText=`${msg.title}: ${msg.notes}`; bellDropdown.appendChild(notifItem);
+profileWrap.addEventListener("click", (e) => {
+  e.stopPropagation();
+  bellDropdown.style.display = "none";
+  profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
 });
+profileDropdown.addEventListener("click", (e) => e.stopPropagation());
+signOutBtn.onclick = () => logout();
+weeklyAnalyticsBtn.onclick = () => {};
+
+function setDarkMode(on){
+  document.body.classList.toggle("dark", on);
+  darkModeBtn.textContent = on ? "Light Mode" : "Dark Mode";
+  localStorage.setItem("darkMode", on ? "1" : "0");
+}
+darkModeBtn.onclick = () => {
+  const isDark = document.body.classList.contains("dark");
+  setDarkMode(!isDark);
+};
+setDarkMode(localStorage.getItem("darkMode") === "1");
+
+searchBar.oninput = () => {
+  const q = searchBar.value.toLowerCase();
+  document.querySelectorAll(".message-card").forEach(c => {
+    c.style.display = c.textContent.toLowerCase().includes(q) ? "block" : "none";
+  });
+};
+
+setInterval(checkNotifications,5000);
+window.addEventListener("storage",()=>{ loadMessages(); renderCalendar(); });
+window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
-
 </body>
 </html>
