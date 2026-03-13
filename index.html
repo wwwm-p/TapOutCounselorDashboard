@@ -896,55 +896,69 @@ function escapePdfText(text){
   return text.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }
 
-function buildSimplePdf(text, title){
-  const pageHeight = 792;
-  const margin = 72;
-  const lineHeight = 14;
-  const maxLineWidth = 86;
-  const words = (title + "\n\n" + text).split(/\s+/);
+function wrapPdfLines(text, maxLineWidth){
+  const words = text.split(/\s+/);
   const lines = [];
   let line = "";
   words.forEach(w=>{
     const test = line ? line + " " + w : w;
     if(test.length > maxLineWidth){
-      lines.push(line);
+      if(line) lines.push(line);
       line = w;
     } else {
       line = test;
     }
   });
   if(line) lines.push(line);
+  return lines;
+}
 
-  let y = pageHeight - margin;
-  let content = "BT\n/F1 12 Tf\n";
-  lines.forEach((ln)=>{
-    if(y < margin) return;
-    content += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(ln)}) Tj\n`;
-    y -= lineHeight;
-  });
-  content += "ET\n";
-
+function buildMultiPagePdf(pages){
   const objects = [];
-  objects.push("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
-  objects.push("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
-  objects.push("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n");
-  objects.push(`4 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
-  objects.push("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
-
   let pdf = "%PDF-1.3\n";
   const xref = [];
+
+  // Catalog
+  objects.push("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+
+  // Pages container (Kids added later)
+  const pagesKidsIndex = objects.length + 1;
+  objects.push("2 0 obj\n<< /Type /Pages /Kids [] /Count 0 >>\nendobj\n");
+
+  const pageRefs = [];
+
+  let objIndex = objects.length + 1;
+
+  pages.forEach((pageContent) => {
+    const contentStream = `BT\n/F1 12 Tf\n${pageContent}ET\n`;
+    const contentObj = `${objIndex+1} 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`;
+    const pageObj = `${objIndex} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents ${objIndex+1} 0 R /Resources << /Font << /F1 ${objIndex+2} 0 R >> >> >>\nendobj\n`;
+    const fontObj = `${objIndex+2} 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n`;
+
+    pageRefs.push(`${objIndex} 0 R`);
+    objects.push(pageObj);
+    objects.push(contentObj);
+    objects.push(fontObj);
+
+    objIndex += 3;
+  });
+
+  // Patch Pages object
+  objects[1] = `2 0 obj\n<< /Type /Pages /Kids [${pageRefs.join(" ")}] /Count ${pageRefs.length} >>\nendobj\n`;
+
   let offset = pdf.length;
   objects.forEach(obj=>{
     xref.push(offset);
     pdf += obj;
     offset = pdf.length;
   });
+
   const xrefStart = pdf.length;
-  pdf += "xref\n0 6\n0000000000 65535 f \n";
+  pdf += "xref\n0 " + (xref.length + 1) + "\n0000000000 65535 f \n";
   xref.forEach(off=>{
     pdf += String(off).padStart(10,"0") + " 00000 n \n";
   });
-  pdf += "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefStart + "\n%%EOF";
+  pdf += "trailer\n<< /Size " + (xref.length + 1) + " /Root 1 0 R >>\nstartxref\n" + xrefStart + "\n%%EOF";
   return pdf;
 }
 
@@ -958,11 +972,43 @@ function downloadAllNotesPdf(){
     alert("No notes to download.");
     return;
   }
-  const title = `Notes — ${currentNotesStudentName}`;
-  const combinedText = notes
-    .map((n, i)=>`Note ${notes.length - i}\nDate: ${n.date}\n\n${n.text}`)
-    .join("\n\n----------------------------------------\n\n");
-  const pdf = buildSimplePdf(combinedText, title);
+
+  const pages = [];
+  const pageHeight = 792;
+  const margin = 72;
+  const lineHeight = 14;
+  const maxLineWidth = 86;
+
+  notes.forEach((n, idx)=>{
+    let y = pageHeight - margin;
+    let content = "";
+    const header = `Notes — ${currentNotesStudentName}`;
+    const sub = `Note ${notes.length - idx} • ${n.date}`;
+    const headerLines = wrapPdfLines(header, maxLineWidth);
+    const subLines = wrapPdfLines(sub, maxLineWidth);
+
+    headerLines.forEach(ln=>{
+      content += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(ln)}) Tj\n`;
+      y -= lineHeight;
+    });
+    y -= 6;
+    subLines.forEach(ln=>{
+      content += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(ln)}) Tj\n`;
+      y -= lineHeight;
+    });
+    y -= 10;
+
+    const bodyLines = wrapPdfLines(n.text, maxLineWidth);
+    bodyLines.forEach(ln=>{
+      if(y < margin) return;
+      content += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(ln)}) Tj\n`;
+      y -= lineHeight;
+    });
+
+    pages.push(content);
+  });
+
+  const pdf = buildMultiPagePdf(pages);
   const blob = new Blob([pdf], { type: "application/pdf" });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
