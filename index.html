@@ -278,6 +278,19 @@ body.dark .close-btn { background:#111827; color:#e5e7eb; border-color:#1f2937; 
   margin-bottom:10px;
 }
 .notes-header h3 { margin:0; }
+.notes-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.download-btn{
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid #e5e7eb;
+  background:#ffffff;
+  cursor:pointer;
+  font-weight:600;
+}
 .notes-list {
   list-style:none;
   margin:0 0 12px 0;
@@ -333,6 +346,7 @@ body.dark .note-item { background:#111827; border-color:#1f2937; }
 body.dark .notes-form textarea { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 body.dark .notes-actions button { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 body.dark .notes-actions .primary { background:#0070c9; border-color:#0070c9; color:#ffffff; }
+body.dark .download-btn { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 
 /* ---------- URGENCY ROWS ---------- */
 .urgency-row {
@@ -606,7 +620,10 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   <div class="notes-modal">
     <div class="notes-header">
       <h3 id="notesTitle">Notes</h3>
-      <button type="button" class="close-btn" onclick="closeNotesModal()">✕</button>
+      <div class="notes-controls">
+        <button type="button" class="download-btn" id="downloadNotesBtn" onclick="downloadAllNotesPdf()">Download PDF</button>
+        <button type="button" class="close-btn" onclick="closeNotesModal()">✕</button>
+      </div>
     </div>
     <ul class="notes-list" id="notesList"></ul>
     <div class="notes-form">
@@ -873,6 +890,89 @@ function saveNote(){
   saveNotesForStudent(notes);
   newNoteText.value = "";
   renderNotesList();
+}
+
+function escapePdfText(text){
+  return text.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+
+function buildSimplePdf(text, title){
+  const pageHeight = 792;
+  const margin = 72;
+  const lineHeight = 14;
+  const maxLineWidth = 86;
+  const words = (title + "\n\n" + text).split(/\s+/);
+  const lines = [];
+  let line = "";
+  words.forEach(w=>{
+    const test = line ? line + " " + w : w;
+    if(test.length > maxLineWidth){
+      lines.push(line);
+      line = w;
+    } else {
+      line = test;
+    }
+  });
+  if(line) lines.push(line);
+
+  let y = pageHeight - margin;
+  let content = "BT\n/F1 12 Tf\n";
+  lines.forEach((ln)=>{
+    if(y < margin) return;
+    content += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(ln)}) Tj\n`;
+    y -= lineHeight;
+  });
+  content += "ET\n";
+
+  const objects = [];
+  objects.push("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+  objects.push("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+  objects.push("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n");
+  objects.push(`4 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
+  objects.push("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
+
+  let pdf = "%PDF-1.3\n";
+  const xref = [];
+  let offset = pdf.length;
+  objects.forEach(obj=>{
+    xref.push(offset);
+    pdf += obj;
+    offset = pdf.length;
+  });
+  const xrefStart = pdf.length;
+  pdf += "xref\n0 6\n0000000000 65535 f \n";
+  xref.forEach(off=>{
+    pdf += String(off).padStart(10,"0") + " 00000 n \n";
+  });
+  pdf += "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefStart + "\n%%EOF";
+  return pdf;
+}
+
+function downloadAllNotesPdf(){
+  if(!currentNotesStudentName || !currentNotesStudentKey){
+    alert("Select a student first.");
+    return;
+  }
+  const notes = loadNotesForStudent();
+  if(notes.length === 0){
+    alert("No notes to download.");
+    return;
+  }
+  const title = `Notes — ${currentNotesStudentName}`;
+  const combinedText = notes
+    .map((n, i)=>`Note ${notes.length - i}\nDate: ${n.date}\n\n${n.text}`)
+    .join("\n\n----------------------------------------\n\n");
+  const pdf = buildSimplePdf(combinedText, title);
+  const blob = new Blob([pdf], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const safeName = currentNotesStudentName.replace(/\s+/g, "_");
+  a.download = `${safeName}_all_notes.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
 function normalizeUrgencyColor(value){
