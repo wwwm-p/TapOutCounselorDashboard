@@ -108,7 +108,7 @@ body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; 
   box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer;
 }
 .notif-icon { font-size:16px; }
-.notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
+notif-label { font-size:14px; font-weight:600; color:#2b2b2b; }
 .notif-badge {
   width:8px; height:8px; border-radius:50%;
   background:#ff3b30; display:none; box-shadow:0 0 0 2px #fff;
@@ -241,7 +241,7 @@ body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; 
   cursor:pointer;
   font-weight:600;
 }
-.student-actions .primary {
+student-actions .primary {
   border-color:#0070c9;
   background:#0070c9;
   color:#ffffff;
@@ -253,195 +253,86 @@ body.dark .student-actions .primary { background:#0070c9; border-color:#0070c9; 
 body.dark .filter-btn,
 body.dark .close-btn { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 
-/* ---------- URGENCY ROWS ---------- */
-.urgency-row {
-  position:relative;
-  display:flex; gap:16px; margin:20px; padding:16px;
-  background:#fff; border-radius:12px; border-left:6px solid;
-  align-items:flex-start;
-}
-.urgency-dot {
-  position:absolute;
-  top:10px;
-  right:12px;
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#ff3b30;
-  box-shadow:0 0 0 2px #fff;
+/* ---------- NOTES MODAL ---------- */
+.notes-overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
   display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2600;
 }
-#red-row { border-color:red; }
-#orange-row { border-color:orange; }
-#yellow-row { border-color:gold; }
-#green-row { border-color:green; }
-
-.urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
-.urgency-header { display:flex; align-items:center; gap:10px; }
-.messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
-.message-card {
-  width:220px; padding:8px 10px; font-size:14px;
-  background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
-  cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease;
-  position:relative;
-}
-.message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
-.message-meta { font-size:12px; color:#555; margin-top:4px; }
-.message-unread {
-  position:absolute;
-  top:8px;
-  right:8px;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#ff3b30;
-  box-shadow:0 0 0 2px #fff;
-}
-body.dark .message-unread { box-shadow:0 0 0 2px #0f172a; }
-.message-read {
-  position:absolute;
-  top:8px;
-  right:8px;
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  background:#3b82f6;
-  box-shadow:0 0 0 2px #fff;
-}
-body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
-
-/* Notes preview single line */
-.notes-preview{
-  display:block;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-
-/* ---------- FACE STYLE ---------- */
-.face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
-.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
-.eye.left { left:13px; }
-.eye.right { right:13px; }
-.mouth {
-  position:absolute; left:50%; bottom:10px; transform:translateX(-50%);
-  width:22px; height:12px; border:4px solid #3b3b3b;
-  border-color:#3b3b3b transparent transparent transparent; border-radius:50%;
-}
-.sad .mouth { transform:translateX(-50%) rotate(180deg); }
-.neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
-.green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
-.orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
-.red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
-
-.red-face { background:#ff5a4e; }
-.orange-face { background:#ffb02e; }
-.yellow-face { background:#ffe31a; }
-.green-face { background:#a9cf4f; }
-
-/* Toggle button modern */
-.toggle-btn {
-  padding:8px 18px;
-  border-radius:999px;
-  border:1px solid #e6e6e6;
+.notes-modal {
+  width:min(680px, 92vw);
   background:#ffffff;
-  box-shadow:0 4px 12px rgba(0,0,0,0.06);
-  font-weight:600;
-  cursor:pointer;
-  transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 18px 40px rgba(0,0,0,0.25);
 }
-toggle-btn:hover {
-  transform:translateY(-1px);
-  border:1px solid #0070c9;
-  box-shadow:0 8px 18px rgba(0,112,201,0.2);
+.notes-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
 }
-
-/* ---------- MESSAGE MODAL ---------- */
-.message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; opacity:0; transition:opacity 0.2s ease; }
-.message-overlay.show { display:flex; opacity:1; }
-.message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
-message-modal h3 { margin:0 0 8px 0; }
-.message-modal .modal-body {
-  background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px;
-  line-height:1.5; font-size:15px; color:#1f2937;
-  max-height:50vh; overflow:auto; white-space:normal; word-break:break-word;
-}
-.message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
-.modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
-.modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
-.modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
-
-/* ---------- CALENDAR ---------- */
-.calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
-.calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
-calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-calendar-header h3 { margin:0; text-align:center; flex:1; }
-close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
-month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-month-nav:hover { background:#0070c9; color:white; }
-calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
-calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
-calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
-calendar-day.expanded strong { align-self:center; }
-day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-day-detail-item { display:flex; align-items:center; gap:6px; }
-day-detail-item .dot { margin:0; }
-calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
-calendar-empty { background:transparent; cursor:default; }
-dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
-appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
-pending { outline:2px solid #0070c9; }
-
-calendar-actions { margin-top:12px; display:flex; justify-content:space-between; gap:10px; }
-calendar-actions button{
-  padding:10px 18px;
-  border-radius:12px;
-  border:1px solid #e5e7eb;
-  background:#ffffff;
-  cursor:pointer;
-  font-weight:600;
-  transition:transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow:0 4px 12px rgba(15,23,42,0.08);
-}
-calendar-actions button:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(15,23,42,0.12); }
-calendar-actions .primary{
-  border-color:#0070c9;
-  background:linear-gradient(180deg, #0f8de0, #0070c9);
-  color:#fff;
-}
-calendar-actions .edit{
-  border-color:#94a3b8;
-  background:linear-gradient(180deg, #ffffff, #f1f5f9);
-  color:#0f172a;
-}
-
-.red { background:red; }
-.orange { background:orange; }
-.yellow { background:gold; }
-.green { background:green; }
-
-/* Edit mode affordances */
-calendar-box.editing .calendar-day { cursor:copy; }
-calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
-.appt-pill {
+notes-header h3 { margin:0; }
+.notes-list {
+  list-style:none;
+  margin:0 0 12px 0;
+  padding:0;
   display:flex;
   flex-direction:column;
-  align-items:center;
-  width:100%;
-  border-radius:10px;
-  padding:2px 4px;
-  font-size:10px;
-  font-weight:600;
-  background:#ffffff;
-  border:1px solid #e5e7eb;
-  margin-top:4px;
-  cursor:pointer;
-  white-space:normal;
-  text-align:center;
-  line-height:1.15;
+  gap:8px;
+  max-height:240px;
+  overflow:auto;
 }
-.appt-pill .dot { margin:0 0 2px 0; }
-.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+.note-item {
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:10px 12px;
+  background:#f9fafb;
+}
+note-meta { font-size:12px; color:#6b7280; margin-bottom:6px; }
+.note-text { font-size:14px; }
+.notes-form {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.notes-form textarea{
+  width:100%;
+  min-height:90px;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
+  padding:10px;
+  font-size:14px;
+  resize:vertical;
+}
+.notes-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+}
+.notes-actions button{
+  padding:8px 14px;
+  border-radius:999px;
+  border:1px solid #e5e7eb;
+  background:#ffffff;
+  cursor:pointer;
+  font-weight:600;
+}
+.notes-actions .primary{
+  border-color:#0070c9;
+  background:#0070c9;
+  color:#ffffff;
+}
+body.dark .notes-modal { background:#0f172a; color:#e5e7eb; }
+body.dark .note-item { background:#111827; border-color:#1f2937; }
+body.dark .notes-form textarea { background:#111827; color:#e5e7eb; border-color:#1f2937; }
+body.dark .notes-actions button { background:#111827; color:#e5e7eb; border-color:#1f2937; }
+body.dark .notes-actions .primary { background:#0070c9; border-color:#0070c9; color:#ffffff; }
 </style>
 </head>
 <body>
@@ -520,6 +411,24 @@ calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
   </div>
 </div>
 
+<!-- NOTES MODAL -->
+<div class="notes-overlay" id="notesOverlay">
+  <div class="notes-modal">
+    <div class="notes-header">
+      <h3 id="notesTitle">Notes</h3>
+      <button type="button" class="close-btn" onclick="closeNotesModal()">✕</button>
+    </div>
+    <ul class="notes-list" id="notesList"></ul>
+    <div class="notes-form">
+      <textarea id="newNoteText" placeholder="Write a new note..."></textarea>
+      <div class="notes-actions">
+        <button type="button" onclick="closeNotesModal()">Cancel</button>
+        <button type="button" class="primary" onclick="saveNote()">Save Note</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- MESSAGE MODAL -->
 <div class="message-overlay" id="messageOverlay">
   <div class="message-modal">
@@ -581,6 +490,10 @@ const studentsBtn = document.getElementById("studentsBtn");
 const studentOverlay = document.getElementById("studentOverlay");
 const studentList = document.getElementById("studentList");
 const gradeFilterBtn = document.getElementById("gradeFilterBtn");
+const notesOverlay = document.getElementById("notesOverlay");
+const notesList = document.getElementById("notesList");
+const notesTitle = document.getElementById("notesTitle");
+const newNoteText = document.getElementById("newNoteText");
 
 const dotRed = document.getElementById("dot-red");
 const dotOrange = document.getElementById("dot-orange");
@@ -598,6 +511,8 @@ let editMode = false;
 let selectedApptId = null;
 let expandedDate = null;
 let currentGradeFilter = "All";
+let currentNotesStudentKey = null;
+let currentNotesStudentName = "";
 
 const gradeFilters = ["All", "9", "10", "11", "12"];
 
@@ -631,7 +546,6 @@ loginForm.onsubmit = async e => {
 
 async function sisLogin(usernameVal, passwordVal){
   // TODO: Replace with actual SIS API call
-  // Example: POST /api/authenticate {username, password}
   if(counselors[usernameVal] && counselors[usernameVal] === passwordVal){
     return {success:true, counselorId:usernameVal};
   }
@@ -673,7 +587,7 @@ function renderStudentList(){
     const notesBtn = document.createElement("button");
     notesBtn.type = "button";
     notesBtn.textContent = "Notes";
-    notesBtn.onclick = () => alert(`Notes for ${s.firstName} ${s.lastName}`);
+    notesBtn.onclick = () => openNotesModal(s);
 
     const historyBtn = document.createElement("button");
     historyBtn.type = "button";
@@ -699,27 +613,78 @@ function closeStudentList(){
   if(studentOverlay) studentOverlay.style.display = "none";
 }
 
-function normalizeUrgencyColor(value){
-  const allowed = ["red","orange","yellow","green"];
-  return allowed.includes(value) ? value : "green";
+function getStudentKey(student){
+  return `${student.lastName.toLowerCase()}-${student.firstName.toLowerCase()}-${student.grade}`;
 }
 
-function ensureAppointmentKeys(){
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  let changed = false;
-  appts.forEach((a, idx)=>{
-    if(!a.key){
-      a.key = `appt-${a.date}-${idx}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
-      changed = true;
-    }
-  });
-  if(changed){
-    localStorage.setItem("appointments", JSON.stringify(appts));
+function openNotesModal(student){
+  if(!notesOverlay || !notesList || !notesTitle) return;
+  currentNotesStudentKey = getStudentKey(student);
+  currentNotesStudentName = `${student.firstName} ${student.lastName}`;
+  notesTitle.textContent = `Notes — ${currentNotesStudentName}`;
+  renderNotesList();
+  notesOverlay.style.display = "flex";
+}
+
+function closeNotesModal(){
+  if(notesOverlay) notesOverlay.style.display = "none";
+  if(newNoteText) newNoteText.value = "";
+}
+
+function loadNotesForStudent(){
+  if(!currentNotesStudentKey) return [];
+  const allNotes = JSON.parse(localStorage.getItem("studentNotes") || "{}");
+  return allNotes[currentNotesStudentKey] || [];
+}
+
+function saveNotesForStudent(notes){
+  if(!currentNotesStudentKey) return;
+  const allNotes = JSON.parse(localStorage.getItem("studentNotes") || "{}");
+  allNotes[currentNotesStudentKey] = notes;
+  localStorage.setItem("studentNotes", JSON.stringify(allNotes));
+}
+
+function renderNotesList(){
+  if(!notesList) return;
+  const notes = loadNotesForStudent();
+  notesList.innerHTML = "";
+  if(notes.length === 0){
+    const empty = document.createElement("li");
+    empty.className = "note-item";
+    empty.innerHTML = `<div class="note-text">No notes yet.</div>`;
+    notesList.appendChild(empty);
+    return;
   }
-  return appts;
+  notes.forEach((n)=>{
+    const li = document.createElement("li");
+    li.className = "note-item";
+    const meta = document.createElement("div");
+    meta.className = "note-meta";
+    meta.textContent = n.date;
+    const text = document.createElement("div");
+    text.className = "note-text";
+    text.textContent = n.text;
+    li.appendChild(meta);
+    li.appendChild(text);
+    notesList.appendChild(li);
+  });
 }
 
-/* ... rest of file unchanged ... */
+function saveNote(){
+  if(!newNoteText) return;
+  const text = newNoteText.value.trim();
+  if(!text) { alert("Please enter a note."); return; }
+  const notes = loadNotesForStudent();
+  notes.unshift({
+    text,
+    date: new Date().toLocaleString()
+  });
+  saveNotesForStudent(notes);
+  newNoteText.value = "";
+  renderNotesList();
+}
+
+/* ... rest of your existing JS continues unchanged ... */
 
 if (studentsBtn) {
   studentsBtn.addEventListener("click", (e) => {
@@ -739,6 +704,11 @@ if (gradeFilterBtn) {
 if (studentOverlay) {
   studentOverlay.addEventListener("click", (e) => {
     if (e.target === studentOverlay) closeStudentList();
+  });
+}
+if (notesOverlay) {
+  notesOverlay.addEventListener("click", (e) => {
+    if (e.target === notesOverlay) closeNotesModal();
   });
 }
 </script>
