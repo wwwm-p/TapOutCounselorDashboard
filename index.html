@@ -246,8 +246,7 @@ body.dark .dashboard-title { color:#ffffff; }
           <span style="font-weight:500; color:#334155;">Counselor Dashboard</span>
         </div>
         <span style="font-size:11px; color:#64748b; margin-top:2px;">
-          Your School Name Here
-          <span style="margin-left:6px; color:#94a3b8;">• Current Term Here</span>
+          <span class="school-info">Your School Name Here • Current Term Here</span>
         </span>
       </div>
     </div>
@@ -450,7 +449,10 @@ const dotOrange = document.getElementById("dot-orange");
 const dotYellow = document.getElementById("dot-yellow");
 const dotGreen = document.getElementById("dot-green");
 
-const counselors = { miap2k10:"1234", kmcconnell:"1234", gsorbi:"1234", apanlilio:"1234", aturner:"1234", cfilson:"1234" };
+let students = [];
+let appointmentsCache = [];
+let readMessages = new Set();
+
 let currentMonth = new Date();
 let pendingDate = null;
 let selectedStudent = null;
@@ -462,21 +464,11 @@ let selectedApptId = null;
 let expandedDate = null;
 
 let currentGradeFilter = "All";
-let currentNotesStudentKey = null;
+let currentNotesStudentId = null;
 let currentNotesStudentName = "";
 let selectedNoteIndex = null;
 
 const gradeFilters = ["All", "9", "10", "11", "12"];
-const exampleStudents = [
-  { firstName: "Aaliyah", lastName: "Brown", grade: "9" },
-  { firstName: "Ethan", lastName: "Carter", grade: "10" },
-  { firstName: "Isabella", lastName: "Diaz", grade: "11" },
-  { firstName: "Liam", lastName: "Evans", grade: "12" },
-  { firstName: "Maya", lastName: "Foster", grade: "10" },
-  { firstName: "Noah", lastName: "Garcia", grade: "9" },
-  { firstName: "Olivia", lastName: "Harris", grade: "11" },
-  { firstName: "Zoe", lastName: "King", grade: "12" }
-];
 
 // ---------- AUTH ----------
 loginForm.onsubmit = async e => {
@@ -488,26 +480,44 @@ loginForm.onsubmit = async e => {
   } else alert("Invalid login");
 };
 
-async function sisLogin(usernameVal, passwordVal){
-  if(counselors[usernameVal] && counselors[usernameVal] === passwordVal){
-    return {success:true, counselorId:usernameVal};
-  }
-  return {success:false};
+async function sisLogin(username, password){
+  const res = await fetch("/api/login",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ username, password })
+  });
+  return await res.json();
 }
 
 function showDashboard(){
   loginScreen.style.display="none";
   dashboardScreen.style.display="block";
   profileBubble.textContent = localStorage.getItem("loggedInCounselor").slice(0,2).toUpperCase();
+  loadStudents();
+  loadSchoolInfo();
   loadMessages();
   checkNotifications();
 }
 
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 
+// ---------- SCHOOL INFO ----------
+async function loadSchoolInfo(){
+  const res = await fetch("/api/schoolInfo");
+  const data = await res.json();
+  const el = document.querySelector(".dashboard-title span:last-child");
+  if(el) el.textContent = data.schoolName + " • " + data.term;
+}
+
 // ---------- STUDENTS + NOTES ----------
+async function loadStudents(){
+  const res = await fetch("/api/students");
+  students = await res.json();
+  renderStudentList();
+}
+
 function renderStudentList(){
-  const sorted = exampleStudents.slice().sort((a,b)=>{
+  const sorted = students.slice().sort((a,b)=>{
     const last = a.lastName.localeCompare(b.lastName);
     if(last !== 0) return last;
     return a.firstName.localeCompare(b.firstName);
@@ -544,10 +554,9 @@ function openStudentList(){
   studentOverlay.style.display = "flex";
 }
 function closeStudentList(){ studentOverlay.style.display = "none"; }
-function getStudentKey(student){ return `${student.lastName.toLowerCase()}-${student.firstName.toLowerCase()}-${student.grade}`; }
 
 function openNotesModal(student){
-  currentNotesStudentKey = getStudentKey(student);
+  currentNotesStudentId = student.id;
   currentNotesStudentName = `${student.firstName} ${student.lastName}`;
   notesTitle.textContent = `Notes — ${currentNotesStudentName}`;
   selectedNoteIndex = null;
@@ -563,19 +572,22 @@ function closeNotesModal(){
   selectedNoteIndex = null;
 }
 
-function loadNotesForStudent(){
-  const allNotes = JSON.parse(localStorage.getItem("studentNotes") || "{}");
-  return allNotes[currentNotesStudentKey] || [];
+async function loadNotesForStudent(studentId){
+  const res = await fetch(`/api/notes?student=${studentId}`);
+  return await res.json();
 }
 
-function saveNotesForStudent(notes){
-  const allNotes = JSON.parse(localStorage.getItem("studentNotes") || "{}");
-  allNotes[currentNotesStudentKey] = notes;
-  localStorage.setItem("studentNotes", JSON.stringify(allNotes));
+async function saveNoteToDb(studentId, text){
+  await fetch("/api/notes",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({ student:studentId, text })
+  });
 }
 
-function renderNotesList(){
-  const notes = loadNotesForStudent();
+async function renderNotesList(){
+  if(!currentNotesStudentId) return;
+  const notes = await loadNotesForStudent(currentNotesStudentId);
   notesList.innerHTML = "";
   if(notes.length === 0){
     const empty = document.createElement("li");
@@ -608,12 +620,11 @@ function selectNote(idx, note){
   renderNotesList();
 }
 
-function saveNote(){
+async function saveNote(){
   const text = newNoteText.value.trim();
   if(!text) { alert("Please enter a note."); return; }
-  const notes = loadNotesForStudent();
-  notes.unshift({ text, date: new Date().toLocaleString() });
-  saveNotesForStudent(notes);
+  if(!currentNotesStudentId) return;
+  await saveNoteToDb(currentNotesStudentId, text);
   newNoteText.value = "";
   renderNotesList();
 }
@@ -665,11 +676,11 @@ function buildMultiPagePdf(pages){
   return pdf;
 }
 
-function downloadAllNotesPdf(){
-  if(!currentNotesStudentName || !currentNotesStudentKey){
+async function downloadAllNotesPdf(){
+  if(!currentNotesStudentName || !currentNotesStudentId){
     alert("Select a student first."); return;
   }
-  const notes = loadNotesForStudent();
+  const notes = await loadNotesForStudent(currentNotesStudentId);
   if(notes.length === 0){
     alert("No notes to download."); return;
   }
@@ -684,7 +695,6 @@ function downloadAllNotesPdf(){
   const oldest = notes[notes.length - 1]?.date || "N/A";
   const generated = new Date().toLocaleString();
 
-  // Cover page
   let y = pageHeight - margin;
   let cover = "";
   cover += `/F1 18 Tf\n`;
@@ -700,7 +710,6 @@ function downloadAllNotesPdf(){
   cover += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText("Generated: " + generated)}) Tj\n`;
   pages.push(cover);
 
-  // One page per note
   notes.forEach((n, idx)=>{
     let y2 = pageHeight - margin;
     let content = "";
@@ -736,59 +745,51 @@ function downloadAllNotesPdf(){
 }
 
 // ---------- MESSAGES / CALENDAR ----------
+async function fetchMessages(counselorId){
+  const res = await fetch(`/api/counselorRequests?counselor_id=${counselorId}`);
+  return await res.json();
+}
+
+async function markMessageRead(msgId){
+  readMessages.add(msgId);
+  return true;
+}
+
+async function fetchAppointments(){
+  const counselor = localStorage.getItem("loggedInCounselor");
+  const res = await fetch(`/api/appointments?counselor_id=${counselor}`);
+  return await res.json();
+}
+
+async function saveAppointment(data){
+  const res = await fetch("/api/appointment",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify(data)
+  });
+  return await res.json();
+}
+
 function normalizeUrgencyColor(value){
   const allowed = ["red","orange","yellow","green"];
   return allowed.includes(value) ? value : "green";
 }
-function ensureAppointmentKeys(){
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  let changed = false;
-  appts.forEach((a, idx)=>{
-    if(!a.key){
-      a.key = `appt-${a.date}-${idx}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
-      changed = true;
-    }
-  });
-  if(changed) localStorage.setItem("appointments", JSON.stringify(appts));
-  return appts;
+function ensureAppointmentKeys(appts){
+  return appts.map((a, idx)=>({
+    ...a,
+    key: a.key || a.id || `${a.date}-${a.name || "appt"}-${idx}`
+  }));
 }
-
-// Fake data
-async function fetchMessages(counselorId){
-  const data = [
-    {studentId:"s1", firstName:"John", lastName:"Doe", grade:"10", reason:"I’m in Crisis", urgency:"I’m in Crisis", notes:"Needs immediate attention", dateTime:"2026-02-15 10:12", counselor:counselorId},
-    {studentId:"s2", firstName:"Jane", lastName:"Smith", grade:"11", reason:"Feeling a Little Off", urgency:"Feeling a Little Off", notes:"", dateTime:"2026-02-15 11:00", counselor:counselorId}
-  ];
-  localStorage.setItem("studentMessages", JSON.stringify(data));
-  return data;
-}
-async function markMessageRead(msgId){
-  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
-  readMap[msgId] = true;
-  localStorage.setItem("readMessages", JSON.stringify(readMap));
-  return true;
-}
-async function fetchAppointments(){
-  const data = [{key:"appt-1", date:"2026-02-15", name:"John Doe", urgency:"red"}];
-  const existing = JSON.parse(localStorage.getItem("appointments")||"[]");
-  if(existing.length === 0){
-    localStorage.setItem("appointments", JSON.stringify(data));
-    return data;
-  }
-  return existing;
-}
-async function saveAppointment(){ return {success:true}; }
 
 async function loadMessages(){
   const counselor = localStorage.getItem("loggedInCounselor");
   const data = await fetchMessages(counselor);
-  const appointments = await fetchAppointments();
-  const scheduledKeys = new Set(appointments.map(a=>a.key));
+  appointmentsCache = ensureAppointmentKeys(await fetchAppointments());
+  const scheduledKeys = new Set(appointmentsCache.map(a=>a.key));
 
   document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
   [dotRed,dotOrange,dotYellow,dotGreen].forEach(d=>d.style.display="none");
 
-  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
   const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
 
   data.forEach((m)=>{
@@ -809,7 +810,7 @@ async function loadMessages(){
       <div class="message-meta">Sent: ${m.dateTime}</div>
     `;
     const statusDot = document.createElement("span");
-    statusDot.className = readMap[m.studentId] ? "message-read" : "message-unread";
+    statusDot.className = readMessages.has(m.studentId) ? "message-read" : "message-unread";
     card.appendChild(statusDot);
     card.onclick = async ()=>{
       await markMessageRead(m.studentId);
@@ -836,12 +837,13 @@ messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) 
 function goToCalendarSchedule(){ closeMessage(); calendarMode = "schedule"; openCalendar(); }
 function openCalendarViewOnly(){ calendarMode = "view"; pendingDate = null; openCalendar(); }
 
-function openCalendar(){
+async function openCalendar(){
   calendarOverlay.style.display="flex";
   continueBtn.style.display = calendarMode === "schedule" ? "inline-block" : "none";
   editBtn.style.display = calendarMode === "view" ? "inline-block" : "none";
   setEditMode(false);
   expandedDate = null;
+  appointmentsCache = ensureAppointmentKeys(await fetchAppointments());
   renderCalendar();
 }
 function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; calendarMode="view"; setEditMode(false); expandedDate=null; }
@@ -873,7 +875,7 @@ function renderCalendar(){
   const daysInMonth=new Date(y,m+1,0).getDate();
   for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
 
-  const appts = ensureAppointmentKeys();
+  const appts = appointmentsCache;
 
   for(let d=1; d<=daysInMonth; d++){
     const key=`${y}-${m}-${d}`;
@@ -942,15 +944,9 @@ function renderCalendar(){
   }
 }
 
-function moveAppointment(apptId, newDate){
-  let appts = ensureAppointmentKeys();
-  let idx = -1;
-  for(let i=0;i<appts.length;i++){
-    if(getApptId(appts[i], i) === apptId){ idx = i; break; }
-  }
-  if(idx === -1) return;
-  appts[idx].date = newDate;
-  localStorage.setItem("appointments",JSON.stringify(appts));
+async function moveAppointment(apptId, newDate){
+  await saveAppointment({ appointmentId: apptId, date: newDate });
+  appointmentsCache = ensureAppointmentKeys(await fetchAppointments());
   selectedApptId = null;
   renderCalendar();
   checkNotifications();
@@ -967,15 +963,17 @@ async function confirmAppointment(){
   if(!selectedStudent || !selectedUrgency || !pendingDate || !selectedKey){
     alert("Select a date first."); return;
   }
-  const res = await saveAppointment({studentId:selectedKey, urgency:selectedUrgency, date:pendingDate, msgId:selectedKey});
+  const res = await saveAppointment({
+    studentId:selectedKey,
+    urgency:selectedUrgency,
+    date:pendingDate,
+    msgId:selectedKey
+  });
   if(res.success){
-    let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-    appts = appts.filter(a=>a.key !== selectedKey);
-    appts.push({date: pendingDate, urgency: normalizeUrgencyColor(selectedUrgency), name: selectedStudent, key: selectedKey});
-    localStorage.setItem("appointments", JSON.stringify(appts));
     pendingDate=null;
     closeCalendar();
     loadMessages();
+    appointmentsCache = ensureAppointmentKeys(await fetchAppointments());
     renderCalendar();
   } else alert("Failed to schedule appointment.");
 }
@@ -983,7 +981,7 @@ async function confirmAppointment(){
 async function checkNotifications(){
   const counselor=localStorage.getItem("loggedInCounselor");
   const students=await fetchMessages(counselor);
-  const appointments=await fetchAppointments();
+  const appointments=ensureAppointmentKeys(await fetchAppointments());
   const crisisStudents=students.filter(s=>s.urgency==="I’m in Crisis");
   const todayDate=new Date();
   const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
@@ -1000,7 +998,7 @@ async function checkNotifications(){
   apptToday.forEach(a=>{ const div=document.createElement("div"); div.textContent=`📅 Appointment today: ${a.name}`; bellDropdown.appendChild(div); });
 }
 
-// ---------- GLOBAL UI WIRING ----------
+// ---------- UI WIRING ----------
 notifBell.onclick=(e)=>{
   e.stopPropagation();
   profileDropdown.style.display = "none";
