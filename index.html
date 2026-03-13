@@ -157,6 +157,74 @@ body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; 
   box-shadow:0 8px 18px rgba(0,112,201,0.18);
 }
 
+/* ---------- STUDENT LIST ---------- */
+.student-overlay {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:2500;
+}
+.student-modal {
+  width:min(760px, 92vw);
+  background:#ffffff;
+  border-radius:16px;
+  padding:18px;
+  box-shadow:0 18px 40px rgba(0,0,0,0.25);
+}
+.student-modal-header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:10px;
+}
+.student-modal h3 { margin:0; }
+.student-list {
+  list-style:none;
+  margin:0;
+  padding:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.student-item {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:10px 12px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  background:#f9fafb;
+}
+.student-name {
+  font-weight:600;
+}
+.student-actions {
+  display:flex;
+  gap:8px;
+}
+.student-actions button {
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid #e5e7eb;
+  background:#ffffff;
+  cursor:pointer;
+  font-weight:600;
+}
+.student-actions .primary {
+  border-color:#0070c9;
+  background:#0070c9;
+  color:#ffffff;
+}
+body.dark .student-modal { background:#0f172a; color:#e5e7eb; }
+body.dark .student-item { background:#111827; border-color:#1f2937; }
+body.dark .student-actions button { background:#111827; color:#e5e7eb; border-color:#1f2937; }
+body.dark .student-actions .primary { background:#0070c9; border-color:#0070c9; color:#ffffff; }
+
 /* ---------- URGENCY ROWS ---------- */
 .urgency-row {
   position:relative;
@@ -321,7 +389,7 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 
 .red { background:red; }
 .orange { background:orange; }
-.yellow { background:gold; }
+yellow { background:gold; }
 .green { background:green; }
 
 /* Edit mode affordances */
@@ -383,7 +451,7 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
         <input id="searchBar" class="search-input" placeholder="Search students..." />
       </div>
       <div style="width:34px; height:34px; border-radius:50%; background:#ffffff; border:2px solid #0070c9; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:bold; color:#0070c9;">SCHOOL</div>
-      <button style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
+      <button id="studentsBtn" style="padding:8px 16px; border-radius:999px; border:1px solid #e6e6e6; background:#ffffff; box-shadow:0 4px 14px rgba(0,0,0,0.06); cursor:pointer; font-size:14px; font-weight:600; color:#2b2b2b;">Students</button>
       <button class="calendar-btn" onclick="openCalendarViewOnly()">📅</button>
       <div class="notif-wrap">
         <button class="notif-btn" id="notifBell">
@@ -408,6 +476,17 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   <div class="urgency-row" id="orange-row"><span class="urgency-dot" id="dot-orange"></span><div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Elevated Risk</h2></div><button class="toggle-btn" onclick="toggleMessages('orange-row')">Hide Messages</button></div><div class="messages"></div></div>
   <div class="urgency-row" id="yellow-row"><span class="urgency-dot" id="dot-yellow"></span><div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Moderate</h2></div><button class="toggle-btn" onclick="toggleMessages('yellow-row')">Hide Messages</button></div><div class="messages"></div></div>
   <div class="urgency-row" id="green-row"><span class="urgency-dot" id="dot-green"></span><div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div><button class="toggle-btn" onclick="toggleMessages('green-row')">Hide Messages</button></div><div class="messages"></div></div>
+</div>
+
+<!-- STUDENT LIST MODAL -->
+<div class="student-overlay" id="studentOverlay">
+  <div class="student-modal">
+    <div class="student-modal-header">
+      <h3>Students (A–Z)</h3>
+      <button type="button" onclick="closeStudentList()">Close</button>
+    </div>
+    <ul class="student-list" id="studentList"></ul>
+  </div>
 </div>
 
 <!-- MESSAGE MODAL -->
@@ -467,6 +546,9 @@ const editBtn = document.getElementById("editBtn");
 const continueBtn = document.getElementById("continueBtn");
 const username = document.getElementById("username");
 const password = document.getElementById("password");
+const studentsBtn = document.getElementById("studentsBtn");
+const studentOverlay = document.getElementById("studentOverlay");
+const studentList = document.getElementById("studentList");
 
 const dotRed = document.getElementById("dot-red");
 const dotOrange = document.getElementById("dot-orange");
@@ -483,6 +565,17 @@ let calendarMode = "view";
 let editMode = false;
 let selectedApptId = null;
 let expandedDate = null;
+
+const exampleStudents = [
+  { firstName: "Aaliyah", lastName: "Brown", grade: "9" },
+  { firstName: "Ethan", lastName: "Carter", grade: "10" },
+  { firstName: "Isabella", lastName: "Diaz", grade: "11" },
+  { firstName: "Liam", lastName: "Evans", grade: "12" },
+  { firstName: "Maya", lastName: "Foster", grade: "10" },
+  { firstName: "Noah", lastName: "Garcia", grade: "9" },
+  { firstName: "Olivia", lastName: "Harris", grade: "11" },
+  { firstName: "Zoe", lastName: "King", grade: "12" }
+];
 
 // ----------------- Authentication -----------------
 loginForm.onsubmit = async e => {
@@ -519,6 +612,49 @@ function showDashboard(){
 }
 
 function logout(){ localStorage.removeItem("loggedInCounselor"); location.reload(); }
+
+function openStudentList(){
+  if(!studentOverlay || !studentList) return;
+  const sorted = exampleStudents.slice().sort((a,b)=>{
+    const last = a.lastName.localeCompare(b.lastName);
+    if(last !== 0) return last;
+    return a.firstName.localeCompare(b.firstName);
+  });
+  studentList.innerHTML = "";
+  sorted.forEach((s)=>{
+    const li = document.createElement("li");
+    li.className = "student-item";
+
+    const name = document.createElement("div");
+    name.className = "student-name";
+    name.textContent = `${s.lastName}, ${s.firstName} (Grade ${s.grade})`;
+
+    const actions = document.createElement("div");
+    actions.className = "student-actions";
+
+    const notesBtn = document.createElement("button");
+    notesBtn.type = "button";
+    notesBtn.textContent = "Notes";
+    notesBtn.onclick = () => alert(`Notes for ${s.firstName} ${s.lastName}`);
+
+    const historyBtn = document.createElement("button");
+    historyBtn.type = "button";
+    historyBtn.className = "primary";
+    historyBtn.textContent = "Appointments";
+    historyBtn.onclick = () => alert(`Appointment history for ${s.firstName} ${s.lastName}`);
+
+    actions.appendChild(notesBtn);
+    actions.appendChild(historyBtn);
+    li.appendChild(name);
+    li.appendChild(actions);
+    studentList.appendChild(li);
+  });
+  studentOverlay.style.display = "flex";
+}
+
+function closeStudentList(){
+  if(studentOverlay) studentOverlay.style.display = "none";
+}
 
 function normalizeUrgencyColor(value){
   const allowed = ["red","orange","yellow","green"];
@@ -852,6 +988,17 @@ profileWrap.addEventListener("click", (e) => {
   profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
 });
 profileDropdown.addEventListener("click", (e) => e.stopPropagation());
+if (studentsBtn) {
+  studentsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    openStudentList();
+  });
+}
+if (studentOverlay) {
+  studentOverlay.addEventListener("click", (e) => {
+    if (e.target === studentOverlay) closeStudentList();
+  });
+}
 signOutBtn.onclick = () => logout();
 weeklyAnalyticsBtn.onclick = () => {};
 
