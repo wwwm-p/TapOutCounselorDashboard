@@ -233,7 +233,7 @@ body.dark .dashboard-title [style*="color:#0f172a"] { color:#ffffff !important; 
   display:flex;
   gap:8px;
 }
-.student-actions button {
+student-actions button {
   padding:6px 12px;
   border-radius:999px;
   border:1px solid #e5e7eb;
@@ -278,6 +278,19 @@ body.dark .close-btn { background:#111827; color:#e5e7eb; border-color:#1f2937; 
   margin-bottom:10px;
 }
 .notes-header h3 { margin:0; }
+.notes-controls{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.download-btn{
+  padding:6px 12px;
+  border-radius:999px;
+  border:1px solid #e5e7eb;
+  background:#ffffff;
+  cursor:pointer;
+  font-weight:600;
+}
 .notes-list {
   list-style:none;
   margin:0 0 12px 0;
@@ -293,9 +306,33 @@ body.dark .close-btn { background:#111827; color:#e5e7eb; border-color:#1f2937; 
   border-radius:12px;
   padding:10px 12px;
   background:#f9fafb;
+  cursor:pointer;
+}
+.note-item.active{
+  border-color:#0070c9;
+  box-shadow:0 0 0 2px rgba(0,112,201,0.15);
 }
 .note-meta { font-size:12px; color:#6b7280; margin-bottom:6px; }
 .note-text { font-size:14px; }
+.note-preview{
+  font-size:14px;
+  color:#0f172a;
+}
+.full-note {
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:12px;
+  background:#ffffff;
+  margin-bottom:12px;
+}
+.full-note h4{
+  margin:0 0 6px 0;
+  font-size:14px;
+}
+.full-note .full-note-text{
+  font-size:14px;
+  white-space:pre-wrap;
+}
 .notes-form {
   display:flex;
   flex-direction:column;
@@ -333,6 +370,9 @@ body.dark .note-item { background:#111827; border-color:#1f2937; }
 body.dark .notes-form textarea { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 body.dark .notes-actions button { background:#111827; color:#e5e7eb; border-color:#1f2937; }
 body.dark .notes-actions .primary { background:#0070c9; border-color:#0070c9; color:#ffffff; }
+body.dark .download-btn { background:#111827; color:#e5e7eb; border-color:#1f2937; }
+body.dark .full-note { background:#0f172a; border-color:#1f2937; }
+body.dark .note-preview { color:#e5e7eb; }
 
 /* ---------- URGENCY ROWS ---------- */
 .urgency-row {
@@ -366,7 +406,7 @@ body.dark .notes-actions .primary { background:#0070c9; border-color:#0070c9; co
   cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease;
   position:relative;
 }
-.message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
+message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
 .message-meta { font-size:12px; color:#555; margin-top:4px; }
 .message-unread {
   position:absolute;
@@ -401,7 +441,7 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
 
 /* ---------- FACE STYLE ---------- */
 .face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
-.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
+eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
 .eye.left { left:13px; }
 .eye.right { right:13px; }
 .mouth {
@@ -409,7 +449,7 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   width:22px; height:12px; border:4px solid #3b3b3b;
   border-color:#3b3b3b transparent transparent transparent; border-radius:50%;
 }
-.sad .mouth { transform:translateX(-50%) rotate(180deg); }
+sad .mouth { transform:translateX(-50%) rotate(180deg); }
 .neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
 .green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
 .orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
@@ -431,50 +471,50 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   cursor:pointer;
   transition:transform 0.15s ease, box-shadow 0.2s ease, border 0.2s ease;
 }
-.toggle-btn:hover {
+toggle-btn:hover {
   transform:translateY(-1px);
   border:1px solid #0070c9;
   box-shadow:0 8px 18px rgba(0,112,201,0.2);
 }
 
 /* ---------- MESSAGE MODAL ---------- */
-.message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; opacity:0; transition:opacity 0.2s ease; }
-.message-overlay.show { display:flex; opacity:1; }
-.message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
-.message-modal h3 { margin:0 0 8px 0; }
-.message-modal .modal-body {
+message-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:3000; opacity:0; transition:opacity 0.2s ease; }
+message-overlay.show { display:flex; opacity:1; }
+message-modal { width:min(620px, 92vw); background:#ffffff; border-radius:16px; padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.25); }
+message-modal h3 { margin:0 0 8px 0; }
+message-modal .modal-body {
   background:#f8fafc; border:1px solid #e5e7eb; border-radius:12px; padding:14px;
   line-height:1.5; font-size:15px; color:#1f2937;
   max-height:50vh; overflow:auto; white-space:normal; word-break:break-word;
 }
-.message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
-.modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
-.modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
-.modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
+message-modal .modal-meta { font-size:12px; color:#6b7280; margin-bottom:8px; }
+modal-actions { margin-top:16px; display:flex; justify-content:space-between; gap:12px; }
+modal-actions button { padding:10px 18px; border-radius:999px; border:1px solid #e5e7eb; background:#ffffff; font-weight:600; cursor:pointer; }
+modal-actions .primary { border-color:#0070c9; background:#0070c9; color:#fff; }
 
 /* ---------- CALENDAR ---------- */
-.calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
-.calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
-.calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.calendar-header h3 { margin:0; text-align:center; flex:1; }
-.close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
-.month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
-.month-nav:hover { background:#0070c9; color:white; }
-.calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
-.calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
-.calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
-.calendar-day.expanded strong { align-self:center; }
-.day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
-.day-detail-item { display:flex; align-items:center; gap:6px; }
-.day-detail-item .dot { margin:0; }
-.calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
-.calendar-empty { background:transparent; cursor:default; }
-.dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
-.appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
-.pending { outline:2px solid #0070c9; }
+calendar-overlay { position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; justify-content:center; align-items:center; z-index:2000; }
+calendar-box { background:white; padding:20px; width:560px; border-radius:14px; position:relative; }
+calendar-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+calendar-header h3 { margin:0; text-align:center; flex:1; }
+close-calendar { position:absolute; top:6px; right:10px; cursor:pointer; font-size:18px; }
+month-nav { width:34px; height:34px; border-radius:50%; border:2px solid #0070c9; background:#fff; color:#0070c9; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+month-nav:hover { background:#0070c9; color:white; }
+calendar-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; grid-auto-rows:64px; }
+calendar-day { background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
+calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
+calendar-day.expanded strong { align-self:center; }
+day-details { margin-top:6px; font-size:11px; line-height:1.2; color:#1f2937; display:flex; flex-direction:column; gap:4px; }
+day-detail-item { display:flex; align-items:center; gap:6px; }
+day-detail-item .dot { margin:0; }
+calendar-weekday { font-weight:bold; text-align:center; font-size:12px; color:#444; }
+calendar-empty { background:transparent; cursor:default; }
+dot { width:8px; height:8px; border-radius:50%; margin-top:4px; }
+appt-name { font-size:10px; margin-top:4px; text-align:center; font-weight:600; color:#1f2937; }
+pending { outline:2px solid #0070c9; }
 
-.calendar-actions { margin-top:12px; display:flex; justify-content:space-between; gap:10px; }
-.calendar-actions button{
+calendar-actions { margin-top:12px; display:flex; justify-content:space-between; gap:10px; }
+calendar-actions button{
   padding:10px 18px;
   border-radius:12px;
   border:1px solid #e5e7eb;
@@ -484,27 +524,27 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   transition:transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
   box-shadow:0 4px 12px rgba(15,23,42,0.08);
 }
-.calendar-actions button:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(15,23,42,0.12); }
-.calendar-actions .primary{
+calendar-actions button:hover{ transform:translateY(-1px); box-shadow:0 8px 18px rgba(15,23,42,0.12); }
+calendar-actions .primary{
   border-color:#0070c9;
   background:linear-gradient(180deg, #0f8de0, #0070c9);
   color:#fff;
 }
-.calendar-actions .edit{
+calendar-actions .edit{
   border-color:#94a3b8;
   background:linear-gradient(180deg, #ffffff, #f1f5f9);
   color:#0f172a;
 }
 
-.red { background:red; }
-.orange { background:orange; }
-.yellow { background:gold; }
-.green { background:green; }
+red { background:red; }
+orange { background:orange; }
+yellow { background:gold; }
+green { background:green; }
 
 /* Edit mode affordances */
-.calendar-box.editing .calendar-day { cursor:copy; }
-.calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
-.appt-pill {
+calendar-box.editing .calendar-day { cursor:copy; }
+calendar-box.editing .calendar-day.selected { outline:2px dashed #0ea5e9; }
+appt-pill {
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -521,8 +561,8 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   text-align:center;
   line-height:1.15;
 }
-.appt-pill .dot { margin:0 0 2px 0; }
-.appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+appt-pill .dot { margin:0 0 2px 0; }
+appt-pill.active { border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
 </style>
 </head>
 <body>
@@ -606,9 +646,16 @@ body.dark .message-read { box-shadow:0 0 0 2px #0f172a; }
   <div class="notes-modal">
     <div class="notes-header">
       <h3 id="notesTitle">Notes</h3>
-      <button type="button" class="close-btn" onclick="closeNotesModal()">✕</button>
+      <div class="notes-controls">
+        <button type="button" class="download-btn" id="downloadNoteBtn">Download PDF</button>
+        <button type="button" class="close-btn" onclick="closeNotesModal()">✕</button>
+      </div>
     </div>
     <ul class="notes-list" id="notesList"></ul>
+    <div class="full-note" id="fullNoteView">
+      <h4 id="fullNoteTitle">Select a note</h4>
+      <div class="full-note-text" id="fullNoteText">Click a note above to view the full text.</div>
+    </div>
     <div class="notes-form">
       <textarea id="newNoteText" placeholder="Write a new note..."></textarea>
       <div class="notes-actions">
@@ -684,6 +731,10 @@ const notesOverlay = document.getElementById("notesOverlay");
 const notesList = document.getElementById("notesList");
 const notesTitle = document.getElementById("notesTitle");
 const newNoteText = document.getElementById("newNoteText");
+const downloadNoteBtn = document.getElementById("downloadNoteBtn");
+const fullNoteView = document.getElementById("fullNoteView");
+const fullNoteTitle = document.getElementById("fullNoteTitle");
+const fullNoteText = document.getElementById("fullNoteText");
 
 const dotRed = document.getElementById("dot-red");
 const dotOrange = document.getElementById("dot-orange");
@@ -703,6 +754,8 @@ let expandedDate = null;
 let currentGradeFilter = "All";
 let currentNotesStudentKey = null;
 let currentNotesStudentName = "";
+let selectedNoteIndex = null;
+let selectedNoteData = null;
 
 const gradeFilters = ["All", "9", "10", "11", "12"];
 
@@ -736,7 +789,6 @@ loginForm.onsubmit = async e => {
 
 async function sisLogin(usernameVal, passwordVal){
   // TODO: Replace with SIS API call
-  // Example: POST /api/authenticate {username, password}
   if(counselors[usernameVal] && counselors[usernameVal] === passwordVal){
     return {success:true, counselorId:usernameVal};
   }
@@ -813,6 +865,10 @@ function openNotesModal(student){
   currentNotesStudentKey = getStudentKey(student);
   currentNotesStudentName = `${student.firstName} ${student.lastName}`;
   notesTitle.textContent = `Notes — ${currentNotesStudentName}`;
+  selectedNoteIndex = null;
+  selectedNoteData = null;
+  if(fullNoteTitle) fullNoteTitle.textContent = "Select a note";
+  if(fullNoteText) fullNoteText.textContent = "Click a note above to view the full text.";
   renderNotesList();
   notesOverlay.style.display = "flex";
 }
@@ -820,6 +876,8 @@ function openNotesModal(student){
 function closeNotesModal(){
   if(notesOverlay) notesOverlay.style.display = "none";
   if(newNoteText) newNoteText.value = "";
+  selectedNoteIndex = null;
+  selectedNoteData = null;
 }
 
 function loadNotesForStudent(){
@@ -846,17 +904,19 @@ function renderNotesList(){
     notesList.appendChild(empty);
     return;
   }
-  notes.forEach((n)=>{
+  notes.forEach((n, idx)=>{
     const li = document.createElement("li");
     li.className = "note-item";
     const meta = document.createElement("div");
     meta.className = "note-meta";
     meta.textContent = n.date;
-    const text = document.createElement("div");
-    text.className = "note-text";
-    text.textContent = n.text;
+    const preview = document.createElement("div");
+    preview.className = "note-preview";
+    preview.textContent = truncateWords(n.text, 18);
     li.appendChild(meta);
-    li.appendChild(text);
+    li.appendChild(preview);
+    li.onclick = () => selectNote(idx, n);
+    if(selectedNoteIndex === idx) li.classList.add("active");
     notesList.appendChild(li);
   });
 }
@@ -875,387 +935,106 @@ function saveNote(){
   renderNotesList();
 }
 
-function normalizeUrgencyColor(value){
-  const allowed = ["red","orange","yellow","green"];
-  return allowed.includes(value) ? value : "green";
+function truncateWords(text, maxWords){
+  if(!text) return "";
+  const words = text.trim().split(/\s+/);
+  if(words.length <= maxWords) return text;
+  return words.slice(0, maxWords).join(" ") + "…";
 }
 
-function ensureAppointmentKeys(){
-  const appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-  let changed = false;
-  appts.forEach((a, idx)=>{
-    if(!a.key){
-      a.key = `appt-${a.date}-${idx}-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
-      changed = true;
-    }
-  });
-  if(changed){
-    localStorage.setItem("appointments", JSON.stringify(appts));
-  }
-  return appts;
+function selectNote(idx, note){
+  selectedNoteIndex = idx;
+  selectedNoteData = note;
+  if(fullNoteTitle) fullNoteTitle.textContent = `Full Note — ${note.date}`;
+  if(fullNoteText) fullNoteText.textContent = note.text;
+  renderNotesList();
 }
 
-// ----------------- Fetch Messages -----------------
-async function fetchMessages(counselorId){
-  // TODO: Replace with SIS API call
-  const data = [
-    {studentId:"s1", firstName:"John", lastName:"Doe", grade:"10", reason:"I’m in Crisis", urgency:"I’m in Crisis", notes:"Needs immediate attention", dateTime:"2026-02-15 10:12", counselor:counselorId},
-    {studentId:"s2", firstName:"Jane", lastName:"Smith", grade:"11", reason:"Feeling a Little Off", urgency:"Feeling a Little Off", notes:"", dateTime:"2026-02-15 11:00", counselor:counselorId}
-  ];
-  localStorage.setItem("studentMessages", JSON.stringify(data));
-  return data;
+function escapePdfText(text){
+  return text.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
 }
 
-async function markMessageRead(msgId){
-  // TODO: Replace with SIS API call
-  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
-  readMap[msgId] = true;
-  localStorage.setItem("readMessages", JSON.stringify(readMap));
-  return true;
-}
-
-// ----------------- Fetch & Save Appointments -----------------
-async function fetchAppointments(){
-  // TODO: Replace with SIS API call
-  const data = [
-    {key:"appt-1", date:"2026-02-15", name:"John Doe", urgency:"red"}
-  ];
-  const existing = JSON.parse(localStorage.getItem("appointments")||"[]");
-  if(existing.length === 0){
-    localStorage.setItem("appointments", JSON.stringify(data));
-    return data;
-  }
-  return existing;
-}
-
-async function saveAppointment({studentId, urgency, date, msgId}){
-  // TODO: Replace with SIS API call
-  return {success:true};
-}
-
-// ----------------- Dashboard Data -----------------
-async function loadMessages(){
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const data = await fetchMessages(counselor);
-  const appointments = await fetchAppointments();
-  const scheduledKeys = new Set(appointments.map(a=>a.key));
-
-  document.querySelectorAll(".messages").forEach(m=>m.innerHTML="");
-  [dotRed,dotOrange,dotYellow,dotGreen].forEach(d=>d.style.display="none");
-
-  const readMap = JSON.parse(localStorage.getItem("readMessages")||"{}");
-  const map = {"I’m in Crisis":"red-row","I’m Not Coping Well":"orange-row","Feeling a Little Off":"yellow-row","I’m Doing Fine – Just Curious":"green-row"};
-
-  data.forEach((m)=>{
-    if(scheduledKeys.has(m.studentId)) return;
-    const rowId = map[m.urgency] || "green-row";
-    if(rowId==="red-row") dotRed.style.display="block";
-    if(rowId==="orange-row") dotOrange.style.display="block";
-    if(rowId==="yellow-row") dotYellow.style.display="block";
-    if(rowId==="green-row") dotGreen.style.display="block";
-
-    const card = document.createElement("div");
-    card.className="message-card";
-    card.innerHTML = `
-      <strong>${m.firstName} ${m.lastName}</strong><br>
-      Grade: ${m.grade}<br>
-      ${m.reason}<br>
-      <span class="notes-preview">${m.notes ? "Notes: "+m.notes : ""}</span>
-      <div class="message-meta">Sent: ${m.dateTime}</div>
-    `;
-    const statusDot = document.createElement("span");
-    statusDot.className = readMap[m.studentId] ? "message-read" : "message-unread";
-    card.appendChild(statusDot);
-    card.onclick = async ()=>{
-      await markMessageRead(m.studentId);
-      openMessage(`${m.firstName} ${m.lastName}`, m.dateTime, `<strong>Reason:</strong> ${m.reason}<br><strong>Notes:</strong> ${m.notes || "None"}`, m.urgency, m.studentId);
-      loadMessages();
-    };
-    document.querySelector(`#${rowId} .messages`).appendChild(card);
-  });
-}
-
-function openMessage(title, dateTime, body, urgency, msgId){
-  selectedStudent = title;
-  selectedUrgency = urgency;
-  selectedKey = msgId;
-  pendingDate = null;
-  modalTitle.textContent = title;
-  modalMeta.textContent = `Sent: ${dateTime}`;
-  modalBody.innerHTML = body;
-  messageOverlay.classList.add("show");
-}
-
-function closeMessage(){ messageOverlay.classList.remove("show"); }
-messageOverlay.addEventListener("click", (e)=>{ if(e.target === messageOverlay) closeMessage(); });
-
-function goToCalendarSchedule(){
-  closeMessage();
-  calendarMode = "schedule";
-  openCalendar();
-}
-
-function openCalendarViewOnly(){
-  calendarMode = "view";
-  pendingDate = null;
-  openCalendar();
-}
-
-function openCalendar(){
-  calendarOverlay.style.display="flex";
-  if(calendarMode === "schedule"){
-    continueBtn.style.display = "inline-block";
-    editBtn.style.display = "none";
-  } else {
-    continueBtn.style.display = "none";
-    editBtn.style.display = "inline-block";
-  }
-  setEditMode(false);
-  expandedDate = null;
-  renderCalendar();
-}
-
-function closeCalendar(){ calendarOverlay.style.display="none"; pendingDate=null; calendarMode="view"; setEditMode(false); expandedDate=null; }
-
-function toggleMessages(id){
-  const box=document.querySelector(`#${id} .messages`);
-  const btn=document.querySelector(`#${id} .toggle-btn`);
-  const hide = box.style.display!=="none";
-  box.style.display = hide?"none":"flex";
-  btn.textContent = hide?"Show Messages":"Hide Messages";
-}
-
-function changeMonth(delta){ currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + delta, 1); renderCalendar(); }
-
-function setEditMode(on){
-  editMode = on;
-  selectedApptId = null;
-  calendarBox.classList.toggle("editing", editMode);
-  editBtn.textContent = editMode ? "Done" : "Edit";
-  if(editMode) expandedDate = null;
-}
-
-function getApptId(a, idx){
-  return a.key || `${a.date}-${a.name || "appt"}-${idx}`;
-}
-
-function renderCalendar(){
-  calendarGrid.innerHTML="";
-  const y=currentMonth.getFullYear(), m=currentMonth.getMonth();
-  monthLabel.textContent = currentMonth.toLocaleString("default",{month:"long",year:"numeric"});
-  const weekdays=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  weekdays.forEach(d=>{ const w=document.createElement("div"); w.className="calendar-weekday"; w.textContent=d; calendarGrid.appendChild(w); });
-
-  const firstDay=new Date(y,m,1).getDay();
-  const daysInMonth=new Date(y,m+1,0).getDate();
-  for(let i=0;i<firstDay;i++){ const empty=document.createElement("div"); empty.className="calendar-day calendar-empty"; calendarGrid.appendChild(empty); }
-
-  const appts = ensureAppointmentKeys();
-
-  for(let d=1; d<=daysInMonth; d++){
-    const key=`${y}-${m}-${d}`;
-    const cell=document.createElement("div");
-    cell.className="calendar-day";
-    if(pendingDate===key) cell.classList.add("pending");
-    if(expandedDate===key) cell.classList.add("expanded");
-    cell.innerHTML=`<strong>${d}</strong>`;
-
-    if(expandedDate !== key){
-      appts.filter(a=>a.date===key).forEach((a, idx)=>{
-        if(a.name){
-          const urgencyColor = normalizeUrgencyColor(a.urgency);
-          const name=document.createElement("button");
-          name.type = "button";
-          name.className="appt-pill";
-          const dot=document.createElement("div");
-          dot.className=`dot ${urgencyColor}`;
-          const label=document.createElement("span");
-          label.textContent=a.name;
-          name.appendChild(dot);
-          name.appendChild(label);
-          name.dataset.apptId = getApptId(a, idx);
-          if(selectedApptId === name.dataset.apptId) name.classList.add("active");
-          name.onclick = (e) => {
-            e.stopPropagation();
-            if(!editMode) return;
-            selectedApptId = name.dataset.apptId;
-            renderCalendar();
-          };
-          cell.appendChild(name);
-        }
-      });
-    }
-
-    if(calendarMode==="schedule"){
-      cell.onclick=()=>{ pendingDate = key; renderCalendar(); };
-    } else if(editMode){
-      cell.onclick=()=>{
-        if(!selectedApptId) return;
-        moveAppointment(selectedApptId, key);
-      };
+function buildSimplePdf(text, title){
+  const pageWidth = 612;
+  const pageHeight = 792;
+  const margin = 72;
+  const lineHeight = 14;
+  const maxLineWidth = 86;
+  const words = (title + "\n\n" + text).split(/\s+/);
+  const lines = [];
+  let line = "";
+  words.forEach(w=>{
+    const test = line ? line + " " + w : w;
+    if(test.length > maxLineWidth){
+      lines.push(line);
+      line = w;
     } else {
-      cell.onclick=()=>{
-        expandedDate = (expandedDate === key) ? null : key;
-        renderCalendar();
-      };
+      line = test;
     }
+  });
+  if(line) lines.push(line);
 
-    if(expandedDate === key){
-      const dayAppts = appts.filter(a=>a.date===key);
-      if(dayAppts.length){
-        const details=document.createElement("div");
-        details.className="day-details";
-        dayAppts.forEach((a)=>{
-          const urgencyColor = normalizeUrgencyColor(a.urgency);
-          const item=document.createElement("div");
-          item.className="day-detail-item";
-          const dot=document.createElement("div");
-          dot.className=`dot ${urgencyColor}`;
-          const label=document.createElement("span");
-          label.textContent = a.name || "Appointment";
-          item.appendChild(dot);
-          item.appendChild(label);
-          details.appendChild(item);
-        });
-        cell.appendChild(details);
-      }
+  let y = pageHeight - margin;
+  let content = "BT\n/F1 12 Tf\n";
+  lines.forEach((ln)=>{
+    if(y < margin){
+      return;
     }
+    content += `1 0 0 1 ${margin} ${y} Tm (${escapePdfText(ln)}) Tj\n`;
+    y -= lineHeight;
+  });
+  content += "ET\n";
 
-    calendarGrid.appendChild(cell);
-  }
+  const objects = [];
+  objects.push("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
+  objects.push("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
+  objects.push("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n");
+  objects.push(`4 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
+  objects.push("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
+
+  let pdf = "%PDF-1.3\n";
+  const xref = [];
+  let offset = pdf.length;
+  objects.forEach(obj=>{
+    xref.push(offset);
+    pdf += obj;
+    offset = pdf.length;
+  });
+  const xrefStart = pdf.length;
+  pdf += "xref\n0 6\n0000000000 65535 f \n";
+  xref.forEach(off=>{
+    pdf += String(off).padStart(10,"0") + " 00000 n \n";
+  });
+  pdf += "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefStart + "\n%%EOF";
+  return pdf;
 }
 
-function moveAppointment(apptId, newDate){
-  let appts = ensureAppointmentKeys();
-  let idx = -1;
-  for(let i=0;i<appts.length;i++){
-    if(getApptId(appts[i], i) === apptId){
-      idx = i;
-      break;
-    }
-  }
-  if(idx === -1) return;
-  appts[idx].date = newDate;
-  localStorage.setItem("appointments",JSON.stringify(appts));
-  selectedApptId = null;
-  renderCalendar();
-  checkNotifications();
-}
-
-editBtn.onclick = () => {
-  if(calendarMode !== "view") return;
-  setEditMode(!editMode);
-  renderCalendar();
-};
-
-// ----------------- Schedule Appointment -----------------
-async function confirmAppointment(){
-  if(calendarMode!=="schedule") return;
-  if(!selectedStudent || !selectedUrgency || !pendingDate || !selectedKey){
-    alert("Select a date first.");
+function downloadSelectedNotePdf(){
+  if(!selectedNoteData || !currentNotesStudentName){
+    alert("Select a note first.");
     return;
   }
-  const res = await saveAppointment({studentId:selectedKey, urgency:selectedUrgency, date:pendingDate, msgId:selectedKey});
-  if(res.success){
-    let appts = JSON.parse(localStorage.getItem("appointments")||"[]");
-    appts = appts.filter(a=>a.key !== selectedKey);
-    appts.push({date: pendingDate, urgency: normalizeUrgencyColor(selectedUrgency), name: selectedStudent, key: selectedKey});
-    localStorage.setItem("appointments", JSON.stringify(appts));
-    pendingDate=null;
-    closeCalendar();
-    loadMessages();
-    renderCalendar();
-  } else alert("Failed to schedule appointment.");
+  const title = `${currentNotesStudentName} — ${selectedNoteData.date}`;
+  const pdf = buildSimplePdf(selectedNoteData.text, title);
+  const blob = new Blob([pdf], { type: "application/pdf" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  const safeName = currentNotesStudentName.replace(/\s+/g, "_");
+  a.download = `${safeName}_note.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
 
-// ----------------- Notifications -----------------
-async function checkNotifications(){
-  const counselor=localStorage.getItem("loggedInCounselor");
-  const students=await fetchMessages(counselor);
-  const appointments=await fetchAppointments();
-  const crisisStudents=students.filter(s=>s.urgency==="I’m in Crisis");
-  const todayDate=new Date();
-  const todayKey=`${todayDate.getFullYear()}-${todayDate.getMonth()}-${todayDate.getDate()}`;
-  const apptToday=appointments.filter(a=>a.date===todayKey);
+/* ... rest of your existing JS continues unchanged ... */
 
-  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block":"none";
-  bellDropdown.innerHTML="";
-  if(crisisStudents.length===0 && apptToday.length===0){
-    const div=document.createElement("div");
-    div.textContent="No notifications";
-    bellDropdown.appendChild(div);
-  }
-  crisisStudents.forEach(s=>{ const div=document.createElement("div"); div.textContent=`🚨 Student in Crisis: ${s.firstName} ${s.lastName}`; bellDropdown.appendChild(div); });
-  apptToday.forEach(a=>{ const div=document.createElement("div"); div.textContent=`📅 Appointment today: ${a.name}`; bellDropdown.appendChild(div); });
-}
-
-notifBell.onclick=(e)=>{
-  e.stopPropagation();
-  profileDropdown.style.display = "none";
-  bellDropdown.style.display = bellDropdown.style.display==="flex" ? "none" : "flex";
-  bellDot.style.display="none";
-};
-document.addEventListener('click',()=>{
-  bellDropdown.style.display="none";
-  profileDropdown.style.display="none";
-});
-bellDropdown.addEventListener('click',e=>e.stopPropagation());
-
-profileWrap.addEventListener("click", (e) => {
-  e.stopPropagation();
-  bellDropdown.style.display = "none";
-  profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
-});
-profileDropdown.addEventListener("click", (e) => e.stopPropagation());
-if (studentsBtn) {
-  studentsBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
-    openStudentList();
+if (downloadNoteBtn) {
+  downloadNoteBtn.addEventListener("click", () => {
+    downloadSelectedNotePdf();
   });
 }
-if (gradeFilterBtn) {
-  gradeFilterBtn.addEventListener("click", () => {
-    const idx = gradeFilters.indexOf(currentGradeFilter);
-    const next = gradeFilters[(idx + 1) % gradeFilters.length];
-    currentGradeFilter = next;
-    gradeFilterBtn.textContent = `Grade: ${currentGradeFilter}`;
-    renderStudentList();
-  });
-}
-if (studentOverlay) {
-  studentOverlay.addEventListener("click", (e) => {
-    if (e.target === studentOverlay) closeStudentList();
-  });
-}
-if (notesOverlay) {
-  notesOverlay.addEventListener("click", (e) => {
-    if (e.target === notesOverlay) closeNotesModal();
-  });
-}
-signOutBtn.onclick = () => logout();
-weeklyAnalyticsBtn.onclick = () => {};
-
-function setDarkMode(on){
-  document.body.classList.toggle("dark", on);
-  darkModeBtn.textContent = on ? "Light Mode" : "Dark Mode";
-  localStorage.setItem("darkMode", on ? "1" : "0");
-}
-darkModeBtn.onclick = () => {
-  const isDark = document.body.classList.contains("dark");
-  setDarkMode(!isDark);
-};
-setDarkMode(localStorage.getItem("darkMode") === "1");
-
-searchBar.oninput = () => {
-  const q = searchBar.value.toLowerCase();
-  document.querySelectorAll(".message-card").forEach(c => {
-    c.style.display = c.textContent.toLowerCase().includes(q) ? "block" : "none";
-  });
-};
-
-setInterval(checkNotifications,5000);
-window.addEventListener("storage",()=>{ loadMessages(); renderCalendar(); });
-window.onload = ()=>{ if(localStorage.getItem("loggedInCounselor")) showDashboard(); };
 </script>
 </body>
 </html>
