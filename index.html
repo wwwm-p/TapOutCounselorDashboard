@@ -68,7 +68,7 @@ body.dark .student-card{ background:#111827; }
 .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency */
+/* Urgency summary cards (main area) */
 .urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
@@ -92,6 +92,58 @@ body.dark .student-card{ background:#111827; }
 .modal-header h3{ margin:0; }
 .modal-body{ max-height:60vh; overflow:auto; }
 .modal-actions{ margin-top:12px; display:flex; justify-content:flex-end; gap:8px; }
+
+/* OG Urgency rows inside modal */
+.urgency-row {
+  position:relative;
+  display:flex; gap:16px; margin:12px 0; padding:16px;
+  background:#fff; border-radius:12px; border-left:6px solid;
+  align-items:flex-start;
+}
+body.dark .urgency-row { background:#111827; border-color:#1f2937; }
+.urgency-dot {
+  position:absolute; top:10px; right:12px; width:10px; height:10px;
+  border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff; display:none;
+}
+#red-row { border-color:red; }
+#orange-row { border-color:orange; }
+#yellow-row { border-color:gold; }
+#green-row { border-color:green; }
+
+.urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
+.urgency-header { display:flex; align-items:center; gap:10px; }
+.messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
+.message-card {
+  width:220px; padding:8px 10px; font-size:14px;
+  background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3;
+  cursor:pointer; transition:transform 0.15s ease, box-shadow 0.2s ease;
+  position:relative;
+}
+body.dark .message-card { background:#111827; border-color:#1f2937; color:#e5e7eb; }
+.message-card:hover { transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,0.08); }
+.message-meta { font-size:12px; color:#555; margin-top:4px; }
+body.dark .message-meta { color:#9ca3af; }
+
+.message-unread {
+  position:absolute; top:8px; right:8px; width:8px; height:8px;
+  border-radius:50%; background:#ff3b30; box-shadow:0 0 0 2px #fff;
+}
+.message-read {
+  position:absolute; top:8px; right:8px; width:8px; height:8px;
+  border-radius:50%; background:#3b82f6; box-shadow:0 0 0 2px #fff;
+}
+
+/* Face icons */
+.face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
+.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
+.eye.left { left:13px; } .eye.right { right:13px; }
+.mouth { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:22px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; }
+.sad .mouth { transform:translateX(-50%) rotate(180deg); }
+.neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
+.green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
+.orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
+.red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
+.red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
 
 /* Login */
 .login-screen{ display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
@@ -190,14 +242,54 @@ body.dark .student-card{ background:#111827; }
   </div>
 </div>
 
-<!-- APPOINTMENTS MODAL -->
-<div id="apptOverlay" class="overlay">
-  <div class="modal">
+<!-- URGENCY MODAL (OG style) -->
+<div id="urgencyOverlay" class="overlay">
+  <div class="modal" style="width:min(980px, 96vw);">
     <div class="modal-header">
-      <h3 id="apptTitle">Appointments</h3>
-      <button class="pill-btn" onclick="closeAppointments()">Close</button>
+      <h3>Urgency Breakdown</h3>
+      <button class="pill-btn" onclick="closeUrgency()">Close</button>
     </div>
-    <div class="modal-body" id="apptBody"></div>
+    <div class="modal-body" id="urgencyModalBody">
+      <div class="urgency-row" id="red-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Crisis</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyRed"></div>
+      </div>
+
+      <div class="urgency-row" id="orange-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Elevated Risk</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyOrange"></div>
+      </div>
+
+      <div class="urgency-row" id="yellow-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Moderate</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyYellow"></div>
+      </div>
+
+      <div class="urgency-row" id="green-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Low Urgency</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyGreen"></div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -213,12 +305,6 @@ body.dark .student-card{ background:#111827; }
 </div>
 
 <script>
-/*
-  ===============================
-  MOCK DATA (EDIT FOR TESTING)
-  Replace with real SIS API responses.
-  ===============================
-*/
 const mockData = {
   counselors: [
     { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
@@ -228,106 +314,44 @@ const mockData = {
   schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"" },
   studentsByCounselor: {
     c1: [
-      { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10", photo:"" },
-      { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9", photo:"" },
-      { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11", photo:"" },
-      { id:"s4", firstName:"Ethan", lastName:"Carter", grade:"10", photo:"" },
-      { id:"s5", firstName:"Zoe", lastName:"King", grade:"12", photo:"" }
-    ],
-    c2: [
-      { id:"s6", firstName:"Aaliyah", lastName:"Brown", grade:"9", photo:"" },
-      { id:"s7", firstName:"Isabella", lastName:"Diaz", grade:"11", photo:"" },
-      { id:"s8", firstName:"Liam", lastName:"Evans", grade:"12", photo:"" },
-      { id:"s9", firstName:"Kai", lastName:"Miller", grade:"10", photo:"" },
-      { id:"s10", firstName:"Ava", lastName:"Young", grade:"11", photo:"" }
-    ],
-    c3: [
-      { id:"s11", firstName:"Lucas", lastName:"Hall", grade:"9", photo:"" },
-      { id:"s12", firstName:"Ella", lastName:"Moore", grade:"12", photo:"" },
-      { id:"s13", firstName:"Ryan", lastName:"Nguyen", grade:"10", photo:"" },
-      { id:"s14", firstName:"Grace", lastName:"Perez", grade:"11", photo:"" },
-      { id:"s15", firstName:"Sofia", lastName:"Reed", grade:"9", photo:"" }
-    ]
-  },
-  notesByStudent: {
-    s1: [
-      { id:"n1", text:"Discussed study plan for math.", timestamp:"2026-02-11 09:12" },
-      { id:"n2", text:"Follow-up on attendance concerns.", timestamp:"2026-02-13 11:40" }
-    ],
-    s2: [
-      { id:"n3", text:"Student requested schedule change.", timestamp:"2026-02-10 14:20" }
-    ]
-  },
-  appointmentsByStudent: {
-    s1: [
-      { id:"a1", date:"2026-02-15", time:"10:00 AM", reason:"Academic support", urgency:"med" }
-    ],
-    s2: [
-      { id:"a2", date:"2026-02-16", time:"1:30 PM", reason:"Wellness check", urgency:"high" }
+      { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
+      { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9" },
+      { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11" }
     ]
   },
   messagesByCounselor: {
     c1: [
       { id:"m1", student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
-      { id:"m2", student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false }
+      { id:"m2", student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false },
+      { id:"m3", student:"Olivia Harris", urgency:"low", text:"Just checking in", ts:"2026-02-15 12:20", read:false }
     ]
   }
 };
 
-/*
-  ===============================
-  API LAYER
-  Replace these with real endpoints later.
-  ===============================
-*/
 async function apiFetch(url){
   try{
     const res = await fetch(url);
     if(!res.ok) throw new Error("API error");
     return await res.json();
-  }catch(err){
-    return mockFallback(url);
+  }catch{
+    if(url === "/api/counselors") return mockData.counselors;
+    if(url === "/api/schoolInfo") return mockData.schoolInfo;
+    if(url.startsWith("/api/students")){
+      const cid = new URLSearchParams(url.split("?")[1]).get("counselorId");
+      return mockData.studentsByCounselor[cid] || [];
+    }
+    return [];
   }
 }
 
-function mockFallback(url){
-  if(url === "/api/counselors") return mockData.counselors;
-  if(url === "/api/schoolInfo") return mockData.schoolInfo;
-
-  if(url.startsWith("/api/students")){
-    const cid = new URLSearchParams(url.split("?")[1]).get("counselorId");
-    return mockData.studentsByCounselor[cid] || [];
-  }
-  if(url.startsWith("/api/notes")){
-    const sid = new URLSearchParams(url.split("?")[1]).get("studentId");
-    return mockData.notesByStudent[sid] || [];
-  }
-  if(url.startsWith("/api/appointments")){
-    const sid = new URLSearchParams(url.split("?")[1]).get("studentId");
-    return mockData.appointmentsByStudent[sid] || [];
-  }
-  return [];
-}
-
-/*
-  ===============================
-  STATE
-  ===============================
-*/
 let currentCounselor = null;
 let students = [];
 let notifications = [];
 
-/*
-  ===============================
-  AUTH
-  ===============================
-*/
 const loginScreen = document.getElementById("loginScreen");
 const app = document.getElementById("app");
-const loginForm = document.getElementById("loginForm");
 
-loginForm.onsubmit = async (e)=>{
+document.getElementById("loginForm").onsubmit = async (e)=>{
   e.preventDefault();
   const email = document.getElementById("loginEmail").value.trim();
   const password = document.getElementById("loginPassword").value.trim();
@@ -357,33 +381,12 @@ document.getElementById("logoutBtn").onclick = () => {
   location.reload();
 };
 
-/*
-  ===============================
-  SCHOOL INFO
-  ===============================
-*/
 async function loadSchoolInfo(){
   const data = await apiFetch("/api/schoolInfo");
   document.getElementById("schoolName").textContent = data.name;
   document.getElementById("schoolTerm").textContent = data.term;
-  const logo = document.getElementById("schoolLogo");
-  if(data.logoUrl){
-    logo.textContent = "";
-    const img = document.createElement("img");
-    img.src = data.logoUrl;
-    img.alt = "School Logo";
-    img.style.width="100%";
-    img.style.height="100%";
-    img.style.objectFit="cover";
-    logo.appendChild(img);
-  }
 }
 
-/*
-  ===============================
-  STUDENTS
-  ===============================
-*/
 async function loadStudents(){
   const counselorId = currentCounselor?.id || localStorage.getItem("loggedInCounselor");
   students = await apiFetch(`/api/students?counselorId=${counselorId}`);
@@ -417,7 +420,7 @@ function renderStudents(){
     actions.className = "student-actions";
     actions.innerHTML = `
       <button class="pill-btn" onclick="openNotes('${s.id}','${s.firstName} ${s.lastName}')">Notes</button>
-      <button class="pill-btn" onclick="openAppointments('${s.id}','${s.firstName} ${s.lastName}')">Appointments</button>
+      <button class="pill-btn" onclick="openUrgency()">Urgency</button>
       <button class="pill-btn primary">Profile</button>
     `;
 
@@ -427,72 +430,14 @@ function renderStudents(){
   });
 }
 
-/*
-  ===============================
-  NOTES
-  ===============================
-*/
-async function openNotes(studentId, name){
-  const notes = await apiFetch(`/api/notes?studentId=${studentId}`);
-  document.getElementById("notesTitle").textContent = `Notes — ${name}`;
-  const body = document.getElementById("notesBody");
-  body.innerHTML = "";
-
-  notes.forEach(n=>{
-    const div = document.createElement("div");
-    div.style.padding = "10px";
-    div.style.border = "1px solid var(--border)";
-    div.style.borderRadius = "10px";
-    div.style.marginBottom = "8px";
-    div.innerHTML = `<strong>${n.timestamp}</strong><br/>${n.text}`;
-    body.appendChild(div);
-  });
-
-  document.getElementById("notesOverlay").style.display = "flex";
-  document.getElementById("exportNotesBtn").onclick = () => exportNotesPdf(name, notes);
-}
-
-function closeNotes(){ document.getElementById("notesOverlay").style.display = "none"; }
-
-/*
-  ===============================
-  APPOINTMENTS
-  ===============================
-*/
-async function openAppointments(studentId, name){
-  const appts = await apiFetch(`/api/appointments?studentId=${studentId}`);
-  document.getElementById("apptTitle").textContent = `Appointments — ${name}`;
-  const body = document.getElementById("apptBody");
-  body.innerHTML = "";
-
-  appts.forEach(a=>{
-    const div = document.createElement("div");
-    div.style.padding = "10px";
-    div.style.border = "1px solid var(--border)";
-    div.style.borderRadius = "10px";
-    div.style.marginBottom = "8px";
-    div.innerHTML = `<strong>${a.date} • ${a.time}</strong><br/>${a.reason}`;
-    body.appendChild(div);
-  });
-
-  document.getElementById("apptOverlay").style.display = "flex";
-}
-
-function closeAppointments(){ document.getElementById("apptOverlay").style.display = "none"; }
-
-/*
-  ===============================
-  URGENCY + NOTIFICATIONS
-  ===============================
-*/
 function loadNotifications(){
   const counselorId = currentCounselor?.id || localStorage.getItem("loggedInCounselor");
   notifications = (mockData.messagesByCounselor[counselorId] || []).map(m=>({ ...m }));
-  renderUrgency();
+  renderUrgencySummary();
   renderNotifBell();
 }
 
-function renderUrgency(){
+function renderUrgencySummary(){
   const grid = document.getElementById("urgencyGrid");
   grid.innerHTML = "";
 
@@ -521,40 +466,43 @@ function renderNotifBell(){
   document.getElementById("notifDot").style.display = unread ? "block" : "none";
 }
 
-document.getElementById("notifBtn").onclick = ()=>{
-  const body = document.getElementById("notifBody");
-  body.innerHTML = "";
-  notifications.forEach(n=>{
-    const div = document.createElement("div");
-    div.style.padding = "10px";
-    div.style.border = "1px solid var(--border)";
-    div.style.borderRadius = "10px";
-    div.style.marginBottom = "8px";
-    div.innerHTML = `
-      <strong>${n.student}</strong> • ${n.ts}<br/>
-      ${n.text}<br/>
-      <button class="pill-btn" onclick="markRead('${n.id}')">Mark as read</button>
-    `;
-    if(n.urgency==="high") div.style.borderLeft = "6px solid var(--danger)";
-    body.appendChild(div);
-  });
-  document.getElementById("notifOverlay").style.display = "flex";
-};
-
-function closeNotifications(){ document.getElementById("notifOverlay").style.display = "none"; }
-function markRead(id){
-  const msg = notifications.find(n=>n.id===id);
-  if(msg) msg.read = true;
-  renderNotifBell();
-  loadNotifications();
+function openUrgency(){
+  document.getElementById("urgencyOverlay").style.display = "flex";
+  renderUrgencyRows();
 }
 
-/*
-  ===============================
-  CALENDAR (READ-ONLY)
-  ===============================
-*/
-async function renderCalendar(){
+function closeUrgency(){
+  document.getElementById("urgencyOverlay").style.display = "none";
+}
+
+function renderUrgencyRows(){
+  const red = document.getElementById("urgencyRed");
+  const orange = document.getElementById("urgencyOrange");
+  const yellow = document.getElementById("urgencyYellow");
+  const green = document.getElementById("urgencyGreen");
+
+  [red, orange, yellow, green].forEach(el => el.innerHTML = "");
+
+  notifications.forEach(n=>{
+    const card = document.createElement("div");
+    card.className = "message-card";
+    card.innerHTML = `
+      <strong>${n.student}</strong><br>
+      ${n.text}
+      <div class="message-meta">${n.ts}</div>
+    `;
+    const dot = document.createElement("span");
+    dot.className = n.read ? "message-read" : "message-unread";
+    card.appendChild(dot);
+
+    if(n.urgency === "high") red.appendChild(card);
+    else if(n.urgency === "med") orange.appendChild(card);
+    else if(n.urgency === "low") green.appendChild(card);
+    else yellow.appendChild(card);
+  });
+}
+
+function renderCalendar(){
   const grid = document.getElementById("calendarGrid");
   grid.innerHTML = "";
   const days = Array.from({length:30}, (_,i)=>i+1);
@@ -568,82 +516,28 @@ async function renderCalendar(){
   });
 }
 
-/*
-  ===============================
-  PDF EXPORT
-  ===============================
-*/
-function exportNotesPdf(name, notes){
-  const content = notes.map(n=>`${n.timestamp}\n${n.text}`).join("\n\n");
-  const pdf = buildSimplePdf(content, `Notes for ${name}`);
-  const blob = new Blob([pdf], { type: "application/pdf" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${name.replace(/\s+/g,"_")}_notes.pdf`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
+/* Notes modal stub */
+function openNotes(id,name){ alert("Notes for " + name); }
 
-function buildSimplePdf(text, title){
-  const pageHeight = 792;
-  const margin = 72;
-  const lineHeight = 14;
-  const maxLineWidth = 86;
-  const words = (title + "\n\n" + text).split(/\s+/);
-  const lines = [];
-  let line = "";
-  words.forEach(w=>{
-    const test = line ? line + " " + w : w;
-    if(test.length > maxLineWidth){
-      lines.push(line);
-      line = w;
-    } else {
-      line = test;
-    }
+/* Notifications modal */
+document.getElementById("notifBtn").onclick = ()=>{
+  const body = document.getElementById("notifBody");
+  body.innerHTML = "";
+  notifications.forEach(n=>{
+    const div = document.createElement("div");
+    div.style.padding = "10px";
+    div.style.border = "1px solid var(--border)";
+    div.style.borderRadius = "10px";
+    div.style.marginBottom = "8px";
+    div.innerHTML = `<strong>${n.student}</strong> • ${n.ts}<br/>${n.text}`;
+    body.appendChild(div);
   });
-  if(line) lines.push(line);
+  document.getElementById("notifOverlay").style.display = "flex";
+};
 
-  let y = pageHeight - margin;
-  let content = "BT\n/F1 12 Tf\n";
-  lines.forEach((ln)=>{
-    if(y < margin) return;
-    content += `1 0 0 1 ${margin} ${y} Tm (${ln.replace(/\\/g,"\\\\").replace(/\(/g,"\\(").replace(/\)/g,"\\)")}) Tj\n`;
-    y -= lineHeight;
-  });
-  content += "ET\n";
+function closeNotifications(){ document.getElementById("notifOverlay").style.display = "none"; }
 
-  const objects = [];
-  objects.push("1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n");
-  objects.push("2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n");
-  objects.push("3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n");
-  objects.push(`4 0 obj\n<< /Length ${content.length} >>\nstream\n${content}endstream\nendobj\n`);
-  objects.push("5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n");
-
-  let pdf = "%PDF-1.3\n";
-  const xref = [];
-  let offset = pdf.length;
-  objects.forEach(obj=>{
-    xref.push(offset);
-    pdf += obj;
-    offset = pdf.length;
-  });
-  const xrefStart = pdf.length;
-  pdf += "xref\n0 6\n0000000000 65535 f \n";
-  xref.forEach(off=>{
-    pdf += String(off).padStart(10,"0") + " 00000 n \n";
-  });
-  pdf += "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefStart + "\n%%EOF";
-  return pdf;
-}
-
-/*
-  ===============================
-  DARK MODE
-  ===============================
-*/
+/* Dark mode */
 const darkModeBtn = document.getElementById("darkModeBtn");
 function setDarkMode(on){
   document.body.classList.toggle("dark", on);
@@ -652,11 +546,7 @@ function setDarkMode(on){
 darkModeBtn.onclick = () => setDarkMode(!document.body.classList.contains("dark"));
 setDarkMode(localStorage.getItem("darkMode") === "1");
 
-/*
-  ===============================
-  RESTORE SESSION
-  ===============================
-*/
+/* Restore */
 const session = localStorage.getItem("loggedInCounselor");
 if(session){
   const counselor = mockData.counselors.find(c=>c.id === session);
