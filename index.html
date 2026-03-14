@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>SIS Counselor Dashboard</title>
+<title>TapOut! – Counselor Dashboard</title>
 <style>
 :root{
   --bg:#f7f6f2;
@@ -35,8 +35,9 @@ button{ font-family:inherit; }
 .sidebar{ background:var(--surface); border-right:1px solid var(--border); padding:20px; }
 .main{ display:flex; flex-direction:column; min-height:100vh; }
 
-/* Header */
-.header{ background:var(--surface); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+/* Header (OG color) */
+.header{ background:#87CEFA; border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
+body.dark .header{ background:#0f172a; }
 .school{ display:flex; align-items:center; gap:12px; }
 .school-logo{ width:42px; height:42px; border-radius:10px; background:#fff; border:2px solid var(--accent-dark); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-dark); overflow:hidden; }
 .school-name{ font-weight:700; }
@@ -67,7 +68,7 @@ body.dark .student-card{ background:#111827; }
 .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency summary cards (main area) */
+/* Urgency summary */
 .urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
@@ -76,18 +77,23 @@ body.dark .student-card{ background:#111827; }
 .urgency-card.high{ border-left:6px solid var(--danger); }
 .message-item{ font-size:13px; color:var(--muted); margin-top:6px; }
 
-/* Calendar */
-.calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
-.calendar .day{ border:1px solid var(--border); border-radius:8px; padding:6px; min-height:70px; font-size:12px; }
-.calendar .day .dot{ width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:6px; }
-.dot.low{ background:var(--ok); }
-.dot.med{ background:var(--warn); }
-.dot.high{ background:var(--danger); }
-
-/* Notes list (by student) */
-.notes-group{ border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
-.notes-group h4{ margin:0 0 6px 0; }
-.note-item{ font-size:13px; margin-bottom:6px; color:var(--muted); }
+/* Calendar (OG scheduling) */
+.calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:10px; }
+.calendar-day{ background:#f1f1f1; border-radius:6px; padding:6px; cursor:pointer; font-size:13px; display:flex; flex-direction:column; align-items:center; height:64px; box-sizing:border-box; overflow:hidden; }
+.calendar-day.expanded { height:auto; grid-row: span 2; align-items:stretch; }
+.calendar-weekday{ font-weight:bold; text-align:center; font-size:12px; color:#444; }
+.calendar-empty{ background:transparent; cursor:default; }
+.dot{ width:8px; height:8px; border-radius:50%; margin-top:4px; }
+.pending{ outline:2px solid #0070c9; }
+.appt-pill{
+  display:flex; flex-direction:column; align-items:center; width:100%;
+  border-radius:10px; padding:2px 4px; font-size:10px; font-weight:600;
+  background:#ffffff; border:1px solid #e5e7eb; margin-top:4px; cursor:pointer;
+  white-space:normal; text-align:center; line-height:1.15;
+}
+.appt-pill .dot{ margin:0 0 2px 0; }
+.appt-pill.active{ border-color:#0ea5e9; box-shadow:0 0 0 2px rgba(14,165,233,0.2); }
+.red{ background:red; } .orange{ background:orange; } .yellow{ background:gold; } .green{ background:green; }
 
 /* Modals */
 .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:2000; }
@@ -95,14 +101,12 @@ body.dark .student-card{ background:#111827; }
 .modal-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
 .modal-header h3{ margin:0; }
 .modal-body{ max-height:60vh; overflow:auto; }
+.modal-actions{ margin-top:12px; display:flex; justify-content:flex-end; gap:8px; }
 
 /* OG Urgency rows */
 .urgency-row { display:flex; gap:16px; margin:12px 0; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
 body.dark .urgency-row { background:#111827; border-color:#1f2937; }
-#red-row { border-color:red; }
-#orange-row { border-color:orange; }
-#yellow-row { border-color:gold; }
-#green-row { border-color:green; }
+#red-row { border-color:red; } #orange-row { border-color:orange; } #yellow-row { border-color:gold; } #green-row { border-color:green; }
 .urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
 .urgency-header { display:flex; align-items:center; gap:10px; }
 .messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
@@ -148,9 +152,6 @@ body.dark .message-meta { color:#9ca3af; }
     <input id="loginPassword" type="password" required placeholder="••••••••" />
     <div style="display:flex; justify-content:flex-end;">
       <button type="submit" class="pill-btn primary">Sign In</button>
-    </div>
-    <div style="margin-top:10px; font-size:12px; color:var(--muted);">
-      Demo counselors: Alice Johnson, Bob Smith, Carlos Martinez
     </div>
   </form>
 </div>
@@ -257,6 +258,11 @@ const mockData = {
       { text:"Schedule change request.", timestamp:"2026-02-14 14:30" }
     ]
   },
+  appointmentsByStudent: {
+    s1: [
+      { date:"2026-02-18", time:"10:00 AM", reason:"Academic support" }
+    ]
+  },
   messagesByCounselor: {
     c1: [
       { student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
@@ -320,9 +326,8 @@ function renderStudents(){
         </div>
       </div>
       <div class="student-actions">
-        <button class="pill-btn">Notes</button>
-        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
-        <button class="pill-btn primary">Profile</button>
+        <button class="pill-btn" onclick="openNotesForStudent('${s.id}','${s.firstName} ${s.lastName}')">Notes</button>
+        <button class="pill-btn" onclick="openHistory('${s.id}','${s.firstName} ${s.lastName}')">History</button>
       </div>
     `;
     list.appendChild(card);
@@ -353,6 +358,30 @@ function renderAllNotes(){
     container.appendChild(group);
   });
 }
+
+function openNotesForStudent(id, name){
+  alert("Notes for " + name);
+}
+
+function openHistory(id, name){
+  const appts = mockData.appointmentsByStudent[id] || [];
+  if(appts.length === 0) return alert("No appointment history for " + name);
+  const lines = appts.map(a=>`${a.date} ${a.time} — ${a.reason}`).join("\n");
+  alert("Appointment history for " + name + ":\n\n" + lines);
+}
+
+/* Nav buttons */
+document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+    const view = document.getElementById(btn.dataset.view+"View");
+    if(view) view.style.display="block";
+  };
+});
+
+document.getElementById("urgencyNavBtn").onclick = openUrgency;
 
 function loadNotifications(){
   notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
@@ -399,24 +428,12 @@ function renderCalendar(){
   calendarGrid.innerHTML="";
   for(let d=1; d<=30; d++){
     const cell=document.createElement("div");
-    cell.className="day";
+    cell.className="calendar-day";
     cell.innerHTML=`<strong>${d}</strong>`;
-    if(d%7===0) cell.innerHTML+=`<div><span class="dot high"></span>Appt</div>`;
+    if(d%7===0) cell.innerHTML+=`<div><span class="dot red"></span>Appt</div>`;
     calendarGrid.appendChild(cell);
   }
 }
-
-/* Nav buttons */
-document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
-  btn.onclick = ()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
-    const view = document.getElementById(btn.dataset.view+"View");
-    if(view) view.style.display="block";
-  };
-});
-document.getElementById("urgencyNavBtn").onclick = openUrgency;
 
 const session = localStorage.getItem("loggedInCounselor");
 if(session){
