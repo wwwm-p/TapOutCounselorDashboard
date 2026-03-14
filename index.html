@@ -67,7 +67,7 @@ body.dark .student-card{ background:#111827; }
 .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency summary */
+/* Urgency summary cards (main area) */
 .urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
@@ -223,20 +223,6 @@ body.dark .message-meta { color:#9ca3af; }
   </div>
 </div>
 
-<!-- NOTES MODAL -->
-<div id="notesOverlay" class="overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="notesTitle">Notes</h3>
-      <button class="pill-btn" onclick="closeNotes()">Close</button>
-    </div>
-    <div class="modal-body" id="notesBody"></div>
-    <div class="modal-actions">
-      <button class="pill-btn" id="exportNotesBtn">Export PDF</button>
-    </div>
-  </div>
-</div>
-
 <!-- URGENCY MODAL -->
 <div id="urgencyOverlay" class="overlay">
   <div class="modal" style="width:min(980px, 96vw);">
@@ -285,17 +271,6 @@ body.dark .message-meta { color:#9ca3af; }
         <div class="messages" id="urgencyGreen"></div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- NOTIFICATIONS MODAL -->
-<div id="notifOverlay" class="overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Notifications</h3>
-      <button class="pill-btn" onclick="closeNotifications()">Close</button>
-    </div>
-    <div class="modal-body" id="notifBody"></div>
   </div>
 </div>
 
@@ -512,22 +487,6 @@ function renderCalendar(){
 }
 
 function openNotes(id,name){ alert("Notes for " + name); }
-
-document.getElementById("notifBtn").onclick = ()=>{
-  const body = document.getElementById("notifBody");
-  body.innerHTML = "";
-  notifications.forEach(n=>{
-    const div = document.createElement("div");
-    div.style.padding = "10px";
-    div.style.border = "1px solid var(--border)";
-    div.style.borderRadius = "10px";
-    div.style.marginBottom = "8px";
-    div.innerHTML = `<strong>${n.student}</strong> • ${n.ts}<br/>${n.text}`;
-    body.appendChild(div);
-  });
-  document.getElementById("notifOverlay").style.display = "flex";
-};
-function closeNotifications(){ document.getElementById("notifOverlay").style.display = "none"; }
 
 const darkModeBtn = document.getElementById("darkModeBtn");
 function setDarkMode(on){
