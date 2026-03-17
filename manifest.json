@@ -1,7 +1,12 @@
 {
-  "name": "Student Support",
-  "short_name": "StudentSupport",
-  "description": "A student support app to connect with counselors and access mental health resources.",
+  "name": "Counselor Dashboard",
+  "short_name": "CounselorDash",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "theme_color": "#0070c9",
+  "background_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "description": "Manage students, appointments, notes, and notifications efficiently.",
   "icons": [
     {
       "src": "icons/icon-192.png",
@@ -14,17 +19,21 @@
       "type": "image/png"
     },
     {
-      "src": "icons/apple-touch-icon.png",
+      "src": "icons/icon-180.png",
       "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-120.png",
+      "sizes": "120x120",
       "type": "image/png"
     }
   ],
-  "start_url": "/index.html",
-  "scope": "/",
-  "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0070c9",
-  "orientation": "portrait-primary",
   "related_applications": [],
   "prefer_related_applications": false
 }
