@@ -4,6 +4,24 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TapOut! – Counselor Dashboard</title>
+
+<!-- PWA: Manifest file link -->
+<link rel="manifest" href="manifest.json">
+
+<!-- PWA: Theme color for browser UI -->
+<meta name="theme-color" content="#0070c9">
+
+<!-- PWA: Mobile web app compatibility -->
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Counselor Dashboard">
+
+<!-- PWA: Apple touch icons (placeholders if icons are missing) -->
+<link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
+
 <style>
 :root{
   --bg:#f7f6f2;
@@ -681,6 +699,14 @@ function setDarkMode(on){
 }
 darkModeBtn.onclick = () => setDarkMode(!document.body.classList.contains("dark"));
 setDarkMode(localStorage.getItem("darkMode") === "1");
+
+/* PWA: Register Service Worker for offline caching */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js")
+      .catch(err => console.warn("Service worker registration failed:", err));
+  });
+}
 </script>
 </body>
 </html>
