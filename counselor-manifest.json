@@ -1,8 +1,7 @@
 {
   "name": "TapOut! – Counselor Dashboard",
-  "short_name": "TapOut! Counselor",
-  "description": "Counselor dashboard for student support",
-  "start_url": "/index.html",
+  "short_name": "TapOut!",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#f7f6f2",
   "theme_color": "#0070c9",
