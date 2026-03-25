@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>TapOut! – Counselor Dashboard</title>
 
-<!-- PWA: Manifest file link -->
+<!-- PWA Manifest -->
 <link rel="manifest" href="counselor-manifest.json">
 
-<!-- PWA: Theme color for browser UI -->
+<!-- Theme color -->
 <meta name="theme-color" content="#0070c9">
 
-<!-- PWA: Mobile web app compatibility -->
+<!-- Mobile web app compatibility -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Counselor Dashboard">
 
-<!-- PWA: Apple touch icons (placeholders) -->
+<!-- Apple touch icons -->
 <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180.png">
 <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152.png">
 <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120.png">
@@ -29,8 +29,20 @@
 body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
 body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35); }
 *{ box-sizing:border-box; }
-button{ font-family:inherit; }
-/* Layout, header, sidebar, panels omitted for brevity; same as your original CSS */
+button{ font-family:inherit; cursor:pointer; }
+.pill-btn{ padding:0.5rem 1.2rem; border-radius:999px; border:none; background:var(--accent); color:#fff; font-weight:600; transition:0.2s; }
+.pill-btn.primary{ background:var(--accent-dark); }
+.pill-btn:hover{ opacity:0.9; }
+.login-screen{ display:flex; justify-content:center; align-items:center; height:100vh; }
+.login-box{ background:var(--surface); padding:2rem; border-radius:12px; box-shadow:var(--shadow); display:flex; flex-direction:column; width:300px; }
+.login-box h2{ margin-top:0; margin-bottom:1rem; text-align:center; }
+.login-box label{ margin-top:0.5rem; font-size:0.9rem; }
+.login-box input{ padding:0.5rem; margin-top:0.25rem; border:1px solid var(--border); border-radius:6px; }
+.login-error{ color:var(--danger); margin-top:0.5rem; font-size:0.85rem; display:none; }
+
+/* App container */
+.app{ display:none; grid-template-columns: 250px 1fr; grid-template-rows: auto 1fr; height:100vh; }
+/* Sidebar, header, panels can be added here or kept from your original code */
 </style>
 </head>
 <body>
@@ -40,7 +52,7 @@ button{ font-family:inherit; }
   <button id="installBtn" class="pill-btn" style="display:none;">Install App</button>
 </div>
 
-<!-- LOGIN -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
     <h2>Counselor Login</h2>
@@ -49,19 +61,16 @@ button{ font-family:inherit; }
     <label>Password</label>
     <input id="loginPassword" type="password" required placeholder="••••••••" />
     <div class="login-error" id="loginError"></div>
-    <div style="display:flex; justify-content:flex-end;">
+    <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
       <button type="submit" class="pill-btn primary" id="loginBtn">Sign In</button>
     </div>
   </form>
 </div>
 
 <!-- APP -->
-<div id="app" class="app" style="display:none;">
-  <!-- Sidebar, header, content panels same as your original code -->
+<div id="app" class="app">
+  <!-- Sidebar, header, content panels go here (your existing HTML structure) -->
 </div>
-
-<!-- MODALS: Profile, Urgency, Notifications -->
-<!-- (Keep same as your original HTML modals for profile, urgency, notif) -->
 
 <script>
 /* ================= MOCK DATA & STATE ================= */
@@ -73,7 +82,7 @@ const mockData = {
   appointmentsByStudent:{s1:[{date:"2026-02-18",time:"10:00",reason:"Academic support",urgency:"med"}]},
   messagesByCounselor:{c1:[{id:"m1",studentId:"s1",student:"Maya Foster",urgency:"high",text:"I’m in Crisis",ts:"2026-02-15 10:12",read:false}]}
 };
-let currentCounselor=null, students=[], notifications=[], activeStudent=null;
+let currentCounselor=null;
 
 /* ================= AUTH ================= */
 const loginForm=document.getElementById("loginForm");
@@ -82,57 +91,70 @@ const app=document.getElementById("app");
 const loginError=document.getElementById("loginError");
 const loginBtn=document.getElementById("loginBtn");
 
-loginForm.onsubmit=async (e)=>{
+loginForm.onsubmit = async (e) => {
   e.preventDefault();
-  loginError.style.display="none"; loginBtn.disabled=true;
-  const email=loginEmail.value.trim(); const password=loginPassword.value.trim();
-  const match=mockData.counselors.find(c=>c.email===email&&c.password===password);
-  if(!match){ loginError.textContent="Invalid email or password."; loginError.style.display="block"; loginBtn.disabled=false; return; }
-  localStorage.setItem("loggedInCounselor",match.id);
-  currentCounselor=match; loginBtn.disabled=false;
+  loginError.style.display="none";
+  loginBtn.disabled = true;
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+  const match = mockData.counselors.find(c => c.email===email && c.password===password);
+  if(!match){ 
+    loginError.textContent="Invalid email or password.";
+    loginError.style.display="block";
+    loginBtn.disabled = false;
+    return;
+  }
+  localStorage.setItem("loggedInCounselor", match.id);
+  currentCounselor = match;
+  loginBtn.disabled = false;
   openDashboard();
 };
-document.getElementById("logoutBtn").onclick=()=>{
+
+document.getElementById("logoutBtn")?.addEventListener('click',()=>{
   localStorage.removeItem("loggedInCounselor");
-  currentCounselor=null; students=[]; notifications=[];
-  loginScreen.style.display="flex"; app.style.display="none";
-};
-const session=localStorage.getItem("loggedInCounselor");
-if(session){ currentCounselor=mockData.counselors.find(c=>c.id===session); if(currentCounselor) openDashboard(); }
-function openDashboard(){ loginScreen.style.display="none"; app.style.display="grid"; loadSchoolInfo(); loadStudents(); loadNotifications(); renderCalendar(); renderAllNotes(); }
-function loadSchoolInfo(){ schoolName.textContent=mockData.schoolInfo.name; schoolTerm.textContent=mockData.schoolInfo.term; }
+  currentCounselor=null;
+  loginScreen.style.display="flex";
+  app.style.display="none";
+});
+
+if(localStorage.getItem("loggedInCounselor")){
+  currentCounselor = mockData.counselors.find(c => c.id === localStorage.getItem("loggedInCounselor"));
+  if(currentCounselor) openDashboard();
+}
+
+function openDashboard(){
+  loginScreen.style.display="none";
+  app.style.display="grid";
+  // Load your dashboard data here
+}
 
 /* ================== INSTALL PROMPT ================== */
 let deferredPrompt;
-const installBtn=document.getElementById("installBtn");
+const installBtn = document.getElementById("installBtn");
 window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
-  deferredPrompt=e;
-  installBtn.style.display="inline-block";
+  deferredPrompt = e;
+  installBtn.style.display = "inline-block";
 });
+
 installBtn.addEventListener('click', async ()=>{
   if(deferredPrompt){
     deferredPrompt.prompt();
-    const choice=await deferredPrompt.userChoice;
-    if(choice.outcome==='accepted'){ console.log('PWA installed'); }
-    else{ console.log('PWA install dismissed'); }
-    deferredPrompt=null;
-    installBtn.style.display='none';
+    const choice = await deferredPrompt.userChoice;
+    if(choice.outcome === 'accepted'){ console.log('PWA installed'); }
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
   }
 });
 
 /* ================== SERVICE WORKER ================== */
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
+  window.addEventListener('load', ()=>{
     navigator.serviceWorker.register('/service-worker.js')
-    .then(reg=>console.log('SW registered',reg))
-    .catch(err=>console.error('SW failed',err));
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('SW registration failed', err));
   });
 }
-
-/* ================= OTHER FUNCTIONS ================== */
-// Keep all your original student, profile, notes, appointments, urgency, calendar JS here
-// e.g., loadStudents, renderStudents, openProfile, saveProfileNote, renderAllNotes, renderUrgencyRows, etc.
 </script>
 </body>
 </html>
