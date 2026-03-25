@@ -1,39 +1,13 @@
 {
-  "name": "Counselor Dashboard",
-  "short_name": "CounselorDash",
+  "name": "TapOut! – Counselor Dashboard",
+  "short_name": "TapOut! Counselor",
   "start_url": "/index.html",
   "display": "standalone",
+  "background_color": "#f7f6f2",
   "theme_color": "#0070c9",
-  "background_color": "#ffffff",
-  "orientation": "portrait-primary",
-  "description": "Manage students, appointments, notes, and notifications efficiently.",
+  "description": "Counselor Dashboard for TapOut! Student Support",
   "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-180.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-152.png",
-      "sizes": "152x152",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-120.png",
-      "sizes": "120x120",
-      "type": "image/png"
-    }
-  ],
-  "related_applications": [],
-  "prefer_related_applications": false
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
 }
