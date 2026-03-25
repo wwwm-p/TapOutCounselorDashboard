@@ -1,13 +1,21 @@
 {
   "name": "TapOut! – Counselor Dashboard",
   "short_name": "TapOut! Counselor",
+  "description": "Counselor dashboard for student support",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#f7f6f2",
   "theme_color": "#0070c9",
-  "description": "Counselor dashboard for TapOut! app",
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "/icons/icon-192-counselor.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512-counselor.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }
