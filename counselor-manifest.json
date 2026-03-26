@@ -1,10 +1,12 @@
 {
-  "name": "TapOut! – Counselor Dashboard",
-  "short_name": "TapOut!",
+  "name": "TapOut! Counselor Dashboard",
+  "short_name": "TapOut",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f7f6f2",
   "theme_color": "#0070c9",
+
   "icons": [
     {
       "src": "/icons/icon-192-counselor.png",
