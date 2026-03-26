@@ -3,158 +3,161 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
 <title>TapOut! – Counselor Dashboard</title>
 
-<!-- ✅ FIXED: Manifest must be correct path -->
+<!-- PWA Manifest -->
 <link rel="manifest" href="/counselor-manifest.json">
 
-<!-- Theme -->
 <meta name="theme-color" content="#0070c9">
-
-<!-- PWA Meta -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Counselor Dashboard">
 
-<!-- ✅ FIXED: Icons MUST match manifest -->
-<link rel="icon" href="/icons/icon-192-counselor.png">
+<!-- Icons -->
+<link rel="icon" sizes="192x192" href="/icons/icon-192-counselor.png">
+<link rel="icon" sizes="512x512" href="/icons/icon-512-counselor.png">
 <link rel="apple-touch-icon" href="/icons/icon-192-counselor.png">
 
 <style>
-body{
-  margin:0;
-  font-family:system-ui;
-  background:#f7f6f2;
+:root{
+  --bg:#f7f6f2; --surface:#ffffff; --muted:#64748b; --text:#0f172a;
+  --accent:#0f8de0; --accent-dark:#0070c9; --border:#e5e7eb; --danger:#ef4444;
+  --warn:#f59e0b; --mid:#facc15; --ok:#10b981; --shadow:0 8px 20px rgba(15,23,42,0.12);
 }
+body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
+body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35); }
+*{ box-sizing:border-box; }
+button{ font-family:inherit; cursor:pointer; }
+.pill-btn{ padding:0.5rem 1.2rem; border-radius:999px; border:none; background:var(--accent); color:#fff; font-weight:600; transition:0.2s; }
+.pill-btn.primary{ background:var(--accent-dark); }
+.pill-btn:hover{ opacity:0.9; }
 
-/* Simple layout so app actually renders */
-#app{
-  display:none;
-  padding:20px;
-}
+.login-screen{ display:flex; justify-content:center; align-items:center; height:100vh; }
+.login-box{ background:var(--surface); padding:2rem; border-radius:12px; box-shadow:var(--shadow); display:flex; flex-direction:column; width:300px; }
+.login-box h2{ margin-top:0; margin-bottom:1rem; text-align:center; }
+.login-box label{ margin-top:0.5rem; font-size:0.9rem; }
+.login-box input{ padding:0.5rem; margin-top:0.25rem; border:1px solid var(--border); border-radius:6px; }
+.login-error{ color:var(--danger); margin-top:0.5rem; font-size:0.85rem; display:none; }
 
-.login-screen{
-  height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-.login-box{
-  background:white;
-  padding:20px;
-  border-radius:12px;
-  width:300px;
-}
-
-.pill-btn{
-  padding:10px 16px;
-  border-radius:999px;
-  border:none;
-  background:#0070c9;
-  color:white;
-  cursor:pointer;
-}
+.app{ display:none; grid-template-columns: 250px 1fr; grid-template-rows: auto 1fr; height:100vh; }
+/* keep your sidebar, header, panels, etc. */
 </style>
 </head>
-
 <body>
 
-<!-- ✅ INSTALL BUTTON -->
+<!-- INSTALL BUTTON -->
 <div style="position:fixed; bottom:20px; right:20px; z-index:1000;">
-  <button id="installBtn" class="pill-btn" style="display:none;">
-    Install App
-  </button>
+  <button id="installBtn" class="pill-btn" style="display:none;">Install App</button>
 </div>
 
-<!-- LOGIN -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
     <h2>Counselor Login</h2>
-
-    <input id="loginEmail" type="email" placeholder="email" required><br><br>
-    <input id="loginPassword" type="password" placeholder="password" required><br><br>
-
-    <button class="pill-btn">Login</button>
-    <div id="loginError" style="color:red; display:none;"></div>
+    <label>Email</label>
+    <input id="loginEmail" type="email" required placeholder="name@school.edu" />
+    <label>Password</label>
+    <input id="loginPassword" type="password" required placeholder="••••••••" />
+    <div class="login-error" id="loginError"></div>
+    <div style="display:flex; justify-content:flex-end; margin-top:1rem;">
+      <button type="submit" class="pill-btn primary" id="loginBtn">Sign In</button>
+    </div>
   </form>
 </div>
 
 <!-- APP -->
-<div id="app">
-  <h1>Dashboard Loaded ✅</h1>
-  <button id="logoutBtn" class="pill-btn">Logout</button>
+<div id="app" class="app">
+  <!-- Sidebar, header, content panels go here -->
 </div>
 
 <script>
+/* ================= MOCK DATA & STATE ================= */
+const mockData = {
+  counselors:[{id:"c1",name:"Alice Johnson",email:"alice@school.edu",password:"alice123"}],
+  schoolInfo:{name:"Riverside High",term:"Fall 2026",logoUrl:""},
+  studentsByCounselor:{c1:[{id:"s1",firstName:"Maya",lastName:"Foster",grade:"10"}]},
+  notesByStudent:{s1:[{text:"Discussed study plan.",timestamp:"2026-02-15 09:20"}]},
+  appointmentsByStudent:{s1:[{date:"2026-02-18",time:"10:00",reason:"Academic support",urgency:"med"}]},
+  messagesByCounselor:{c1:[{id:"m1",studentId:"s1",student:"Maya Foster",urgency:"high",text:"I’m in Crisis",ts:"2026-02-15 10:12",read:false}]}
+};
+let currentCounselor=null;
+
 /* ================= AUTH ================= */
-const loginForm = document.getElementById("loginForm");
-const loginScreen = document.getElementById("loginScreen");
-const app = document.getElementById("app");
+const loginForm=document.getElementById("loginForm");
+const loginScreen=document.getElementById("loginScreen");
+const app=document.getElementById("app");
+const loginError=document.getElementById("loginError");
+const loginBtn=document.getElementById("loginBtn");
 
-loginForm.onsubmit = (e)=>{
+loginForm.onsubmit = async (e) => {
   e.preventDefault();
-
-  const email = loginEmail.value;
-  const pass = loginPassword.value;
-
-  if(email === "alice@school.edu" && pass === "alice123"){
-    localStorage.setItem("user","1");
-    openApp();
-  } else {
+  loginError.style.display="none";
+  loginBtn.disabled = true;
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+  const match = mockData.counselors.find(c => c.email===email && c.password===password);
+  if(!match){ 
+    loginError.textContent="Invalid email or password.";
     loginError.style.display="block";
-    loginError.textContent="Invalid login";
+    loginBtn.disabled = false;
+    return;
   }
+  localStorage.setItem("loggedInCounselor", match.id);
+  currentCounselor = match;
+  loginBtn.disabled = false;
+  openDashboard();
 };
 
-function openApp(){
+document.getElementById("logoutBtn")?.addEventListener('click',()=>{
+  localStorage.removeItem("loggedInCounselor");
+  currentCounselor=null;
+  loginScreen.style.display="flex";
+  app.style.display="none";
+});
+
+if(localStorage.getItem("loggedInCounselor")){
+  currentCounselor = mockData.counselors.find(c => c.id === localStorage.getItem("loggedInCounselor"));
+  if(currentCounselor) openDashboard();
+}
+
+function openDashboard(){
   loginScreen.style.display="none";
-  app.style.display="block";
+  app.style.display="grid";
+  // Load your dashboard data here
 }
 
-logoutBtn.onclick = ()=>{
-  localStorage.removeItem("user");
-  location.reload();
-};
-
-if(localStorage.getItem("user")){
-  openApp();
-}
-
-/* ================= INSTALL BUTTON ================= */
+/* ================== INSTALL PROMPT ================== */
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
 
-window.addEventListener("beforeinstallprompt", (e)=>{
-  console.log("Install prompt ready");
-
+window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
   deferredPrompt = e;
-
-  installBtn.style.display = "block";
+  installBtn.style.display = "inline-block";
 });
 
-installBtn.onclick = async ()=>{
-  if(!deferredPrompt) return;
+installBtn.addEventListener('click', async ()=>{
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  }
+});
 
-  deferredPrompt.prompt();
-  const choice = await deferredPrompt.userChoice;
+window.addEventListener('appinstalled', ()=>{
+  installBtn.style.display = 'none';
+});
 
-  console.log(choice.outcome);
-
-  deferredPrompt = null;
-  installBtn.style.display = "none";
-};
-
-/* ================= SERVICE WORKER ================= */
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("/service-worker.js")
-      .then(()=>console.log("SW registered"))
-      .catch(err=>console.log("SW error", err));
+/* ================== SERVICE WORKER ================== */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(reg => console.log('Service Worker registered', reg))
+      .catch(err => console.error('SW registration failed', err));
   });
 }
 </script>
-
 </body>
 </html>
