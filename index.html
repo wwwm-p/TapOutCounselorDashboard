@@ -8,7 +8,10 @@
 <!-- PWA Manifest -->
 <link rel="manifest" href="/counselor-manifest.json">
 
+<!-- Theme color -->
 <meta name="theme-color" content="#0070c9">
+
+<!-- Mobile web app compatibility -->
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -21,9 +24,7 @@
 
 <style>
 :root{
-  --bg:#f7f6f2; --surface:#ffffff; --muted:#64748b; --text:#0f172a;
-  --accent:#0f8de0; --accent-dark:#0070c9; --border:#e5e7eb; --danger:#ef4444;
-  --warn:#f59e0b; --mid:#facc15; --ok:#10b981; --shadow:0 8px 20px rgba(15,23,42,0.12);
+  --bg:#f7f6f2; --surface:#ffffff; --muted:#64748b; --text:#0f172a; --accent:#0f8de0; --accent-dark:#0070c9; --border:#e5e7eb; --danger:#ef4444; --warn:#f59e0b; --mid:#facc15; --ok:#10b981; --shadow:0 8px 20px rgba(15,23,42,0.12);
 }
 body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
 body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35); }
@@ -32,7 +33,6 @@ button{ font-family:inherit; cursor:pointer; }
 .pill-btn{ padding:0.5rem 1.2rem; border-radius:999px; border:none; background:var(--accent); color:#fff; font-weight:600; transition:0.2s; }
 .pill-btn.primary{ background:var(--accent-dark); }
 .pill-btn:hover{ opacity:0.9; }
-
 .login-screen{ display:flex; justify-content:center; align-items:center; height:100vh; }
 .login-box{ background:var(--surface); padding:2rem; border-radius:12px; box-shadow:var(--shadow); display:flex; flex-direction:column; width:300px; }
 .login-box h2{ margin-top:0; margin-bottom:1rem; text-align:center; }
@@ -40,8 +40,9 @@ button{ font-family:inherit; cursor:pointer; }
 .login-box input{ padding:0.5rem; margin-top:0.25rem; border:1px solid var(--border); border-radius:6px; }
 .login-error{ color:var(--danger); margin-top:0.5rem; font-size:0.85rem; display:none; }
 
+/* App container */
 .app{ display:none; grid-template-columns: 250px 1fr; grid-template-rows: auto 1fr; height:100vh; }
-/* keep your sidebar, header, panels, etc. */
+/* Sidebar, header, panels can be added here or kept from your original code */
 </style>
 </head>
 <body>
@@ -68,7 +69,7 @@ button{ font-family:inherit; cursor:pointer; }
 
 <!-- APP -->
 <div id="app" class="app">
-  <!-- Sidebar, header, content panels go here -->
+  <!-- Sidebar, header, content panels go here (your existing HTML structure) -->
 </div>
 
 <script>
@@ -130,7 +131,6 @@ function openDashboard(){
 /* ================== INSTALL PROMPT ================== */
 let deferredPrompt;
 const installBtn = document.getElementById("installBtn");
-
 window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
   deferredPrompt = e;
@@ -141,13 +141,10 @@ installBtn.addEventListener('click', async ()=>{
   if(deferredPrompt){
     deferredPrompt.prompt();
     const choice = await deferredPrompt.userChoice;
+    if(choice.outcome === 'accepted'){ console.log('PWA installed'); }
     deferredPrompt = null;
     installBtn.style.display = 'none';
   }
-});
-
-window.addEventListener('appinstalled', ()=>{
-  installBtn.style.display = 'none';
 });
 
 /* ================== SERVICE WORKER ================== */
