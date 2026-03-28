@@ -6,7 +6,7 @@
 <title>TapOut! – Counselor Dashboard</title>
 
 <!-- PWA: Manifest file link -->
-<link rel="manifest" href="counselor-manifest.json">
+<link rel="manifest" href="/counselor-manifest.json">
 
 <!-- PWA: Theme color for browser UI -->
 <meta name="theme-color" content="#0070c9">
@@ -19,8 +19,8 @@
 <meta name="apple-mobile-web-app-title" content="Counselor Dashboard">
 
 <!-- PWA: Apple touch icons (placeholders if icons are missing) -->
-<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192-counselor.png">
-<link rel="apple-touch-icon" sizes="512x512" href="icons/icon-512-counselor.png">
+<link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192-counselor.png">
+<link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512-counselor.png">
 
 <style>
 :root{
@@ -722,7 +722,7 @@ setDarkMode(localStorage.getItem("darkMode") === "1");
 /* PWA: Register Service Worker for offline caching */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js")
+    navigator.serviceWorker.register("/service-worker.js")
       .catch(err => console.warn("Service worker registration failed:", err));
   });
 }
