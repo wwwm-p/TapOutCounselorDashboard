@@ -160,6 +160,23 @@ body.dark .message-meta { color:#9ca3af; }
 .login-box input{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin:6px 0 12px 0; background:var(--surface); color:var(--text); }
 .login-error{ color:var(--danger); font-size:13px; margin-top:6px; display:none; }
 
+/* PWA install button */
+.install-btn{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:3000;
+  padding:10px 14px;
+  border-radius:10px;
+  border:1px solid var(--accent-dark);
+  background:var(--accent-dark);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  display:none;
+  box-shadow:var(--shadow);
+}
+
 @media (max-width: 980px){
   .app{ grid-template-columns:1fr; }
   .sidebar{ display:none; }
@@ -167,6 +184,8 @@ body.dark .message-meta { color:#9ca3af; }
 </style>
 </head>
 <body>
+
+<button class="install-btn" id="installBtn">Install App</button>
 
 <!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
@@ -707,6 +726,29 @@ if ("serviceWorker" in navigator) {
       .catch(err => console.warn("Service worker registration failed:", err));
   });
 }
+
+/* PWA: Install prompt button (Chrome/Edge) */
+let deferredInstallPrompt = null;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  installBtn.style.display = "block";
+});
+
+installBtn.addEventListener("click", async () => {
+  if (!deferredInstallPrompt) return;
+  installBtn.style.display = "none";
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+});
+
+window.addEventListener("appinstalled", () => {
+  installBtn.style.display = "none";
+  deferredInstallPrompt = null;
+});
 </script>
 </body>
 </html>
