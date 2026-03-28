@@ -1,21 +1,30 @@
 {
+  "id": ".",
   "name": "Counselor Dashboard",
   "short_name": "CounselorDash",
-  "start_url": "/index.html",
-  "scope": "/",
+  "description": "A dashboard for school counselors to manage students, notes, and urgency alerts.",
+  "start_url": ".",
+  "scope": ".",
   "display": "standalone",
+  "orientation": "portrait",
   "theme_color": "#0070c9",
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "/icons/icon-192-counselor.png",
+      "src": "icons/icon-192-counselor.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/icon-512-counselor.png",
+      "src": "icons/icon-512-counselor.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512-counselor.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
