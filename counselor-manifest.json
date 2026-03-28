@@ -2,17 +2,18 @@
   "name": "Counselor Dashboard",
   "short_name": "CounselorDash",
   "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#0070c9",
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "icons/icon-192-counselor.png",
+      "src": "/icons/icon-192-counselor.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512-counselor.png",
+      "src": "/icons/icon-512-counselor.png",
       "sizes": "512x512",
       "type": "image/png"
     }
