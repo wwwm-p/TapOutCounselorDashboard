@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SIS Counselor Dashboard</title>
 
 <!-- PWA: Manifest -->
@@ -155,9 +155,20 @@ body.dark .message-meta { color:#9ca3af; }
   .app{ grid-template-columns:1fr; }
   .sidebar{ display:none; }
 }
+
+/* PWA install button (shown when install prompt is available) */
+.pwa-install-btn{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:2500;
+  box-shadow:var(--shadow);
+  display:none;
+}
 </style>
 </head>
 <body>
+<button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn" type="button">Install App</button>
 <!-- Login Screen -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
@@ -461,32 +472,64 @@ if(session){
   if(currentCounselor) openDashboard();
 }
 
-/* ✅ Register Service Worker */
+/* ✅ PWA: Register Service Worker */
 if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("Service Worker registered"))
-      .catch(err => console.error("Service Worker failed:", err));
-  });
+  navigator.serviceWorker.register("service-worker.js").catch(()=>{});
 }
 
-/* ✅ Install Prompt */
-let deferredPrompt;
+/* ✅ PWA: Install Prompt (Chrome/Edge) */
+let deferredPrompt = null;
+const pwaInstallBtn = document.getElementById("pwaInstallBtn");
+
+function isRunningStandalone(){
+  // Chromium + most browsers
+  if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+  // iOS Safari
+  // eslint-disable-next-line no-undef
+  if (typeof navigator !== "undefined" && "standalone" in navigator && navigator.standalone) return true;
+  return false;
+}
+
+function setInstallBtnVisible(visible){
+  if (!pwaInstallBtn) return;
+  pwaInstallBtn.style.display = visible ? "inline-flex" : "none";
+}
+
+// Default: show unless we're already installed (if Chrome/Edge provides a real prompt, we'll use it).
+setInstallBtnVisible(!isRunningStandalone());
+
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
-  const installBtn = document.createElement("button");
-  installBtn.textContent = "Install App";
-  installBtn.className = "pill-btn primary";
-  installBtn.onclick = async () => {
+  setInstallBtnVisible(true);
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredPrompt = null;
+  setInstallBtnVisible(false);
+});
+
+if (pwaInstallBtn) {
+  pwaInstallBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) {
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (isIOS) {
+        alert("To install on iPhone/iPad: use Share → Add to Home Screen.");
+        return;
+      }
+      if (!window.isSecureContext) {
+        alert("Install requires HTTPS (or http://localhost). It won’t show on file:// or plain http.");
+        return;
+      }
+      alert("If install is available: open Chrome menu (⋮) → Install app / Add to Home screen. If you don’t see it yet, refresh once.");
+      return;
+    }
     deferredPrompt.prompt();
     await deferredPrompt.userChoice;
     deferredPrompt = null;
-    installBtn.remove();
-  };
-  const header = document.querySelector(".header-actions");
-  if (header) header.prepend(installBtn);
-});
+    setInstallBtnVisible(!isRunningStandalone());
+  });
+}
 </script>
 </body>
 </html>
