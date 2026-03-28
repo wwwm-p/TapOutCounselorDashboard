@@ -4,211 +4,71 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<title>TapOut! – Counselor Dashboard</title>
+<title>SIS Counselor Dashboard</title>
 
-<!-- PWA -->
+<!-- ✅ PWA -->
 <link rel="manifest" href="/counselor-manifest.json">
 <meta name="theme-color" content="#0070c9">
 
-<!-- Icons -->
-<link rel="icon" sizes="192x192" href="/icons/icon-192-counselor.png">
+<!-- iOS -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Counselor Dashboard">
 <link rel="apple-touch-icon" href="/icons/icon-192-counselor.png">
 
 <style>
-:root{
-  --bg:#f7f6f2;
-  --surface:#ffffff;
-  --muted:#64748b;
-  --text:#0f172a;
-  --accent:#0f8de0;
-  --accent-dark:#0070c9;
-  --border:#e5e7eb;
-  --danger:#ef4444;
-  --warn:#f59e0b;
-  --ok:#10b981;
-}
-body{ margin:0; font-family:system-ui; background:var(--bg); }
-
-/* Layout */
-.app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
-.sidebar{ background:white; border-right:1px solid var(--border); padding:20px; }
-.main{ display:flex; flex-direction:column; }
-
-/* Header */
-.header{ display:flex; justify-content:space-between; padding:16px; border-bottom:1px solid var(--border); }
-
-/* Buttons */
-.pill-btn{ padding:8px 14px; border-radius:999px; border:none; background:var(--accent-dark); color:white; cursor:pointer; }
-
-/* Login */
-.login-screen{ display:flex; justify-content:center; align-items:center; height:100vh; }
-.login-box{ background:white; padding:20px; border-radius:12px; width:300px; }
-
-/* Panels */
-.panel{ padding:16px; }
-
-/* Urgency */
-.message-card{ padding:10px; border:1px solid #ccc; border-radius:8px; margin:6px 0; }
-.high{ border-left:6px solid red; }
-.med{ border-left:6px solid orange; }
-.low{ border-left:6px solid green; }
-
-/* Install Button */
-#installBtn{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  display:none;
-}
+/* KEEP YOUR ENTIRE CSS EXACTLY AS YOU HAD IT */
 </style>
 </head>
 
 <body>
 
-<button id="installBtn" class="pill-btn">Install App</button>
-
-<!-- LOGIN -->
-<div id="loginScreen" class="login-screen">
-  <form id="loginForm" class="login-box">
-    <h2>Login</h2>
-    <input id="loginEmail" placeholder="email" required><br><br>
-    <input id="loginPassword" type="password" placeholder="password" required><br><br>
-    <button class="pill-btn">Sign In</button>
-  </form>
+<!-- ✅ INSTALL BUTTON -->
+<div style="position:fixed; bottom:20px; right:20px; z-index:9999;">
+  <button id="installBtn" class="pill-btn primary" style="display:none;">
+    Install App
+  </button>
 </div>
 
-<!-- APP -->
-<div id="app" class="app" style="display:none;">
-  
-  <div class="sidebar">
-    <button onclick="showView('home')">Home</button><br><br>
-    <button onclick="showView('students')">Students</button><br><br>
-    <button onclick="openUrgency()">Urgency</button>
-  </div>
-
-  <div class="main">
-    <div class="header">
-      <div id="schoolName">School</div>
-      <button onclick="logout()">Logout</button>
-    </div>
-
-    <div id="homeView" class="panel">Dashboard</div>
-
-    <div id="studentsView" class="panel" style="display:none;"></div>
-
-  </div>
-</div>
-
-<!-- URGENCY MODAL -->
-<div id="urgencyModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5);">
-  <div style="background:white; margin:5% auto; padding:20px; width:400px;">
-    <h3>Urgency</h3>
-
-    <h4>😢 High</h4>
-    <div id="highList"></div>
-
-    <h4>😐 Medium</h4>
-    <div id="medList"></div>
-
-    <h4>😊 Low</h4>
-    <div id="lowList"></div>
-
-    <button onclick="closeUrgency()">Close</button>
-  </div>
-</div>
+<!-- ✅ YOUR FULL ORIGINAL HTML (UNCHANGED) -->
+<!-- LOGIN + APP + EVERYTHING GOES HERE -->
 
 <script>
-
-/* DATA */
-const data = {
-  counselors:[{email:"alice@school.edu", password:"123"}],
-  messages:[
-    {student:"Maya", text:"Help!", urgency:"high"},
-    {student:"Noah", text:"Stressed", urgency:"med"},
-    {student:"Olivia", text:"All good", urgency:"low"}
-  ]
-};
-
-/* LOGIN */
-loginForm.onsubmit = e=>{
-  e.preventDefault();
-  const email = loginEmail.value;
-  const pass = loginPassword.value;
-
-  const user = data.counselors.find(u=>u.email===email && u.password===pass);
-  if(!user) return alert("wrong login");
-
-  localStorage.setItem("login","true");
-  openApp();
-};
-
-function openApp(){
-  loginScreen.style.display="none";
-  app.style.display="grid";
-}
-
-function logout(){
-  localStorage.clear();
-  location.reload();
-}
-
-/* SESSION */
-if(localStorage.getItem("login")) openApp();
-
-/* NAV */
-function showView(v){
-  homeView.style.display="none";
-  studentsView.style.display="none";
-  document.getElementById(v+"View").style.display="block";
-}
-
-/* URGENCY */
-function openUrgency(){
-  urgencyModal.style.display="block";
-  renderUrgency();
-}
-function closeUrgency(){
-  urgencyModal.style.display="none";
-}
-
-function renderUrgency(){
-  highList.innerHTML="";
-  medList.innerHTML="";
-  lowList.innerHTML="";
-
-  data.messages.forEach(m=>{
-    const div=document.createElement("div");
-    div.className="message-card "+m.urgency;
-    div.innerText = m.student+": "+m.text;
-
-    if(m.urgency==="high") highList.appendChild(div);
-    if(m.urgency==="med") medList.appendChild(div);
-    if(m.urgency==="low") lowList.appendChild(div);
-  });
-}
-
-/* PWA INSTALL FIX */
+/* ================= PWA INSTALL ================= */
 let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
 
-window.addEventListener("beforeinstallprompt", (e)=>{
+window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
   installBtn.style.display = "block";
 });
 
-installBtn.onclick = async ()=>{
-  if(!deferredPrompt) return alert("Install not available yet");
+installBtn.addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+
   deferredPrompt.prompt();
   const choice = await deferredPrompt.userChoice;
-  deferredPrompt = null;
-  installBtn.style.display="none";
-};
 
-/* SERVICE WORKER */
-if("serviceWorker" in navigator){
-  navigator.serviceWorker.register("/service-worker.js");
+  if (choice.outcome === 'accepted') {
+    console.log("Installed");
+  }
+
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+});
+
+/* ================= SERVICE WORKER ================= */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(() => console.log("SW registered"))
+      .catch(err => console.log("SW failed", err));
+  });
 }
 
+/* ================= YOUR ORIGINAL JS ================= */
+// PASTE YOUR ENTIRE SCRIPT HERE (unchanged)
 </script>
 
 </body>
