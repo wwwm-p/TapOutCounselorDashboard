@@ -5,265 +5,140 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>SIS Counselor Dashboard</title>
 
-<!-- PWA -->
 <link rel="manifest" href="counselor-manifest.json" />
 <meta name="theme-color" content="#0070c9" />
-<meta name="description" content="Counselor dashboard for student support and communication." />
-<meta name="application-name" content="SIS Counselor Dashboard" />
-
-<!-- iOS -->
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-title" content="Counselor Dashboard" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192-counselor.png" />
-<link rel="icon" sizes="192x192" href="icons/icon-192-counselor.png" />
 
 <style>
-/* all your existing CSS from your file (unchanged) */
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --muted:#64748b;
+  --text:#0f172a;
+  --accent-dark:#0070c9;
+  --border:#e5e7eb;
+}
+body{ margin:0; font-family:system-ui; background:var(--bg); }
+.app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
+.sidebar{ padding:20px; border-right:1px solid var(--border); background:white;}
+.main{ display:flex; flex-direction:column; }
+.header{ padding:16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between;}
+.content{ padding:20px; }
+.panel{ background:white; padding:16px; border-radius:12px; border:1px solid var(--border); }
+
+.login-screen{ display:flex; justify-content:center; align-items:center; height:100vh;}
+.login-box{ background:white; padding:20px; border-radius:12px; width:300px; }
+
+.pill-btn{ padding:8px 12px; border-radius:20px; border:1px solid var(--border); cursor:pointer;}
+.primary{ background:#0070c9; color:white; }
+
+.pwa-install-btn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  display:none;
+}
 </style>
 </head>
+
 <body>
 
-<!-- PWA Install Button -->
-<button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn" type="button">Install App</button>
+<button id="installBtn" class="pill-btn primary pwa-install-btn">Install App</button>
 
-<!-- Login Screen -->
+<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
-    <h2>Counselor Login</h2>
-    <label>Email</label>
-    <input id="loginEmail" type="email" required placeholder="name@school.edu" />
-    <label>Password</label>
-    <input id="loginPassword" type="password" required placeholder="••••••••" />
-    <div style="display:flex; justify-content:flex-end;">
-      <button type="submit" class="pill-btn primary">Sign In</button>
-    </div>
-    <div style="margin-top:10px; font-size:12px; color:var(--muted);">
-      Demo counselors: Alice Johnson, Bob Smith, Carlos Martinez
-    </div>
+    <h2>Login</h2>
+    <input id="email" placeholder="email" required><br><br>
+    <input id="password" type="password" placeholder="password" required><br><br>
+    <button class="pill-btn primary">Sign In</button>
   </form>
 </div>
 
-<!-- Main App -->
+<!-- APP -->
 <div id="app" class="app" style="display:none;">
-  <!-- sidebar, main content, modals remain exactly as in your HTML -->
+  <aside class="sidebar">
+    <h3>Dashboard</h3>
+    <button data-view="home">Home</button>
+    <button data-view="students">Students</button>
+  </aside>
+
+  <div class="main">
+    <div class="header">
+      <div id="schoolName">School</div>
+      <button id="logout">Logout</button>
+    </div>
+
+    <div class="content">
+      <div id="homeView" class="panel view">Home Content</div>
+      <div id="studentsView" class="panel view" style="display:none;">Students Content</div>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ----------------- MOCK DATA ----------------- */
-const mockData = {
-  counselors: [
-    { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
-    { id:"c2", name:"Bob Smith", email:"bob@school.edu", password:"bob123" }
-  ],
-  schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"" },
-  studentsByCounselor: {
-    c1: [
-      { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
-      { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9" },
-      { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11" }
-    ]
-  },
-  notesByStudent: {
-    s1: [
-      { text:"Discussed study plan.", timestamp:"2026-02-15 09:20" },
-      { text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }
-    ],
-    s2: [
-      { text:"Schedule change request.", timestamp:"2026-02-14 14:30" }
-    ]
-  },
-  messagesByCounselor: {
-    c1: [
-      { student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
-      { student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false },
-      { student:"Olivia Harris", urgency:"low", text:"Just checking in", ts:"2026-02-15 12:20", read:false }
-    ]
-  }
-};
+document.addEventListener("DOMContentLoaded", ()=>{
 
-/* ----------------- STATE ----------------- */
-let currentCounselor = null;
-let students = [];
-let notifications = [];
-let deferredPrompt = null;
+/* ---------- DATA ---------- */
+const users = [
+  {email:"alice@school.edu", password:"alice123"},
+  {email:"bob@school.edu", password:"bob123"}
+];
 
-/* ----------------- LOGIN ----------------- */
+/* ---------- ELEMENTS ---------- */
 const loginScreen = document.getElementById("loginScreen");
 const app = document.getElementById("app");
+const form = document.getElementById("loginForm");
 
-document.getElementById("loginForm").onsubmit = e => {
+/* ---------- LOGIN ---------- */
+form.addEventListener("submit", (e)=>{
   e.preventDefault();
-  const email = loginEmail.value.trim();
-  const password = loginPassword.value.trim();
-  const match = mockData.counselors.find(c => c.email===email && c.password===password);
-  if(!match) return alert("Invalid credentials");
-  localStorage.setItem("loggedInCounselor", match.id);
-  currentCounselor = match;
-  openDashboard();
-};
 
-// Auto-login if session exists
-const session = localStorage.getItem("loggedInCounselor");
-if(session){
-  currentCounselor = mockData.counselors.find(c=>c.id===session);
-  if(currentCounselor) openDashboard();
-}
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-/* ----------------- DASHBOARD ----------------- */
-function openDashboard(){
+  const valid = users.find(u => u.email===email && u.password===password);
+
+  if(!valid){
+    alert("Invalid login");
+    return;
+  }
+
   loginScreen.style.display = "none";
   app.style.display = "grid";
-  loadSchoolInfo();
-  loadStudents();
-  loadNotifications();
-  renderCalendar();
-  renderAllNotes();
-}
+});
 
-function loadSchoolInfo(){
-  schoolName.textContent = mockData.schoolInfo.name;
-  schoolTerm.textContent = mockData.schoolInfo.term;
-}
-
-function loadStudents(){
-  students = mockData.studentsByCounselor[currentCounselor.id] || [];
-  renderStudents();
-}
-
-function renderStudents(){
-  const list = studentList;
-  list.innerHTML = "";
-  students.forEach(s=>{
-    const card = document.createElement("div");
-    card.className = "student-card";
-    card.innerHTML = `
-      <div class="student-info">
-        <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
-        <div>
-          <div class="student-name">${s.firstName} ${s.lastName}</div>
-          <div class="student-meta">Grade ${s.grade}</div>
-        </div>
-      </div>
-      <div class="student-actions">
-        <button class="pill-btn">Notes</button>
-        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
-        <button class="pill-btn primary">Profile</button>
-      </div>
-    `;
-    list.appendChild(card);
-  });
-}
-
-function renderAllNotes(){
-  const container = document.getElementById("allNotesList");
-  container.innerHTML = "";
-  const sortedStudents = students.slice().sort((a,b)=>a.lastName.localeCompare(b.lastName));
-  sortedStudents.forEach(s=>{
-    const notes = (mockData.notesByStudent[s.id] || []).slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
-    const group = document.createElement("div");
-    group.className = "notes-group";
-    group.innerHTML = `<h4>${s.lastName}, ${s.firstName} (Grade ${s.grade})</h4>`;
-    notes.forEach(n=>{
-      const note = document.createElement("div");
-      note.className = "note-item";
-      note.textContent = `${n.timestamp} — ${n.text}`;
-      group.appendChild(note);
-    });
-    if(notes.length===0){
-      const note = document.createElement("div");
-      note.className="note-item";
-      note.textContent="No notes.";
-      group.appendChild(note);
-    }
-    container.appendChild(group);
-  });
-}
-
-/* ----------------- NOTIFICATIONS / URGENCY ----------------- */
-function loadNotifications(){
-  notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
-  renderUrgencySummary();
-}
-
-function renderUrgencySummary(){
-  const grid = urgencyGrid;
-  grid.innerHTML="";
-  ["high","med","low"].forEach(level=>{
-    const card = document.createElement("div");
-    card.className=`urgency-card ${level}`;
-    card.innerHTML=`<div class="label">${level.toUpperCase()}</div>`;
-    notifications.filter(n=>n.urgency===level).forEach(n=>{
-      const item = document.createElement("div");
-      item.className="message-item";
-      item.textContent=`${n.student}: ${n.text}`;
-      card.appendChild(item);
-    });
-    grid.appendChild(card);
-  });
-}
-
-function openUrgency(){ urgencyOverlay.style.display="flex"; renderUrgencyRows(); }
-function closeUrgency(){ urgencyOverlay.style.display="none"; }
-
-function renderUrgencyRows(){
-  urgencyRed.innerHTML=""; urgencyOrange.innerHTML=""; urgencyYellow.innerHTML=""; urgencyGreen.innerHTML="";
-  notifications.forEach(n=>{
-    const card = document.createElement("div");
-    card.className="message-card";
-    card.innerHTML=`<strong>${n.student}</strong><br>${n.text}<div class="message-meta">${n.ts}</div>`;
-    const dot = document.createElement("span");
-    dot.className = n.read ? "message-read" : "message-unread";
-    card.appendChild(dot);
-    if(n.urgency==="high") urgencyRed.appendChild(card);
-    else if(n.urgency==="med") urgencyOrange.appendChild(card);
-    else if(n.urgency==="low") urgencyGreen.appendChild(card);
-    else urgencyYellow.appendChild(card);
-  });
-}
-
-/* ----------------- CALENDAR ----------------- */
-function renderCalendar(){
-  calendarGrid.innerHTML="";
-  for(let d=1; d<=30; d++){
-    const cell=document.createElement("div");
-    cell.className="day";
-    cell.innerHTML=`<strong>${d}</strong>`;
-    if(d%7===0) cell.innerHTML+=`<div><span class="dot high"></span>Appt</div>`;
-    calendarGrid.appendChild(cell);
-  }
-}
-
-/* ----------------- NAVIGATION ----------------- */
-document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
+/* ---------- NAV ---------- */
+document.querySelectorAll("[data-view]").forEach(btn=>{
   btn.onclick = ()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
     document.querySelectorAll(".view").forEach(v=>v.style.display="none");
-    const view = document.getElementById(btn.dataset.view+"View");
-    if(view) view.style.display="block";
+    document.getElementById(btn.dataset.view+"View").style.display="block";
   };
 });
-document.getElementById("urgencyNavBtn").onclick = openUrgency;
 
-/* ----------------- PWA INSTALL ----------------- */
-const installBtn = document.getElementById("pwaInstallBtn");
-window.addEventListener('beforeinstallprompt', (e)=>{
+/* ---------- LOGOUT ---------- */
+document.getElementById("logout").onclick = ()=>{
+  location.reload();
+};
+
+/* ---------- PWA INSTALL ---------- */
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e)=>{
   e.preventDefault();
   deferredPrompt = e;
-  installBtn.style.display='block';
+  installBtn.style.display = "block";
 });
-installBtn.addEventListener('click', async ()=>{
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installBtn.style.display='none';
-  }
+
+installBtn.onclick = async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt = null;
+  installBtn.style.display = "none";
+};
+
 });
 </script>
 
-<script src="pwa.js"></script>
 </body>
 </html>
