@@ -213,19 +213,23 @@ body.dark .message-meta { color:#9ca3af; }
         <button class="pill-btn" id="logoutBtn">Sign Out</button>
       </div>
     </header>
+
     <div class="content">
       <div class="panel view" id="homeView">
         <h3>Overview</h3>
         <div class="urgency-grid" id="urgencyGrid"></div>
       </div>
+
       <div class="panel view" id="studentsView" style="display:none;">
         <h3>Students</h3>
         <div class="student-list" id="studentList"></div>
       </div>
+
       <div class="panel view" id="notesView" style="display:none;">
         <h3>Notes (A–Z Students, Recent Notes First)</h3>
         <div id="allNotesList"></div>
       </div>
+
       <div class="panel view" id="calendarView" style="display:none;">
         <h3>Calendar (Read‑Only)</h3>
         <div class="calendar" id="calendarGrid"></div>
@@ -473,8 +477,10 @@ if(session){
 }
 
 /* ✅ PWA: Register Service Worker */
+let swRegistrationPromise = null;
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("service-worker.js").catch(()=>{});
+  swRegistrationPromise = navigator.serviceWorker.register("service-worker.js");
+  swRegistrationPromise.catch(()=>{});
 }
 
 /* ✅ PWA: Install Prompt (Chrome/Edge) */
@@ -517,11 +523,28 @@ if (pwaInstallBtn) {
         alert("To install on iPhone/iPad: use Share → Add to Home Screen.");
         return;
       }
+      if (location.protocol === "file:") {
+        alert("Install won’t work from a local file (file://). Run a local server and open http://localhost instead.");
+        return;
+      }
       if (!window.isSecureContext) {
         alert("Install requires HTTPS (or http://localhost). It won’t show on file:// or plain http.");
         return;
       }
-      alert("If install is available: open Chrome menu (⋮) → Install app / Add to Home screen. If you don’t see it yet, refresh once.");
+      try {
+        const reg = swRegistrationPromise ? await swRegistrationPromise.catch(() => null) : null;
+        if (!reg) {
+          alert("Service worker isn’t registered yet. Refresh once, then try again.");
+          return;
+        }
+        if (!navigator.serviceWorker.controller) {
+          alert("Service worker is installed but not controlling this page yet. Refresh once, then try again.");
+          return;
+        }
+      } catch (_) {
+        // ignore
+      }
+      alert("Chrome hasn’t offered an install prompt yet. Try refreshing once, then open Chrome menu (⋮) → Install app / Add to Home screen.");
       return;
     }
     deferredPrompt.prompt();
