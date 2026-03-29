@@ -1,5 +1,5 @@
 {
-  "name": "SIS Counselor Dashboard",
+  "name": "Counselor Dashboard",
   "short_name": "CounselorDash",
   "description": "Interactive dashboard for counselors to monitor students, notes, and urgency levels.",
   "start_url": "/index.html",
