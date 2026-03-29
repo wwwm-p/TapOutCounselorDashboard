@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SIS Counselor Dashboard</title>
 
-<!-- PWA: Manifest -->
+<!-- PWA Manifest -->
 <link rel="manifest" href="counselor-manifest.json">
 
 <!-- App Metadata -->
@@ -25,13 +25,27 @@
 
 <style>
 :root{
-  --bg:#f7f6f2; --surface:#ffffff; --muted:#64748b; --text:#0f172a;
-  --accent:#0f8de0; --accent-dark:#0070c9; --border:#e5e7eb;
-  --danger:#ef4444; --warn:#f59e0b; --ok:#10b981;
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --muted:#64748b;
+  --text:#0f172a;
+  --accent:#0f8de0;
+  --accent-dark:#0070c9;
+  --border:#e5e7eb;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --ok:#10b981;
   --shadow:0 8px 20px rgba(15,23,42,0.12);
 }
 body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
-body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35); }
+body.dark{
+  --bg:#0b1220;
+  --surface:#0f172a;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:#1f2937;
+  --shadow:0 8px 20px rgba(0,0,0,0.35);
+}
 *{ box-sizing:border-box; }
 button{ font-family:inherit; }
 
@@ -61,7 +75,7 @@ button{ font-family:inherit; }
 .panel h3{ margin:0 0 12px 0; }
 
 /* Student list */
-.student-list{ display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+.student-list{ display:grid; gap:10px; }
 .student-card{ display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid var(--border); border-radius:12px; padding:12px; background:rgba(255,255,255,0.4); }
 body.dark .student-card{ background:#111827; }
 .student-info{ display:flex; align-items:center; gap:12px; }
@@ -72,7 +86,7 @@ body.dark .student-card{ background:#111827; }
 .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency summary cards */
+/* Urgency summary cards (main area) */
 .urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
@@ -80,13 +94,6 @@ body.dark .student-card{ background:#111827; }
 .urgency-card.med{ border-left:6px solid var(--warn); }
 .urgency-card.high{ border-left:6px solid var(--danger); }
 .message-item{ font-size:13px; color:var(--muted); margin-top:6px; }
-.messages{ display:flex; flex-wrap:wrap; gap:12px; }
-.message-card{ flex:1 1 220px; min-width:200px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; position:relative; }
-body.dark .message-card{ background:#111827; border-color:#1f2937; color:#e5e7eb; }
-.message-meta{ font-size:12px; color:#555; margin-top:4px; }
-body.dark .message-meta{ color:#9ca3af; }
-.message-unread{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; }
-.message-read{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#3b82f6; }
 
 /* Calendar */
 .calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
@@ -96,17 +103,29 @@ body.dark .message-meta{ color:#9ca3af; }
 .dot.med{ background:var(--warn); }
 .dot.high{ background:var(--danger); }
 
-/* Notes */
+/* Notes list */
 .notes-group{ border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
 .notes-group h4{ margin:0 0 6px 0; }
 .note-item{ font-size:13px; margin-bottom:6px; color:var(--muted); }
 
 /* Modals */
 .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:2000; }
-.modal{ width:min(960px, 96vw); background:var(--surface); border-radius:16px; padding:18px; box-shadow:var(--shadow); }
+.modal{ width:min(760px, 92vw); background:var(--surface); border-radius:16px; padding:18px; box-shadow:var(--shadow); }
 .modal-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
 .modal-header h3{ margin:0; }
 .modal-body{ max-height:60vh; overflow:auto; }
+
+/* Urgency rows */
+.urgency-row{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:12px; }
+.urgency-left{ min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
+.urgency-header{ display:flex; align-items:center; gap:10px; }
+.messages{ display:flex; flex-wrap:wrap; gap:8px; width:100%; }
+.message-card{ min-width:180px; flex:1 1 180px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; position:relative; }
+body.dark .message-card{ background:#111827; border-color:#1f2937; color:#e5e7eb; }
+.message-meta{ font-size:12px; color:#555; margin-top:4px; }
+body.dark .message-meta{ color:#9ca3af; }
+.message-unread{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; }
+.message-read{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#3b82f6; }
 
 /* Login */
 .login-screen{ display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
@@ -119,10 +138,20 @@ body.dark .message-meta{ color:#9ca3af; }
   .app{ grid-template-columns:1fr; }
   .sidebar{ display:none; }
 }
-.pwa-install-btn{ position:fixed; right:16px; bottom:16px; z-index:2500; box-shadow:var(--shadow); display:none; }
+
+/* PWA install button */
+.pwa-install-btn{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:2500;
+  box-shadow:var(--shadow);
+  display:none;
+}
 </style>
 </head>
 <body>
+
 <button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn" type="button">Install App</button>
 
 <!-- Login Screen -->
@@ -192,22 +221,46 @@ body.dark .message-meta{ color:#9ca3af; }
 
 <!-- Urgency Modal -->
 <div id="urgencyOverlay" class="overlay">
-  <div class="modal">
+  <div class="modal" style="width:min(980px, 96vw);">
     <div class="modal-header">
       <h3>Urgency Breakdown</h3>
       <button class="pill-btn" onclick="closeUrgency()">Close</button>
     </div>
     <div class="modal-body">
       <div class="urgency-row" id="red-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Crisis</h2>
+          </div>
+        </div>
         <div class="messages" id="urgencyRed"></div>
       </div>
       <div class="urgency-row" id="orange-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Elevated Risk</h2>
+          </div>
+        </div>
         <div class="messages" id="urgencyOrange"></div>
       </div>
       <div class="urgency-row" id="yellow-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Moderate</h2>
+          </div>
+        </div>
         <div class="messages" id="urgencyYellow"></div>
       </div>
       <div class="urgency-row" id="green-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Low Urgency</h2>
+          </div>
+        </div>
         <div class="messages" id="urgencyGreen"></div>
       </div>
     </div>
@@ -215,73 +268,153 @@ body.dark .message-meta{ color:#9ca3af; }
 </div>
 
 <script>
-// MOCK DATA
-const mockData = { /* same as your data */ };
+/* ---------- MOCK DATA ---------- */
+const mockData = {
+  counselors: [
+    {id:1, name:"Alice Johnson", email:"alice@school.edu", password:"alice123"},
+    {id:2, name:"Bob Smith", email:"bob@school.edu", password:"bob123"},
+    {id:3, name:"Carlos Martinez", email:"carlos@school.edu", password:"carlos123"}
+  ],
+  schoolInfo: { name:"Springfield High", term:"Fall 2026" },
+  studentsByCounselor:{
+    1:[{firstName:"John",lastName:"Doe",grade:11},{firstName:"Mary",lastName:"Lee",grade:12}],
+    2:[{firstName:"Sam",lastName:"Wilson",grade:10}],
+    3:[{firstName:"Lara",lastName:"Croft",grade:12}]
+  },
+  notesByStudent:{
+    1:[{text:"Met about science project",timestamp:"2026-03-15"}],
+    2:[{text:"Discussed college applications",timestamp:"2026-03-16"}]
+  },
+  messagesByCounselor:{
+    1:[
+      {student:"John Doe",urgency:"high",text:"Needs immediate support",ts:"2026-03-15 10:12",read:false},
+      {student:"Mary Lee",urgency:"low",text:"All good",ts:"2026-03-15 11:00",read:true}
+    ]
+  }
+};
+
 let currentCounselor = null;
 let students = [];
-let notifications = [];
 
-// DOM refs
+/* ---------- DOM REFERENCES ---------- */
 const loginScreen = document.getElementById("loginScreen");
 const app = document.getElementById("app");
 
-// Login
+/* ---------- LOGIN ---------- */
 document.getElementById("loginForm").onsubmit = e => {
   e.preventDefault();
-  const email = loginEmail.value.trim();
-  const password = loginPassword.value.trim();
+  const email = document.getElementById("loginEmail").value.trim();
+  const password = document.getElementById("loginPassword").value.trim();
   const match = mockData.counselors.find(c=>c.email===email && c.password===password);
   if(!match) return alert("Invalid credentials");
-  localStorage.setItem("loggedInCounselor", match.id);
   currentCounselor = match;
+  loginScreen.style.display="none";
+  app.style.display="grid";
   openDashboard();
 };
 
+/* ---------- DASHBOARD ---------- */
 function openDashboard(){
-  loginScreen.style.display = "none";
-  app.style.display = "grid";
-  loadSchoolInfo();
-  loadStudents();
-  loadNotifications();
-  renderCalendar();
-  renderAllNotes();
-}
-
-function loadSchoolInfo(){
-  const data = mockData.schoolInfo;
-  schoolName.textContent = data.name;
-  schoolTerm.textContent = data.term;
-}
-
-function loadStudents(){
+  document.getElementById("schoolName").textContent = mockData.schoolInfo.name;
+  document.getElementById("schoolTerm").textContent = mockData.schoolInfo.term;
   students = mockData.studentsByCounselor[currentCounselor.id] || [];
-  renderStudents();
+  populateStudents();
+  populateUrgency();
 }
 
-function renderStudents(){
-  const list = studentList;
-  list.innerHTML = "";
+function populateStudents(){
+  const container = document.getElementById("studentList");
+  container.innerHTML="";
   students.forEach(s=>{
     const card = document.createElement("div");
     card.className="student-card";
-    card.innerHTML=`
+    card.innerHTML = `
       <div class="student-info">
         <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
-        <div><div class="student-name">${s.firstName} ${s.lastName}</div><div class="student-meta">Grade ${s.grade}</div></div>
+        <div>
+          <div class="student-name">${s.firstName} ${s.lastName}</div>
+          <div class="student-meta">Grade ${s.grade}</div>
+        </div>
       </div>
       <div class="student-actions">
+        <button class="pill-btn primary" onclick="openUrgency(${s.firstName})">Urgency</button>
         <button class="pill-btn">Notes</button>
-        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
-        <button class="pill-btn primary">Profile</button>
       </div>
     `;
-    list.appendChild(card);
+    container.appendChild(card);
   });
 }
 
-// Notes, Notifications, Urgency, Calendar
-// ... Keep all JS from previous code as-is, including renderAllNotes(), renderUrgencySummary(), renderUrgencyRows(), renderCalendar(), dark mode toggle, PWA install etc.
+function populateUrgency(){
+  const grid = document.getElementById("urgencyGrid");
+  grid.innerHTML="";
+  const messages = mockData.messagesByCounselor[currentCounselor.id]||[];
+  const urgencyLevels = {high:"high",med:"med",low:"low"};
+  const counts = {high:0,med:0,low:0};
+  messages.forEach(m=>{
+    if(m.urgency==="high") counts.high++;
+    else if(m.urgency==="med") counts.med++;
+    else counts.low++;
+  });
+  ["high","med","low"].forEach(lvl=>{
+    const card = document.createElement("div");
+    card.className=`urgency-card ${lvl}`;
+    card.innerHTML = `<div class="label">${lvl.charAt(0).toUpperCase()+lvl.slice(1)}</div><div class="message-item">${counts[lvl]} message(s)</div>`;
+    grid.appendChild(card);
+  });
+}
 
+/* ---------- URGENCY MODAL ---------- */
+function openUrgency(studentId){
+  const overlay = document.getElementById("urgencyOverlay");
+  overlay.style.display="flex";
+
+  const red = document.getElementById("urgencyRed");
+  const orange = document.getElementById("urgencyOrange");
+  const yellow = document.getElementById("urgencyYellow");
+  const green = document.getElementById("urgencyGreen");
+  [red,orange,yellow,green].forEach(div=>div.innerHTML="");
+
+  const messages = mockData.messagesByCounselor[currentCounselor.id]||[];
+  messages.forEach(note=>{
+    const card = document.createElement("div");
+    card.className="message-card";
+    card.textContent = note.text;
+    card.classList.add(note.urgency==="high"?"red":note.urgency==="med"?"orange":"green");
+    if(note.read) card.classList.add("message-read");
+    else card.classList.add("message-unread");
+    if(note.urgency==="high") red.appendChild(card);
+    else if(note.urgency==="med") orange.appendChild(card);
+    else green.appendChild(card);
+  });
+}
+
+function closeUrgency(){
+  document.getElementById("urgencyOverlay").style.display="none";
+}
+
+/* ---------- NAVIGATION ---------- */
+document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const view = btn.dataset.view;
+    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+    if(view) document.getElementById(view+"View").style.display="block";
+  });
+});
+
+/* ---------- LOGOUT ---------- */
+document.getElementById("logoutBtn").onclick = ()=>{
+  currentCounselor = null;
+  loginScreen.style.display="flex";
+  app.style.display="none";
+};
+
+/* ---------- DARK MODE ---------- */
+const body = document.body;
+document.getElementById("darkModeBtn").onclick = ()=>body.classList.toggle("dark");
 </script>
+
 </body>
 </html>
