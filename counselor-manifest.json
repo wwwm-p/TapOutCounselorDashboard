@@ -1,19 +1,19 @@
 {
   "name": "SIS Counselor Dashboard",
   "short_name": "Counselor",
-  "start_url": "index.html",
-  "scope": "./",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#0070c9",
   "background_color": "#ffffff",
   "icons": [
     {
-      "src": "icons/icon-192-counselor.png",
+      "src": "/icons/icon-192-counselor.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512-counselor.png",
+      "src": "/icons/icon-512-counselor.png",
       "sizes": "512x512",
       "type": "image/png"
     }
