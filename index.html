@@ -141,7 +141,7 @@ body.dark .student-card{ background:#111827; }
       <button class="active" data-view="home">Home</button>
       <button data-view="students">Students</button>
       <button data-view="notes">Notes</button>
-      <button id="urgencyNavBtn">Urgency</button>
+      <button data-view="urgency">Urgency</button>
       <button data-view="calendar">Calendar</button>
     </div>
   </aside>
@@ -177,6 +177,11 @@ body.dark .student-card{ background:#111827; }
         <div id="allNotesList"></div>
       </div>
 
+      <div class="panel view" id="urgencyView" style="display:none;">
+        <h3>Urgency</h3>
+        <div class="urgency-grid" id="urgencyGridView"></div>
+      </div>
+
       <div class="panel view" id="calendarView" style="display:none;">
         <h3>Calendar (Read‑Only)</h3>
         <div class="calendar" id="calendarGrid"></div>
@@ -192,44 +197,7 @@ body.dark .student-card{ background:#111827; }
       <h3>Urgency Breakdown</h3>
       <button class="pill-btn" onclick="closeUrgency()">Close</button>
     </div>
-    <div class="modal-body">
-      <div class="urgency-row" id="red-row">
-        <div class="urgency-left">
-          <div class="urgency-header">
-            <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-            <h2>Crisis</h2>
-          </div>
-        </div>
-        <div class="messages" id="urgencyRed"></div>
-      </div>
-      <div class="urgency-row" id="orange-row">
-        <div class="urgency-left">
-          <div class="urgency-header">
-            <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-            <h2>Elevated Risk</h2>
-          </div>
-        </div>
-        <div class="messages" id="urgencyOrange"></div>
-      </div>
-      <div class="urgency-row" id="yellow-row">
-        <div class="urgency-left">
-          <div class="urgency-header">
-            <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-            <h2>Moderate</h2>
-          </div>
-        </div>
-        <div class="messages" id="urgencyYellow"></div>
-      </div>
-      <div class="urgency-row" id="green-row">
-        <div class="urgency-left">
-          <div class="urgency-header">
-            <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
-            <h2>Low Urgency</h2>
-          </div>
-        </div>
-        <div class="messages" id="urgencyGreen"></div>
-      </div>
-    </div>
+    <div class="modal-body" id="urgencyModalBody"></div>
   </div>
 </div>
 
@@ -289,6 +257,7 @@ function openDashboard(){
   loadNotifications();
   renderCalendar();
   renderAllNotes();
+  updateUrgencyCards();
 }
 
 function loadSchoolInfo(){
@@ -359,7 +328,6 @@ function renderCalendar(){
 // === URGENCY ===
 function loadNotifications(){
   notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
-  updateUrgencyCards();
   notifDot.style.display=notifications.some(n=>!n.read)?"inline-block":"none";
 }
 
@@ -379,16 +347,12 @@ function updateUrgencyCards(){
 
 function openUrgencyModal(){
   urgencyOverlay.style.display="flex";
-  ["Green","Yellow","Orange","Red"].forEach(id=>{
-    const el=document.getElementById("urgency"+id);
-    if(!el) return;
-    const lvl=id.toLowerCase();
-    el.innerHTML="";
-    notifications.filter(n=>n.urgency===lvl).forEach(n=>{
-      const div=document.createElement("div");
-      div.textContent=`${n.student}: ${n.text}`;
-      el.appendChild(div);
-    });
+  const body = document.getElementById("urgencyModalBody");
+  body.innerHTML="";
+  notifications.forEach(n=>{
+    const div = document.createElement("div");
+    div.textContent=`${n.student}: ${n.text} [${n.urgency.toUpperCase()}]`;
+    body.appendChild(div);
   });
 }
 
@@ -404,6 +368,7 @@ document.querySelectorAll(".nav button").forEach(btn=>{
     const view = btn.dataset.view;
     document.querySelectorAll(".view").forEach(v=>v.style.display="none");
     if(view) document.getElementById(view+"View").style.display="block";
+    if(view==="urgency") updateUrgencyCards();
   };
 });
 
