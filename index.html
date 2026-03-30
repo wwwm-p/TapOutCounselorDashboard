@@ -13,14 +13,14 @@
 <meta name="description" content="Counselor dashboard for student support and communication." />
 <meta name="application-name" content="SIS Counselor Dashboard" />
 
-<!-- Mobile Web App / iOS PWA -->
+<!-- Mobile Web App -->
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Counselor Dashboard" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="apple-touch-icon" href="icons/icon-192-counselor.png">
 
 <!-- Icons -->
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192-counselor.png" />
 <link rel="icon" sizes="192x192" href="icons/icon-192-counselor.png" />
 
 <style>
@@ -156,7 +156,7 @@ body.dark .message-meta { color:#9ca3af; }
   .sidebar{ display:none; }
 }
 
-/* PWA install button */
+/* PWA install button (shown when install prompt is available) */
 .pwa-install-btn{
   position:fixed;
   right:16px;
@@ -169,7 +169,6 @@ body.dark .message-meta { color:#9ca3af; }
 </head>
 <body>
 <button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn" type="button">Install App</button>
-
 <!-- Login Screen -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
@@ -247,13 +246,313 @@ body.dark .message-meta { color:#9ca3af; }
       <button class="pill-btn" onclick="closeUrgency()">Close</button>
     </div>
     <div class="modal-body">
-      <!-- Urgency rows content remains identical -->
+      <div class="urgency-row" id="red-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Crisis</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyRed"></div>
+      </div>
+      <div class="urgency-row" id="orange-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Elevated Risk</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyOrange"></div>
+      </div>
+      <div class="urgency-row" id="yellow-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Moderate</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyYellow"></div>
+      </div>
+      <div class="urgency-row" id="green-row">
+        <div class="urgency-left">
+          <div class="urgency-header">
+            <div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div>
+            <h2>Low Urgency</h2>
+          </div>
+        </div>
+        <div class="messages" id="urgencyGreen"></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-// All your existing JS logic remains unchanged, including login, dashboard rendering, service worker, and PWA install prompt
+const mockData = {
+  counselors: [
+    { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
+    { id:"c2", name:"Bob Smith", email:"bob@school.edu", password:"bob123" }
+  ],
+  schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"" },
+  studentsByCounselor: {
+    c1: [
+      { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
+      { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9" },
+      { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11" }
+    ]
+  },
+  notesByStudent: {
+    s1: [
+      { text:"Discussed study plan.", timestamp:"2026-02-15 09:20" },
+      { text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }
+    ],
+    s2: [
+      { text:"Schedule change request.", timestamp:"2026-02-14 14:30" }
+    ]
+  },
+  messagesByCounselor: {
+    c1: [
+      { student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
+      { student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false },
+      { student:"Olivia Harris", urgency:"low", text:"Just checking in", ts:"2026-02-15 12:20", read:false }
+    ]
+  }
+};
+
+let currentCounselor = null;
+let students = [];
+let notifications = [];
+
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
+
+document.getElementById("loginForm").onsubmit = (e)=>{
+  e.preventDefault();
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+  const match = mockData.counselors.find(c => c.email === email && c.password === password);
+  if(!match) return alert("Invalid credentials");
+  localStorage.setItem("loggedInCounselor", match.id);
+  currentCounselor = match;
+  openDashboard();
+};
+
+function openDashboard(){
+  loginScreen.style.display = "none";
+  app.style.display = "grid";
+  loadSchoolInfo();
+  loadStudents();
+  loadNotifications();
+  renderCalendar();
+  renderAllNotes();
+}
+
+function loadSchoolInfo(){
+  const data = mockData.schoolInfo;
+  schoolName.textContent = data.name;
+  schoolTerm.textContent = data.term;
+}
+
+function loadStudents(){
+  students = mockData.studentsByCounselor[currentCounselor.id] || [];
+  renderStudents();
+}
+
+function renderStudents(){
+  const list = studentList;
+  list.innerHTML = "";
+  students.forEach(s=>{
+    const card = document.createElement("div");
+    card.className = "student-card";
+    card.innerHTML = `
+      <div class="student-info">
+        <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
+        <div>
+          <div class="student-name">${s.firstName} ${s.lastName}</div>
+          <div class="student-meta">Grade ${s.grade}</div>
+        </div>
+      </div>
+      <div class="student-actions">
+        <button class="pill-btn">Notes</button>
+        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
+        <button class="pill-btn primary">Profile</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function renderAllNotes(){
+  const container = document.getElementById("allNotesList");
+  container.innerHTML = "";
+  const sortedStudents = students.slice().sort((a,b)=>a.lastName.localeCompare(b.lastName));
+  sortedStudents.forEach(s=>{
+    const notes = (mockData.notesByStudent[s.id] || []).slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    const group = document.createElement("div");
+    group.className = "notes-group";
+    group.innerHTML = `<h4>${s.lastName}, ${s.firstName} (Grade ${s.grade})</h4>`;
+    notes.forEach(n=>{
+      const note = document.createElement("div");
+      note.className = "note-item";
+      note.textContent = `${n.timestamp} — ${n.text}`;
+      group.appendChild(note);
+    });
+    if(notes.length === 0){
+      const note = document.createElement("div");
+      note.className = "note-item";
+      note.textContent = "No notes.";
+      group.appendChild(note);
+    }
+    container.appendChild(group);
+  });
+}
+
+function loadNotifications(){
+  notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
+  renderUrgencySummary();
+}
+
+function renderUrgencySummary(){
+  const grid = urgencyGrid;
+  grid.innerHTML = "";
+  ["high","med","low"].forEach(level=>{
+    const card = document.createElement("div");
+    card.className = `urgency-card ${level}`;
+    card.innerHTML = `<div class="label">${level.toUpperCase()}</div>`;
+    notifications.filter(n=>n.urgency===level).forEach(n=>{
+      const item = document.createElement("div");
+      item.className="message-item";
+      item.textContent = `${n.student}: ${n.text}`;
+      card.appendChild(item);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function openUrgency(){ urgencyOverlay.style.display = "flex"; renderUrgencyRows(); }
+function closeUrgency(){ urgencyOverlay.style.display = "none"; }
+
+function renderUrgencyRows(){
+  urgencyRed.innerHTML=""; urgencyOrange.innerHTML=""; urgencyYellow.innerHTML=""; urgencyGreen.innerHTML="";
+  notifications.forEach(n=>{
+    const card = document.createElement("div");
+    card.className="message-card";
+    card.innerHTML=`<strong>${n.student}</strong><br>${n.text}<div class="message-meta">${n.ts}</div>`;
+    const dot = document.createElement("span");
+    dot.className = n.read ? "message-read" : "message-unread";
+    card.appendChild(dot);
+    if(n.urgency==="high") urgencyRed.appendChild(card);
+    else if(n.urgency==="med") urgencyOrange.appendChild(card);
+    else if(n.urgency==="low") urgencyGreen.appendChild(card);
+    else urgencyYellow.appendChild(card);
+  });
+}
+
+function renderCalendar(){
+  calendarGrid.innerHTML="";
+  for(let d=1; d<=30; d++){
+    const cell=document.createElement("div");
+    cell.className="day";
+    cell.innerHTML=`<strong>${d}</strong>`;
+    if(d%7===0) cell.innerHTML+=`<div><span class="dot high"></span>Appt</div>`;
+    calendarGrid.appendChild(cell);
+  }
+}
+
+/* Nav buttons */
+document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+    const view = document.getElementById(btn.dataset.view+"View");
+    if(view) view.style.display="block";
+  };
+});
+document.getElementById("urgencyNavBtn").onclick = openUrgency;
+
+const session = localStorage.getItem("loggedInCounselor");
+if(session){
+  currentCounselor = mockData.counselors.find(c=>c.id===session);
+  if(currentCounselor) openDashboard();
+}
+
+/* ✅ PWA: Register Service Worker */
+let swRegistrationPromise = null;
+if ("serviceWorker" in navigator) {
+  swRegistrationPromise = navigator.serviceWorker.register("service-worker.js");
+  swRegistrationPromise.catch(()=>{});
+}
+
+/* ✅ PWA: Install Prompt (Chrome/Edge) */
+let deferredPrompt = null;
+const pwaInstallBtn = document.getElementById("pwaInstallBtn");
+
+function isRunningStandalone(){
+  // Chromium + most browsers
+  if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
+  // iOS Safari
+  // eslint-disable-next-line no-undef
+  if (typeof navigator !== "undefined" && "standalone" in navigator && navigator.standalone) return true;
+  return false;
+}
+
+function setInstallBtnVisible(visible){
+  if (!pwaInstallBtn) return;
+  pwaInstallBtn.style.display = visible ? "inline-flex" : "none";
+}
+
+// Default: show unless we're already installed (if Chrome/Edge provides a real prompt, we'll use it).
+setInstallBtnVisible(!isRunningStandalone());
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  setInstallBtnVisible(true);
+});
+
+window.addEventListener("appinstalled", () => {
+  deferredPrompt = null;
+  setInstallBtnVisible(false);
+});
+
+if (pwaInstallBtn) {
+  pwaInstallBtn.addEventListener("click", async () => {
+    if (!deferredPrompt) {
+      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+      if (isIOS) {
+        alert("To install on iPhone/iPad: use Share → Add to Home Screen.");
+        return;
+      }
+      if (location.protocol === "file:") {
+        alert("Install won’t work from a local file (file://). Run a local server and open http://localhost instead.");
+        return;
+      }
+      if (!window.isSecureContext) {
+        alert("Install requires HTTPS (or http://localhost). It won’t show on file:// or plain http.");
+        return;
+      }
+      try {
+        const reg = swRegistrationPromise ? await swRegistrationPromise.catch(() => null) : null;
+        if (!reg) {
+          alert("Service worker isn’t registered yet. Refresh once, then try again.");
+          return;
+        }
+        if (!navigator.serviceWorker.controller) {
+          alert("Service worker is installed but not controlling this page yet. Refresh once, then try again.");
+          return;
+        }
+      } catch (_) {
+        // ignore
+      }
+      alert("Chrome hasn’t offered an install prompt yet. Try refreshing once, then open Chrome menu (⋮) → Install app / Add to Home screen.");
+      return;
+    }
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    setInstallBtnVisible(!isRunningStandalone());
+  });
+}
 </script>
 </body>
 </html>
