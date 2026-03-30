@@ -1,41 +1,26 @@
-const CACHE_NAME = "counselor-dashboard-v1";
+const CACHE_NAME = "counselor-cache-v1";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
-  "/style.css",
   "/counselor-manifest.json",
-  "/service-worker.js",
   "/icons/icon-192-counselor.png",
-  "/icons/icon-512-counselor.png",
+  "/icons/icon-512-counselor.png"
 ];
 
-// Install Service Worker and cache assets
-self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(ASSETS_TO_CACHE))
-      .then(() => self.skipWaiting())
-  );
+self.addEventListener("install", e=>{
+  e.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS_TO_CACHE)));
+  self.skipWaiting();
 });
 
-// Activate Service Worker and clean old caches
-self.addEventListener("activate", event => {
-  event.waitUntil(
+self.addEventListener("activate", e=>{
+  e.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(
-        keys.map(key => {
-          if(key !== CACHE_NAME) return caches.delete(key);
-        })
-      )
+      Promise.all(keys.map(key => key!==CACHE_NAME? caches.delete(key):null))
     )
   );
   self.clients.claim();
 });
 
-// Fetch: serve cached assets if offline
-self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(resp => resp || fetch(event.request).catch(() => caches.match("/index.html")))
-  );
+self.addEventListener("fetch", e=>{
+  e.respondWith(caches.match(e.request).then(res=>res || fetch(e.request)));
 });
