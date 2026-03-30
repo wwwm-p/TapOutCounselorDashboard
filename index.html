@@ -5,8 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>SIS Counselor Dashboard</title>
 
+<!-- PWA -->
 <link rel="manifest" href="counselor-manifest.json" />
 <meta name="theme-color" content="#0070c9" />
+<meta name="description" content="Counselor dashboard for student support and communication." />
+<meta name="application-name" content="SIS Counselor Dashboard" />
+
+<!-- iOS (Add to Home Screen) -->
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Counselor Dashboard" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192-counselor.png" />
+<link rel="icon" sizes="192x192" href="icons/icon-192-counselor.png" />
 
 <style>
 :root{
@@ -23,9 +34,16 @@
   --shadow:0 8px 20px rgba(15,23,42,0.12);
 }
 body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
-body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35); }
+body.dark{
+  --bg:#0b1220;
+  --surface:#0f172a;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:#1f2937;
+  --shadow:0 8px 20px rgba(0,0,0,0.35);
+}
 *{ box-sizing:border-box; }
-button{ font-family:inherit; cursor:pointer; }
+button{ font-family:inherit; }
 
 /* Layout */
 .app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
@@ -33,36 +51,38 @@ button{ font-family:inherit; cursor:pointer; }
 .main{ display:flex; flex-direction:column; min-height:100vh; }
 
 /* Header */
-.header{ background:var(--surface); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; justify-content:space-between; align-items:center; }
+.header{ background:var(--surface); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .school{ display:flex; align-items:center; gap:12px; }
-.school-logo{ width:42px; height:42px; border-radius:10px; border:2px solid var(--accent-dark); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-dark); overflow:hidden; background:#fff; }
+.school-logo{ width:42px; height:42px; border-radius:10px; background:#fff; border:2px solid var(--accent-dark); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-dark); overflow:hidden; }
 .school-name{ font-weight:700; }
-.header-actions{ display:flex; gap:10px; align-items:center; }
-.icon-btn{ width:40px; height:40px; border-radius:999px; border:1px solid var(--border); background:var(--surface); display:flex; align-items:center; justify-content:center; position:relative; }
+.header-actions{ display:flex; align-items:center; gap:10px; }
+.icon-btn{ width:40px; height:40px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; }
 .notif-dot{ width:8px; height:8px; border-radius:50%; background:var(--danger); position:absolute; top:8px; right:8px; display:none; box-shadow:0 0 0 2px var(--surface); }
 
 /* Sidebar */
 .brand{ font-weight:800; font-size:18px; margin-bottom:16px; }
 .nav{ display:flex; flex-direction:column; gap:10px; }
-.nav button{ text-align:left; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); font-weight:600; }
+.nav button{ text-align:left; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .nav button.active{ border-color:var(--accent-dark); box-shadow:0 0 0 2px rgba(0,112,201,0.12); }
 
 /* Content */
 .content{ padding:24px; display:grid; gap:20px; }
 .panel{ background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; box-shadow:var(--shadow); }
-.view{ display:none; }
+.panel h3{ margin:0 0 12px 0; }
 
 /* Student list */
 .student-list{ display:grid; gap:10px; }
-.student-card{ display:flex; justify-content:space-between; align-items:center; gap:12px; border:1px solid var(--border); border-radius:12px; padding:12px; background:rgba(255,255,255,0.4);}
+.student-card{ display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px solid var(--border); border-radius:12px; padding:12px; background:rgba(255,255,255,0.4); }
 body.dark .student-card{ background:#111827; }
 .student-info{ display:flex; align-items:center; gap:12px; }
-.avatar{ width:42px; height:42px; border-radius:50%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; font-weight:700; color:#334155; overflow:hidden; }
+.avatar{ width:42px; height:42px; border-radius:50%; background:#e2e8f0; overflow:hidden; display:flex; align-items:center; justify-content:center; font-weight:700; color:#334155; }
+.student-name{ font-weight:700; }
+.student-meta{ font-size:12px; color:var(--muted); }
 .student-actions{ display:flex; gap:8px; flex-wrap:wrap; }
-.pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); font-weight:600; }
+.pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency grid */
+/* Urgency summary cards (main area) */
 .urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
@@ -71,6 +91,26 @@ body.dark .student-card{ background:#111827; }
 .urgency-card.high{ border-left:6px solid var(--danger); }
 .message-item{ font-size:13px; color:var(--muted); margin-top:6px; }
 
+/* Calendar */
+.calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.calendar .day{ border:1px solid var(--border); border-radius:8px; padding:6px; min-height:70px; font-size:12px; }
+.calendar .day .dot{ width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:6px; }
+.dot.low{ background:var(--ok); }
+.dot.med{ background:var(--warn); }
+.dot.high{ background:var(--danger); }
+
+/* Notes list (by student) */
+.notes-group{ border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
+.notes-group h4{ margin:0 0 6px 0; }
+.note-item{ font-size:13px; margin-bottom:6px; color:var(--muted); }
+
+/* Modals */
+.overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:2000; }
+.modal{ width:min(760px, 92vw); background:var(--surface); border-radius:16px; padding:18px; box-shadow:var(--shadow); }
+.modal-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
+.modal-header h3{ margin:0; }
+.modal-body{ max-height:60vh; overflow:auto; }
+
 /* Login */
 .login-screen{ display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
 .login-box{ width:min(420px, 92vw); background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow); }
@@ -78,31 +118,42 @@ body.dark .student-card{ background:#111827; }
 .login-box label{ font-size:13px; color:var(--muted); }
 .login-box input{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin:6px 0 12px 0; background:var(--surface); color:var(--text); }
 
-/* PWA install button */
-.pwa-install-btn{ position:fixed; right:16px; bottom:16px; z-index:2500; display:none; }
-@media (max-width:980px){ .app{ grid-template-columns:1fr; } .sidebar{ display:none; } }
+@media (max-width: 980px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ display:none; }
+}
+
+/* PWA install button (shown when install prompt is available) */
+.pwa-install-btn{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:2500;
+  box-shadow:var(--shadow);
+  display:none;
+}
 </style>
 </head>
 <body>
 
-<!-- PWA install -->
-<button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn">Install App</button>
+<button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn" type="button">Install App</button>
 
-<!-- LOGIN -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
     <h2>Counselor Login</h2>
     <label>Email</label>
-    <input id="loginEmail" type="email" placeholder="name@school.edu" required>
+    <input id="loginEmail" type="email" required placeholder="name@school.edu" />
     <label>Password</label>
-    <input id="loginPassword" type="password" placeholder="••••••••" required>
+    <input id="loginPassword" type="password" required placeholder="••••••••" />
     <div style="display:flex; justify-content:flex-end;">
       <button type="submit" class="pill-btn primary">Sign In</button>
+    </div>
+    <div style="margin-top:10px; font-size:12px; color:var(--muted);">
+      Demo counselors: Alice Johnson, Bob Smith, Carlos Martinez
     </div>
   </form>
 </div>
 
-<!-- APP -->
 <div id="app" class="app" style="display:none;">
   <aside class="sidebar">
     <div class="brand">Counselor Dashboard</div>
@@ -132,30 +183,242 @@ body.dark .student-card{ background:#111827; }
     </header>
 
     <div class="content">
-      <div class="panel view" id="homeView" style="display:block;">
+      <div class="panel view" id="homeView">
         <h3>Overview</h3>
         <div class="urgency-grid" id="urgencyGrid"></div>
       </div>
 
-      <div class="panel view" id="studentsView">
+      <div class="panel view" id="studentsView" style="display:none;">
         <h3>Students</h3>
         <div class="student-list" id="studentList"></div>
       </div>
 
-      <div class="panel view" id="notesView">
-        <h3>Notes</h3>
+      <div class="panel view" id="notesView" style="display:none;">
+        <h3>Notes (A–Z Students, Recent Notes First)</h3>
         <div id="allNotesList"></div>
       </div>
 
-      <div class="panel view" id="calendarView">
-        <h3>Calendar</h3>
+      <div class="panel view" id="calendarView" style="display:none;">
+        <h3>Calendar (Read‑Only)</h3>
         <div class="calendar" id="calendarGrid"></div>
       </div>
     </div>
   </div>
 </div>
 
-<script src="dashboard.js" defer></script>
-<script src="pwa.js" defer></script>
+<div id="urgencyOverlay" class="overlay">
+  <div class="modal" style="width:min(980px, 96vw);">
+    <div class="modal-header">
+      <h3>Urgency Breakdown</h3>
+      <button class="pill-btn" onclick="closeUrgency()">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="urgency-row" id="red-row">
+        <div class="urgency-left"><div class="urgency-header"><div class="face red-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Crisis</h2></div></div>
+        <div class="messages" id="urgencyRed"></div>
+      </div>
+      <div class="urgency-row" id="orange-row">
+        <div class="urgency-left"><div class="urgency-header"><div class="face orange-face sad"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Elevated Risk</h2></div></div>
+        <div class="messages" id="urgencyOrange"></div>
+      </div>
+      <div class="urgency-row" id="yellow-row">
+        <div class="urgency-left"><div class="urgency-header"><div class="face yellow-face neutral"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Moderate</h2></div></div>
+        <div class="messages" id="urgencyYellow"></div>
+      </div>
+      <div class="urgency-row" id="green-row">
+        <div class="urgency-left"><div class="urgency-header"><div class="face green-face"><div class="eye left"></div><div class="eye right"></div><div class="mouth"></div></div><h2>Low Urgency</h2></div></div>
+        <div class="messages" id="urgencyGreen"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const mockData = {
+  counselors: [
+    { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
+    { id:"c2", name:"Bob Smith", email:"bob@school.edu", password:"bob123" }
+  ],
+  schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"" },
+  studentsByCounselor: {
+    c1: [
+      { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
+      { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9" },
+      { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11" }
+    ]
+  },
+  notesByStudent: {
+    s1: [
+      { text:"Discussed study plan.", timestamp:"2026-02-15 09:20" },
+      { text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }
+    ],
+    s2: [
+      { text:"Schedule change request.", timestamp:"2026-02-14 14:30" }
+    ]
+  },
+  messagesByCounselor: {
+    c1: [
+      { student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
+      { student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false },
+      { student:"Olivia Harris", urgency:"low", text:"Just checking in", ts:"2026-02-15 12:20", read:false }
+    ]
+  }
+};
+
+let currentCounselor = null;
+let students = [];
+let notifications = [];
+
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
+
+document.getElementById("loginForm").onsubmit = (e)=>{
+  e.preventDefault();
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+  const match = mockData.counselors.find(c => c.email === email && c.password === password);
+  if(!match) return alert("Invalid credentials");
+  localStorage.setItem("loggedInCounselor", match.id);
+  currentCounselor = match;
+  openDashboard();
+};
+
+function openDashboard(){
+  loginScreen.style.display = "none";
+  app.style.display = "grid";
+  loadSchoolInfo();
+  loadStudents();
+  loadNotifications();
+  renderCalendar();
+  renderAllNotes();
+}
+
+function loadSchoolInfo(){
+  const data = mockData.schoolInfo;
+  schoolName.textContent = data.name;
+  schoolTerm.textContent = data.term;
+}
+
+function loadStudents(){
+  students = mockData.studentsByCounselor[currentCounselor.id] || [];
+  renderStudents();
+}
+
+function renderStudents(){
+  const list = studentList;
+  list.innerHTML = "";
+  students.forEach(s=>{
+    const card = document.createElement("div");
+    card.className = "student-card";
+    card.innerHTML = `
+      <div class="student-info">
+        <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
+        <div>
+          <div class="student-name">${s.firstName} ${s.lastName}</div>
+          <div class="student-meta">Grade ${s.grade}</div>
+        </div>
+      </div>
+      <div class="student-actions">
+        <button class="pill-btn">Notes</button>
+        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
+        <button class="pill-btn primary">Profile</button>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function loadNotifications(){
+  notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
+  const unread = notifications.some(n => !n.read);
+  notifDot.style.display = unread ? "block" : "none";
+  renderUrgency();
+}
+
+function renderUrgency(){
+  const urgencyRed = document.getElementById("urgencyRed");
+  const urgencyOrange = document.getElementById("urgencyOrange");
+  const urgencyYellow = document.getElementById("urgencyYellow");
+  const urgencyGreen = document.getElementById("urgencyGreen");
+  urgencyRed.innerHTML = urgencyOrange.innerHTML = urgencyYellow.innerHTML = urgencyGreen.innerHTML = "";
+  
+  const urgencyMap = {high: urgencyRed, med: urgencyOrange, moderate: urgencyYellow, low: urgencyGreen};
+  notifications.forEach(n=>{
+    const card = document.createElement("div");
+    card.className = "message-item";
+    card.textContent = `${n.student}: ${n.text}`;
+    const target = urgencyMap[n.urgency] || urgencyYellow;
+    target.appendChild(card);
+  });
+}
+
+function renderAllNotes(){
+  const allNotesList = document.getElementById("allNotesList");
+  allNotesList.innerHTML = "";
+  students.forEach(s=>{
+    const notes = mockData.notesByStudent[s.id] || [];
+    notes.sort((a,b)=> new Date(b.timestamp)-new Date(a.timestamp));
+    const group = document.createElement("div");
+    group.className = "notes-group";
+    group.innerHTML = `<h4>${s.firstName} ${s.lastName}</h4>` +
+      notes.map(n=>`<div class="note-item">${n.timestamp}: ${n.text}</div>`).join("");
+    allNotesList.appendChild(group);
+  });
+}
+
+function renderCalendar(){
+  const grid = calendarGrid;
+  grid.innerHTML = "";
+  const today = new Date();
+  for(let i=1;i<=30;i++){
+    const day = document.createElement("div");
+    day.className="day";
+    day.textContent=i;
+    const dot = document.createElement("span");
+    dot.className="dot low";
+    day.appendChild(dot);
+    grid.appendChild(day);
+  }
+}
+
+function openUrgency(){ urgencyOverlay.style.display="flex"; }
+function closeUrgency(){ urgencyOverlay.style.display="none"; }
+
+document.getElementById("urgencyNavBtn").onclick = openUrgency;
+document.getElementById("notifBtn").onclick = ()=> alert("You have notifications!");
+document.getElementById("darkModeBtn").onclick = ()=> document.body.classList.toggle("dark");
+document.getElementById("logoutBtn").onclick = ()=>{
+  localStorage.removeItem("loggedInCounselor");
+  location.reload();
+};
+
+/* Sidebar nav switch */
+document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+    const view = btn.dataset.view;
+    if(view) document.getElementById(view+"View").style.display="block";
+  }
+});
+
+/* PWA install */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  pwaInstallBtn.style.display='block';
+});
+pwaInstallBtn.onclick = async () => {
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    deferredPrompt=null;
+    pwaInstallBtn.style.display='none';
+  }
+};
+</script>
+
 </body>
 </html>
