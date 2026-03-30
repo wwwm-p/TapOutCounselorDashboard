@@ -11,7 +11,7 @@
 <meta name="description" content="Counselor dashboard for student support and communication." />
 <meta name="application-name" content="SIS Counselor Dashboard" />
 
-<!-- iOS -->
+<!-- iOS (Add to Home Screen) -->
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-title" content="Counselor Dashboard" />
@@ -21,13 +21,29 @@
 
 <style>
 :root{
-  --bg:#f7f6f2; --surface:#ffffff; --muted:#64748b; --text:#0f172a;
-  --accent:#0f8de0; --accent-dark:#0070c9; --border:#e5e7eb;
-  --danger:#ef4444; --warn:#f59e0b; --ok:#10b981; --shadow:0 8px 20px rgba(15,23,42,0.12);
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --muted:#64748b;
+  --text:#0f172a;
+  --accent:#0f8de0;
+  --accent-dark:#0070c9;
+  --border:#e5e7eb;
+  --danger:#ef4444;
+  --warn:#f59e0b;
+  --ok:#10b981;
+  --shadow:0 8px 20px rgba(15,23,42,0.12);
 }
-body{ margin:0; font-family:system-ui,sans-serif; background:var(--bg); color:var(--text); }
-body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35); }
-*{ box-sizing:border-box; } button{ font-family:inherit; }
+body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
+body.dark{
+  --bg:#0b1220;
+  --surface:#0f172a;
+  --text:#e5e7eb;
+  --muted:#9ca3af;
+  --border:#1f2937;
+  --shadow:0 8px 20px rgba(0,0,0,0.35);
+}
+*{ box-sizing:border-box; }
+button{ font-family:inherit; }
 
 /* Layout */
 .app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
@@ -66,8 +82,8 @@ body.dark .student-card{ background:#111827; }
 .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency summary cards */
-.urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+/* Urgency summary cards (main area) */
+.urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
 .urgency-card.low{ border-left:6px solid var(--ok); }
@@ -75,37 +91,59 @@ body.dark .student-card{ background:#111827; }
 .urgency-card.high{ border-left:6px solid var(--danger); }
 .message-item{ font-size:13px; color:var(--muted); margin-top:6px; }
 
+/* Calendar */
+.calendar{ display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+.calendar .day{ border:1px solid var(--border); border-radius:8px; padding:6px; min-height:70px; font-size:12px; }
+.calendar .day .dot{ width:6px; height:6px; border-radius:50%; display:inline-block; margin-right:6px; }
+.dot.low{ background:var(--ok); }
+.dot.med{ background:var(--warn); }
+.dot.high{ background:var(--danger); }
+
+/* Notes list (by student) */
+.notes-group{ border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
+.notes-group h4{ margin:0 0 6px 0; }
+.note-item{ font-size:13px; margin-bottom:6px; color:var(--muted); }
+
 /* Modals */
 .overlay{ position:fixed; inset:0; background:rgba(0,0,0,0.55); display:none; align-items:center; justify-content:center; z-index:2000; }
-.modal{ width:min(980px,96vw); background:var(--surface); border-radius:16px; padding:18px; box-shadow:var(--shadow); }
+.modal{ width:min(760px, 92vw); background:var(--surface); border-radius:16px; padding:18px; box-shadow:var(--shadow); }
 .modal-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; }
 .modal-header h3{ margin:0; }
 .modal-body{ max-height:60vh; overflow:auto; }
 
-/* Urgency rows */
-.urgency-row{ display:flex; gap:16px; margin:12px 0; padding:16px; background:#fff; border-left:6px solid; border-radius:12px; align-items:flex-start; }
-body.dark .urgency-row{ background:#111827; border-color:#1f2937; }
-.urgency-left{ min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
-.urgency-header{ display:flex; align-items:center; gap:10px; }
-.messages{ display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
-.message-card{ width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; position:relative; }
-body.dark .message-card{ background:#111827; border-color:#1f2937; color:#e5e7eb; }
-.message-meta{ font-size:12px; color:#555; margin-top:4px; }
-body.dark .message-meta{ color:#9ca3af; }
-.message-unread{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; }
-.message-read{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#3b82f6; }
+/* Face icons */
+.face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
+.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
+.eye.left { left:13px; } .eye.right { right:13px; }
+.mouth { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:22px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; }
+.sad .mouth { transform:translateX(-50%) rotate(180deg); }
+.neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
+.green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
+.orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
+.red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
+.red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
 
 /* Login */
 .login-screen{ display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
-.login-box{ width:min(420px,92vw); background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow); }
+.login-box{ width:min(420px, 92vw); background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow); }
 .login-box h2{ margin:0 0 12px 0; }
 .login-box label{ font-size:13px; color:var(--muted); }
 .login-box input{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin:6px 0 12px 0; background:var(--surface); color:var(--text); }
 
-@media (max-width:980px){ .app{ grid-template-columns:1fr; } .sidebar{ display:none; } }
+@media (max-width: 980px){
+  .app{ grid-template-columns:1fr; }
+  .sidebar{ display:none; }
+}
 
-/* PWA Install */
-.pwa-install-btn{ position:fixed; right:16px; bottom:16px; z-index:2500; box-shadow:var(--shadow); display:none; }
+/* PWA install button */
+.pwa-install-btn{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  z-index:2500;
+  box-shadow:var(--shadow);
+  display:none;
+}
 </style>
 </head>
 <body>
@@ -123,7 +161,7 @@ body.dark .message-meta{ color:#9ca3af; }
       <button type="submit" class="pill-btn primary">Sign In</button>
     </div>
     <div style="margin-top:10px; font-size:12px; color:var(--muted);">
-      Demo counselors: Alice Johnson, Bob Smith, Carlos Martinez
+      Demo counselors: alice.johnson@school.edu, bob.smith@school.edu, carlos.martinez@school.edu
     </div>
   </form>
 </div>
@@ -181,7 +219,7 @@ body.dark .message-meta{ color:#9ca3af; }
 </div>
 
 <div id="urgencyOverlay" class="overlay">
-  <div class="modal" style="width:min(980px,96vw);">
+  <div class="modal" style="width:min(980px, 96vw);">
     <div class="modal-header">
       <h3>Urgency Breakdown</h3>
       <button class="pill-btn" onclick="closeUrgency()">Close</button>
@@ -208,176 +246,41 @@ body.dark .message-meta{ color:#9ca3af; }
 </div>
 
 <script>
-// Mock Data
-const mockData = {
-  counselors:[
-    { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
-    { id:"c2", name:"Bob Smith", email:"bob@school.edu", password:"bob123" }
-  ],
-  schoolInfo:{ name:"Riverside High", term:"Fall 2026", logoUrl:"" },
-  studentsByCounselor:{ c1:[
-    { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
-    { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9" },
-    { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11" }
-  ]},
-  notesByStudent:{
-    s1:[{ text:"Discussed study plan.", timestamp:"2026-02-15 09:20" },{ text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }],
-    s2:[{ text:"Schedule change request.", timestamp:"2026-02-14 14:30" }]
-  },
-  messagesByCounselor:{
-    c1:[
-      { student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
-      { student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false },
-      { student:"Olivia Harris", urgency:"low", text:"Just checking in", ts:"2026-02-15 12:20", read:false }
-    ]
-  }
-};
+// Demo login and dashboard logic
+document.addEventListener("DOMContentLoaded", () => {
+  const loginScreen = document.getElementById("loginScreen");
+  const app = document.getElementById("app");
+  const loginForm = document.getElementById("loginForm");
+  const logoutBtn = document.getElementById("logoutBtn");
 
-let currentCounselor=null;
-let students=[];
-let notifications=[];
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
 
-const loginScreen=document.getElementById("loginScreen");
-const app=document.getElementById("app");
+    const demoUsers = [
+      "alice.johnson@school.edu",
+      "bob.smith@school.edu",
+      "carlos.martinez@school.edu"
+    ];
 
-// Login
-document.getElementById("loginForm").onsubmit=e=>{
-  e.preventDefault();
-  const email=loginEmail.value.trim();
-  const password=loginPassword.value.trim();
-  const match=mockData.counselors.find(c=>c.email===email&&c.password===password);
-  if(!match) return alert("Invalid credentials");
-  localStorage.setItem("loggedInCounselor",match.id);
-  currentCounselor=match;
-  openDashboard();
-};
-
-function openDashboard(){
-  loginScreen.style.display="none";
-  app.style.display="grid";
-  loadSchoolInfo();
-  loadStudents();
-  loadNotifications();
-  renderCalendar();
-  renderAllNotes();
-}
-
-function loadSchoolInfo(){
-  const data=mockData.schoolInfo;
-  schoolName.textContent=data.name;
-  schoolTerm.textContent=data.term;
-}
-
-function loadStudents(){
-  students=mockData.studentsByCounselor[currentCounselor.id]||[];
-  renderStudents();
-}
-
-function renderStudents(){
-  studentList.innerHTML="";
-  students.forEach(s=>{
-    const card=document.createElement("div");
-    card.className="student-card";
-    card.innerHTML=`
-      <div class="student-info">
-        <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
-        <div>
-          <div class="student-name">${s.firstName} ${s.lastName}</div>
-          <div class="student-meta">Grade ${s.grade}</div>
-        </div>
-      </div>
-      <div class="student-actions">
-        <button class="pill-btn primary">View</button>
-      </div>
-    `;
-    studentList.appendChild(card);
-  });
-}
-
-// Urgency
-function loadNotifications(){
-  notifications=mockData.messagesByCounselor[currentCounselor.id]||[];
-  renderUrgencySummary();
-  renderUrgencyRows();
-  notifDot.style.display=notifications.some(n=>!n.read)?"block":"none";
-}
-
-function renderUrgencySummary(){
-  urgencyGrid.innerHTML="";
-  const counts={high:0,med:0,moderate:0,low:0};
-  notifications.forEach(n=>{ counts[n.urgency] = (counts[n.urgency]||0)+1; });
-  [
-    {label:"Crisis", key:"high", color:"high"},
-    {label:"Elevated", key:"med", color:"med"},
-    {label:"Moderate", key:"moderate", color:"med"},
-    {label:"Low", key:"low", color:"low"}
-  ].forEach(cat=>{
-    const card=document.createElement("div");
-    card.className=`urgency-card ${cat.color}`;
-    card.innerHTML=`<div class="label">${cat.label}</div><div class="message-item">${counts[cat.key]||0} messages</div>`;
-    urgencyGrid.appendChild(card);
-  });
-}
-
-function renderUrgencyRows(){
-  ["urgencyRed","urgencyOrange","urgencyYellow","urgencyGreen"].forEach(id=>document.getElementById(id).innerHTML="");
-  notifications.forEach(n=>{
-    const card=document.createElement("div");
-    card.className="message-card";
-    card.innerHTML=`<strong>${n.student}</strong><br>${n.text}<div class="message-meta">${n.ts}</div>`;
-    const dot=document.createElement("span");
-    dot.className=n.read?"message-read":"message-unread";
-    card.appendChild(dot);
-    switch(n.urgency){
-      case "high": urgencyRed.appendChild(card); break;
-      case "med": urgencyOrange.appendChild(card); break;
-      case "moderate": urgencyYellow.appendChild(card); break;
-      case "low": urgencyGreen.appendChild(card); break;
-      default: urgencyYellow.appendChild(card);
+    if (demoUsers.includes(email)) {
+      loginScreen.style.display = "none";
+      app.style.display = "grid";
+      document.getElementById("schoolName").textContent = "Riverside High";
+      document.getElementById("schoolTerm").textContent = "Fall 2026";
+    } else {
+      alert("Invalid login. Use a demo email from the list below the form.");
     }
   });
-}
 
-// Modal
-urgencyNavBtn.onclick=()=>{ urgencyOverlay.style.display="flex"; };
-function closeUrgency(){ urgencyOverlay.style.display="none"; }
-
-// Dark Mode
-darkModeBtn.onclick=()=>{ document.body.classList.toggle("dark"); };
-
-// Install PWA
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  pwaInstallBtn.style.display="block";
+  logoutBtn.addEventListener("click", () => {
+    app.style.display = "none";
+    loginScreen.style.display = "flex";
+  });
 });
-
-pwaInstallBtn.onclick=async()=>{
-  if(!deferredPrompt) return;
-  deferredPrompt.prompt();
-  const {outcome} = await deferredPrompt.userChoice;
-  deferredPrompt=null;
-  pwaInstallBtn.style.display="none";
-};
-
-// Navigation
-document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
-  btn.onclick=()=>{
-    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
-    document.getElementById(btn.dataset.view+"View").style.display="block";
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-  };
-});
-
-// Calendar & Notes placeholders
-function renderCalendar(){ calendarGrid.innerHTML="<p>Calendar placeholder</p>"; }
-function renderAllNotes(){ allNotesList.innerHTML="<p>Notes placeholder</p>"; }
-
-// Logout
-logoutBtn.onclick=()=>{ localStorage.removeItem("loggedInCounselor"); location.reload(); }
 </script>
 
+<script src="pwa.js"></script>
 </body>
 </html>
