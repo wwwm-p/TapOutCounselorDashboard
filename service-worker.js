@@ -7,7 +7,6 @@ const ASSETS_TO_CACHE = [
   "/service-worker.js",
   "/icons/icon-192-counselor.png",
   "/icons/icon-512-counselor.png",
-  "/icons/school-logo.png"
 ];
 
 // Install Service Worker and cache assets
