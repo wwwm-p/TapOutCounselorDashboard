@@ -2,19 +2,19 @@
   "name": "SIS Counselor Dashboard",
   "short_name": "CounselorDash",
   "description": "Counselor dashboard for student support and communication.",
-  "start_url": "/index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f7f6f2",
   "theme_color": "#0070c9",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icons/icon-192-counselor.png",
+      "src": "./icons/icon-192-counselor.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icons/icon-512-counselor.png",
+      "src": "./icons/icon-512-counselor.png",
       "sizes": "512x512",
       "type": "image/png"
     }
