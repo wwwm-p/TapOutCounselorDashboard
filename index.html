@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>SIS Counselor Dashboard</title>
 
-<!-- PWA: Manifest -->
+<!-- PWA Manifest -->
 <link rel="manifest" href="counselor-manifest.json">
 
-<!-- App Metadata -->
+<!-- Metadata -->
 <meta name="theme-color" content="#0070c9" />
 <meta name="description" content="Counselor dashboard for student support and communication." />
 <meta name="application-name" content="SIS Counselor Dashboard" />
@@ -25,29 +25,13 @@
 
 <style>
 :root{
-  --bg:#f7f6f2;
-  --surface:#ffffff;
-  --muted:#64748b;
-  --text:#0f172a;
-  --accent:#0f8de0;
-  --accent-dark:#0070c9;
-  --border:#e5e7eb;
-  --danger:#ef4444;
-  --warn:#f59e0b;
-  --ok:#10b981;
-  --shadow:0 8px 20px rgba(15,23,42,0.12);
+  --bg:#f7f6f2; --surface:#ffffff; --muted:#64748b; --text:#0f172a;
+  --accent:#0f8de0; --accent-dark:#0070c9; --border:#e5e7eb;
+  --danger:#ef4444; --warn:#f59e0b; --ok:#10b981; --shadow:0 8px 20px rgba(15,23,42,0.12);
 }
 body{ margin:0; font-family:system-ui, sans-serif; background:var(--bg); color:var(--text); }
-body.dark{
-  --bg:#0b1220;
-  --surface:#0f172a;
-  --text:#e5e7eb;
-  --muted:#9ca3af;
-  --border:#1f2937;
-  --shadow:0 8px 20px rgba(0,0,0,0.35);
-}
-*{ box-sizing:border-box; }
-button{ font-family:inherit; }
+body.dark{ --bg:#0b1220; --surface:#0f172a; --text:#e5e7eb; --muted:#9ca3af; --border:#1f2937; --shadow:0 8px 20px rgba(0,0,0,0.35);}
+*{ box-sizing:border-box; } button{ font-family:inherit; cursor:pointer; }
 
 /* Layout */
 .app{ display:grid; grid-template-columns:260px 1fr; min-height:100vh; }
@@ -58,6 +42,7 @@ button{ font-family:inherit; }
 .header{ background:var(--surface); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
 .school{ display:flex; align-items:center; gap:12px; }
 .school-logo{ width:42px; height:42px; border-radius:10px; background:#fff; border:2px solid var(--accent-dark); display:flex; align-items:center; justify-content:center; font-weight:700; color:var(--accent-dark); overflow:hidden; }
+.school-logo img{ width:100%; height:100%; object-fit:cover; border-radius:inherit; }
 .school-name{ font-weight:700; }
 .header-actions{ display:flex; align-items:center; gap:10px; }
 .icon-btn{ width:40px; height:40px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; display:flex; align-items:center; justify-content:center; position:relative; }
@@ -86,7 +71,7 @@ body.dark .student-card{ background:#111827; }
 .pill-btn{ padding:6px 12px; border-radius:999px; border:1px solid var(--border); background:var(--surface); cursor:pointer; font-weight:600; }
 .pill-btn.primary{ background:var(--accent-dark); color:#fff; border-color:var(--accent-dark); }
 
-/* Urgency summary cards (main area) */
+/* Urgency summary cards */
 .urgency-grid{ display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:12px; }
 .urgency-card{ border:1px solid var(--border); border-radius:12px; padding:12px; }
 .urgency-card .label{ font-weight:700; margin-bottom:6px; }
@@ -103,7 +88,7 @@ body.dark .student-card{ background:#111827; }
 .dot.med{ background:var(--warn); }
 .dot.high{ background:var(--danger); }
 
-/* Notes list (by student) */
+/* Notes list */
 .notes-group{ border:1px solid var(--border); border-radius:12px; padding:12px; margin-bottom:10px; }
 .notes-group h4{ margin:0 0 6px 0; }
 .note-item{ font-size:13px; margin-bottom:6px; color:var(--muted); }
@@ -115,35 +100,6 @@ body.dark .student-card{ background:#111827; }
 .modal-header h3{ margin:0; }
 .modal-body{ max-height:60vh; overflow:auto; }
 
-/* OG Urgency rows */
-.urgency-row { display:flex; gap:16px; margin:12px 0; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
-body.dark .urgency-row { background:#111827; border-color:#1f2937; }
-#red-row { border-color:red; }
-#orange-row { border-color:orange; }
-#yellow-row { border-color:gold; }
-#green-row { border-color:green; }
-.urgency-left { min-width:160px; display:flex; flex-direction:column; gap:10px; flex:0 0 180px; }
-.urgency-header { display:flex; align-items:center; gap:10px; }
-.messages { display:flex; flex-wrap:wrap; gap:10px; flex:1; min-width:0; }
-.message-card { width:220px; padding:8px 10px; font-size:14px; background:#f9f9f9; border:1px solid #ccc; border-radius:6px; line-height:1.3; position:relative; }
-body.dark .message-card { background:#111827; border-color:#1f2937; color:#e5e7eb; }
-.message-meta { font-size:12px; color:#555; margin-top:4px; }
-body.dark .message-meta { color:#9ca3af; }
-.message-unread{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#ff3b30; }
-.message-read{ position:absolute; top:8px; right:8px; width:8px; height:8px; border-radius:50%; background:#3b82f6; }
-
-/* Face icons */
-.face { width:44px; height:44px; border-radius:50%; position:relative; flex:0 0 44px; }
-.eye { width:6px; height:8px; background:#3b3b3b; border-radius:50%; position:absolute; top:15px; }
-.eye.left { left:13px; } .eye.right { right:13px; }
-.mouth { position:absolute; left:50%; bottom:10px; transform:translateX(-50%); width:22px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; }
-.sad .mouth { transform:translateX(-50%) rotate(180deg); }
-.neutral .mouth { border:none; width:24px; height:4px; background:#3b3b3b; border-radius:6px; }
-.green-face .mouth { border-color:transparent transparent #3b3b3b transparent; height:12px; }
-.orange-face.sad .mouth { width:18px; height:9px; border:3px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:4px; }
-.red-face.sad .mouth { width:26px; height:12px; border:4px solid #3b3b3b; border-color:#3b3b3b transparent transparent transparent; border-radius:50%; transform:translateX(-50%); bottom:2px; }
-.red-face { background:#ff5a4e; } .orange-face { background:#ffb02e; } .yellow-face { background:#ffe31a; } .green-face { background:#a9cf4f; }
-
 /* Login */
 .login-screen{ display:flex; align-items:center; justify-content:center; min-height:100vh; background:var(--bg); }
 .login-box{ width:min(420px, 92vw); background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow); }
@@ -151,24 +107,15 @@ body.dark .message-meta { color:#9ca3af; }
 .login-box label{ font-size:13px; color:var(--muted); }
 .login-box input{ width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin:6px 0 12px 0; background:var(--surface); color:var(--text); }
 
-@media (max-width: 980px){
-  .app{ grid-template-columns:1fr; }
-  .sidebar{ display:none; }
-}
+@media (max-width: 980px){ .app{ grid-template-columns:1fr; } .sidebar{ display:none; } }
 
-/* PWA install button (shown when install prompt is available) */
-.pwa-install-btn{
-  position:fixed;
-  right:16px;
-  bottom:16px;
-  z-index:2500;
-  box-shadow:var(--shadow);
-  display:none;
-}
+/* PWA install button */
+.pwa-install-btn{ position:fixed; right:16px; bottom:16px; z-index:2500; box-shadow:var(--shadow); display:none; }
 </style>
 </head>
 <body>
 <button id="pwaInstallBtn" class="pill-btn primary pwa-install-btn" type="button">Install App</button>
+
 <!-- Login Screen -->
 <div id="loginScreen" class="login-screen">
   <form id="loginForm" class="login-box">
@@ -181,7 +128,7 @@ body.dark .message-meta { color:#9ca3af; }
       <button type="submit" class="pill-btn primary">Sign In</button>
     </div>
     <div style="margin-top:10px; font-size:12px; color:var(--muted);">
-      Demo counselors: Alice Johnson, Bob Smith, Carlos Martinez
+      Demo counselors: Alice Johnson, Bob Smith
     </div>
   </form>
 </div>
@@ -201,7 +148,7 @@ body.dark .message-meta { color:#9ca3af; }
   <div class="main">
     <header class="header">
       <div class="school">
-        <div class="school-logo" id="schoolLogo">LOGO</div>
+        <div class="school-logo" id="schoolLogo"><img src="icons/school-logo.png" alt="School Logo" /></div>
         <div>
           <div class="school-name" id="schoolName">School Name</div>
           <div class="student-meta" id="schoolTerm">Term</div>
@@ -287,12 +234,13 @@ body.dark .message-meta { color:#9ca3af; }
 </div>
 
 <script>
+// === MOCK DATA ===
 const mockData = {
   counselors: [
     { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
     { id:"c2", name:"Bob Smith", email:"bob@school.edu", password:"bob123" }
   ],
-  schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"" },
+  schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"icons/school-logo.png" },
   studentsByCounselor: {
     c1: [
       { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
@@ -301,13 +249,8 @@ const mockData = {
     ]
   },
   notesByStudent: {
-    s1: [
-      { text:"Discussed study plan.", timestamp:"2026-02-15 09:20" },
-      { text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }
-    ],
-    s2: [
-      { text:"Schedule change request.", timestamp:"2026-02-14 14:30" }
-    ]
+    s1: [{ text:"Discussed study plan.", timestamp:"2026-02-15 09:20" }, { text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }],
+    s2: [{ text:"Schedule change request.", timestamp:"2026-02-14 14:30" }]
   },
   messagesByCounselor: {
     c1: [
@@ -325,6 +268,7 @@ let notifications = [];
 const loginScreen = document.getElementById("loginScreen");
 const app = document.getElementById("app");
 
+// === LOGIN ===
 document.getElementById("loginForm").onsubmit = (e)=>{
   e.preventDefault();
   const email = loginEmail.value.trim();
@@ -336,6 +280,7 @@ document.getElementById("loginForm").onsubmit = (e)=>{
   openDashboard();
 };
 
+// === DASHBOARD ===
 function openDashboard(){
   loginScreen.style.display = "none";
   app.style.display = "grid";
@@ -350,6 +295,7 @@ function loadSchoolInfo(){
   const data = mockData.schoolInfo;
   schoolName.textContent = data.name;
   schoolTerm.textContent = data.term;
+  if(data.logoUrl) schoolLogo.innerHTML=`<img src="${data.logoUrl}" alt="School Logo" />`;
 }
 
 function loadStudents(){
@@ -358,12 +304,11 @@ function loadStudents(){
 }
 
 function renderStudents(){
-  const list = studentList;
-  list.innerHTML = "";
+  studentList.innerHTML="";
   students.forEach(s=>{
-    const card = document.createElement("div");
-    card.className = "student-card";
-    card.innerHTML = `
+    const card=document.createElement("div");
+    card.className="student-card";
+    card.innerHTML=`
       <div class="student-info">
         <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
         <div>
@@ -373,186 +318,136 @@ function renderStudents(){
       </div>
       <div class="student-actions">
         <button class="pill-btn">Notes</button>
-        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
-        <button class="pill-btn primary">Profile</button>
+        <button class="pill-btn">Profile</button>
+        <button class="pill-btn primary" onclick="openUrgencyModal()">Urgency</button>
       </div>
     `;
-    list.appendChild(card);
+    studentList.appendChild(card);
   });
 }
 
+// === NOTES ===
 function renderAllNotes(){
-  const container = document.getElementById("allNotesList");
-  container.innerHTML = "";
-  const sortedStudents = students.slice().sort((a,b)=>a.lastName.localeCompare(b.lastName));
-  sortedStudents.forEach(s=>{
-    const notes = (mockData.notesByStudent[s.id] || []).slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+  allNotesList.innerHTML="";
+  students.forEach(s=>{
+    const notes = mockData.notesByStudent[s.id]||[];
+    if(notes.length===0) return;
     const group = document.createElement("div");
-    group.className = "notes-group";
-    group.innerHTML = `<h4>${s.lastName}, ${s.firstName} (Grade ${s.grade})</h4>`;
+    group.className="notes-group";
+    group.innerHTML=`<h4>${s.firstName} ${s.lastName}</h4>`;
     notes.forEach(n=>{
       const note = document.createElement("div");
-      note.className = "note-item";
-      note.textContent = `${n.timestamp} — ${n.text}`;
+      note.className="note-item";
+      note.textContent = `[${n.timestamp}] ${n.text}`;
       group.appendChild(note);
     });
-    if(notes.length === 0){
-      const note = document.createElement("div");
-      note.className = "note-item";
-      note.textContent = "No notes.";
-      group.appendChild(note);
-    }
-    container.appendChild(group);
+    allNotesList.appendChild(group);
   });
 }
 
-function loadNotifications(){
-  notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
-  renderUrgencySummary();
-}
-
-function renderUrgencySummary(){
-  const grid = urgencyGrid;
-  grid.innerHTML = "";
-  ["high","med","low"].forEach(level=>{
-    const card = document.createElement("div");
-    card.className = `urgency-card ${level}`;
-    card.innerHTML = `<div class="label">${level.toUpperCase()}</div>`;
-    notifications.filter(n=>n.urgency===level).forEach(n=>{
-      const item = document.createElement("div");
-      item.className="message-item";
-      item.textContent = `${n.student}: ${n.text}`;
-      card.appendChild(item);
-    });
-    grid.appendChild(card);
-  });
-}
-
-function openUrgency(){ urgencyOverlay.style.display = "flex"; renderUrgencyRows(); }
-function closeUrgency(){ urgencyOverlay.style.display = "none"; }
-
-function renderUrgencyRows(){
-  urgencyRed.innerHTML=""; urgencyOrange.innerHTML=""; urgencyYellow.innerHTML=""; urgencyGreen.innerHTML="";
-  notifications.forEach(n=>{
-    const card = document.createElement("div");
-    card.className="message-card";
-    card.innerHTML=`<strong>${n.student}</strong><br>${n.text}<div class="message-meta">${n.ts}</div>`;
-    const dot = document.createElement("span");
-    dot.className = n.read ? "message-read" : "message-unread";
-    card.appendChild(dot);
-    if(n.urgency==="high") urgencyRed.appendChild(card);
-    else if(n.urgency==="med") urgencyOrange.appendChild(card);
-    else if(n.urgency==="low") urgencyGreen.appendChild(card);
-    else urgencyYellow.appendChild(card);
-  });
-}
-
+// === CALENDAR ===
 function renderCalendar(){
   calendarGrid.innerHTML="";
-  for(let d=1; d<=30; d++){
-    const cell=document.createElement("div");
-    cell.className="day";
-    cell.innerHTML=`<strong>${d}</strong>`;
-    if(d%7===0) cell.innerHTML+=`<div><span class="dot high"></span>Appt</div>`;
-    calendarGrid.appendChild(cell);
+  for(let i=1;i<=30;i++){
+    const d = document.createElement("div");
+    d.className="day";
+    d.textContent=i;
+    calendarGrid.appendChild(d);
   }
 }
 
-/* Nav buttons */
-document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
-  btn.onclick = ()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
-    const view = document.getElementById(btn.dataset.view+"View");
-    if(view) view.style.display="block";
-  };
-});
-document.getElementById("urgencyNavBtn").onclick = openUrgency;
-
-const session = localStorage.getItem("loggedInCounselor");
-if(session){
-  currentCounselor = mockData.counselors.find(c=>c.id===session);
-  if(currentCounselor) openDashboard();
+// === URGENCY ===
+function loadNotifications(){
+  notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
+  updateUrgencyCards();
+  notifDot.style.display=notifications.some(n=>!n.read)?"inline-block":"none";
 }
 
-/* ✅ PWA: Register Service Worker */
-let swRegistrationPromise = null;
-if ("serviceWorker" in navigator) {
-  swRegistrationPromise = navigator.serviceWorker.register("service-worker.js");
-  swRegistrationPromise.catch(()=>{});
-}
-
-/* ✅ PWA: Install Prompt (Chrome/Edge) */
-let deferredPrompt = null;
-const pwaInstallBtn = document.getElementById("pwaInstallBtn");
-
-function isRunningStandalone(){
-  // Chromium + most browsers
-  if (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) return true;
-  // iOS Safari
-  // eslint-disable-next-line no-undef
-  if (typeof navigator !== "undefined" && "standalone" in navigator && navigator.standalone) return true;
-  return false;
-}
-
-function setInstallBtnVisible(visible){
-  if (!pwaInstallBtn) return;
-  pwaInstallBtn.style.display = visible ? "inline-flex" : "none";
-}
-
-// Default: show unless we're already installed (if Chrome/Edge provides a real prompt, we'll use it).
-setInstallBtnVisible(!isRunningStandalone());
-
-window.addEventListener("beforeinstallprompt", (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  setInstallBtnVisible(true);
-});
-
-window.addEventListener("appinstalled", () => {
-  deferredPrompt = null;
-  setInstallBtnVisible(false);
-});
-
-if (pwaInstallBtn) {
-  pwaInstallBtn.addEventListener("click", async () => {
-    if (!deferredPrompt) {
-      const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-      if (isIOS) {
-        alert("To install on iPhone/iPad: use Share → Add to Home Screen.");
-        return;
-      }
-      if (location.protocol === "file:") {
-        alert("Install won’t work from a local file (file://). Run a local server and open http://localhost instead.");
-        return;
-      }
-      if (!window.isSecureContext) {
-        alert("Install requires HTTPS (or http://localhost). It won’t show on file:// or plain http.");
-        return;
-      }
-      try {
-        const reg = swRegistrationPromise ? await swRegistrationPromise.catch(() => null) : null;
-        if (!reg) {
-          alert("Service worker isn’t registered yet. Refresh once, then try again.");
-          return;
-        }
-        if (!navigator.serviceWorker.controller) {
-          alert("Service worker is installed but not controlling this page yet. Refresh once, then try again.");
-          return;
-        }
-      } catch (_) {
-        // ignore
-      }
-      alert("Chrome hasn’t offered an install prompt yet. Try refreshing once, then open Chrome menu (⋮) → Install app / Add to Home screen.");
-      return;
-    }
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    setInstallBtnVisible(!isRunningStandalone());
+function updateUrgencyCards(){
+  const counts={low:0, med:0, high:0};
+  notifications.forEach(n=>counts[n.urgency]++);
+  urgencyGrid.innerHTML="";
+  ["low","med","high"].forEach(level=>{
+    const card = document.createElement("div");
+    card.className=`urgency-card ${level}`;
+    card.innerHTML=`<div class="label">${level.toUpperCase()} (${counts[level]})</div>`;
+    const msgs = notifications.filter(n=>n.urgency===level).map(n=>`<div class="message-item">${n.student}: ${n.text}</div>`).join("");
+    card.innerHTML+=msgs;
+    urgencyGrid.appendChild(card);
   });
 }
+
+function openUrgencyModal(){
+  urgencyOverlay.style.display="flex";
+  ["Green","Yellow","Orange","Red"].forEach(id=>{
+    const el=document.getElementById("urgency"+id);
+    if(!el) return;
+    const lvl=id.toLowerCase();
+    el.innerHTML="";
+    notifications.filter(n=>n.urgency===lvl).forEach(n=>{
+      const div=document.createElement("div");
+      div.textContent=`${n.student}: ${n.text}`;
+      el.appendChild(div);
+    });
+  });
+}
+
+function closeUrgency(){
+  urgencyOverlay.style.display="none";
+}
+
+// === NAVIGATION ===
+document.querySelectorAll(".nav button").forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    const view = btn.dataset.view;
+    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+    if(view) document.getElementById(view+"View").style.display="block";
+  };
+});
+
+// === LOGOUT ===
+logoutBtn.onclick=()=>{
+  localStorage.removeItem("loggedInCounselor");
+  location.reload();
+};
+
+// === DARK MODE ===
+darkModeBtn.onclick=()=>document.body.classList.toggle("dark");
+
+// === PWA INSTALL ===
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  pwaInstallBtn.style.display="inline-block";
+});
+
+pwaInstallBtn.onclick=async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const choice = await deferredPrompt.userChoice;
+  if(choice.outcome==="accepted") pwaInstallBtn.style.display="none";
+  deferredPrompt=null;
+};
+
+// === SERVICE WORKER ===
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/service-worker.js').then(()=>console.log('SW registered')).catch(console.error);
+}
+
+// === AUTO LOGIN IF SAVED ===
+window.addEventListener("load", ()=>{
+  const saved = localStorage.getItem("loggedInCounselor");
+  if(saved){
+    const match = mockData.counselors.find(c=>c.id===saved);
+    if(match){
+      currentCounselor=match;
+      openDashboard();
+    }
+  }
+});
 </script>
 </body>
 </html>
