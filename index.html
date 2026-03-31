@@ -112,7 +112,7 @@ body.dark .student-card{ background:#111827; }
 .modal-body{ max-height:60vh; overflow:auto; }
 
 /* OG Urgency rows */
-.urgency-row { display:flex; gap:16px; margin:12px 0; padding:16px; background:#fff; border-left:6px solid; border-radius:12px; align-items:flex-start; }
+.urgency-row { display:flex; gap:16px; margin:12px 0; padding:16px; background:#fff; border-radius:12px; border-left:6px solid; align-items:flex-start; }
 body.dark .urgency-row { background:#111827; border-color:#1f2937; }
 #red-row { border-color:red; }
 #orange-row { border-color:orange; }
@@ -265,169 +265,194 @@ body.dark .message-meta { color:#9ca3af; }
 <script>
 const mockData = {
   counselors: [
-    { id:"c1", name:"Alice Johnson", email:"alice@school.edu", term:"Spring 2026", school:"Lincoln High" },
-    { id:"c2", name:"Bob Smith", email:"bob@school.edu", term:"Spring 2026", school:"Lincoln High" },
-    { id:"c3", name:"Carlos Martinez", email:"carlos@school.edu", term:"Spring 2026", school:"Lincoln High" }
+    { id:"c1", name:"Alice Johnson", email:"alice@school.edu", password:"alice123" },
+    { id:"c2", name:"Bob Smith", email:"bob@school.edu", password:"bob123" }
   ],
-  students:[
-    {id:"s1", name:"Emily Parker", grade:"10", avatar:"EP", notes:[{text:"Missed class", timestamp:1672502400000, urgency:"low"}]},
-    {id:"s2", name:"James Lee", grade:"11", avatar:"JL", notes:[{text:"Needs tutoring", timestamp:1672602400000, urgency:"medium"}]},
-    {id:"s3", name:"Sophia Brown", grade:"12", avatar:"SB", notes:[{text:"Behavior issues", timestamp:1672702400000, urgency:"high"}]}
-  ],
-  notifications:[
-    {id:"n1", text:"New student message", read:false},
-    {id:"n2", text:"Urgency alert", read:true}
-  ]
+  schoolInfo: { name:"Riverside High", term:"Fall 2026", logoUrl:"" },
+  studentsByCounselor: {
+    c1: [
+      { id:"s1", firstName:"Maya", lastName:"Foster", grade:"10" },
+      { id:"s2", firstName:"Noah", lastName:"Garcia", grade:"9" },
+      { id:"s3", firstName:"Olivia", lastName:"Harris", grade:"11" }
+    ]
+  },
+  notesByStudent: {
+    s1: [
+      { text:"Discussed study plan.", timestamp:"2026-02-15 09:20" },
+      { text:"Follow-up on attendance.", timestamp:"2026-02-12 08:10" }
+    ],
+    s2: [
+      { text:"Schedule change request.", timestamp:"2026-02-14 14:30" }
+    ]
+  },
+  messagesByCounselor: {
+    c1: [
+      { student:"Maya Foster", urgency:"high", text:"I’m in Crisis", ts:"2026-02-15 10:12", read:false },
+      { student:"Noah Garcia", urgency:"med", text:"Feeling a Little Off", ts:"2026-02-15 11:00", read:false },
+      { student:"Olivia Harris", urgency:"low", text:"Just checking in", ts:"2026-02-15 12:20", read:false }
+    ]
+  }
 };
+
+let currentCounselor = null;
+let students = [];
+let notifications = [];
 
 const loginScreen = document.getElementById("loginScreen");
-const loginForm = document.getElementById("loginForm");
 const app = document.getElementById("app");
-const darkModeBtn = document.getElementById("darkModeBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const notifDot = document.getElementById("notifDot");
-const pwaInstallBtn = document.getElementById("pwaInstallBtn");
-const urgencyOverlay = document.getElementById("urgencyOverlay");
 
-let deferredPrompt;
-
-// --- Login ---
-loginForm.onsubmit = e => {
+document.getElementById("loginForm").onsubmit = (e)=>{
   e.preventDefault();
-  const email = document.getElementById("loginEmail").value;
-  const counselor = mockData.counselors.find(c=>c.email===email);
-  if(counselor){
-    localStorage.setItem("loggedInCounselor", JSON.stringify(counselor));
-    initApp(counselor);
-  } else { alert("Unknown counselor email."); }
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+  const match = mockData.counselors.find(c => c.email === email && c.password === password);
+  if(!match) return alert("Invalid credentials");
+  localStorage.setItem("loggedInCounselor", match.id);
+  currentCounselor = match;
+  openDashboard();
 };
 
-const storedCounselor = JSON.parse(localStorage.getItem("loggedInCounselor"));
-if(storedCounselor){ initApp(storedCounselor); }
-
-function initApp(counselor){
-  loginScreen.style.display="none";
-  app.style.display="grid";
-  document.getElementById("schoolName").textContent = counselor.school;
-  document.getElementById("schoolTerm").textContent = counselor.term;
-  renderStudents();
-  renderNotes();
-  renderUrgency();
-  updateNotifDot();
+function openDashboard(){
+  loginScreen.style.display = "none";
+  app.style.display = "grid";
+  loadSchoolInfo();
+  loadStudents();
+  loadNotifications();
   renderCalendar();
+  renderAllNotes();
 }
 
-// --- Dark Mode ---
-darkModeBtn.onclick = ()=>document.body.classList.toggle("dark");
+function loadSchoolInfo(){
+  const data = mockData.schoolInfo;
+  schoolName.textContent = data.name;
+  schoolTerm.textContent = data.term;
+}
 
-// --- Logout ---
-logoutBtn.onclick = ()=>{ localStorage.removeItem("loggedInCounselor"); location.reload(); };
+function loadStudents(){
+  students = mockData.studentsByCounselor[currentCounselor.id] || [];
+  renderStudents();
+}
 
-// --- Navigation ---
-document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
-  btn.onclick = ()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    const view = btn.dataset.view;
-    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
-    document.getElementById(view+"View").style.display="block";
-  };
-});
-
-// --- Urgency modal ---
-document.getElementById("urgencyNavBtn").onclick = ()=>{ urgencyOverlay.style.display="flex"; };
-function closeUrgency(){ urgencyOverlay.style.display="none"; }
-
-// --- Students ---
 function renderStudents(){
-  const list = document.getElementById("studentList");
-  list.innerHTML="";
-  mockData.students.forEach(s=>{
-    const card = document.createElement("div"); card.className="student-card";
+  const list = studentList;
+  list.innerHTML = "";
+  students.forEach(s=>{
+    const card = document.createElement("div");
+    card.className = "student-card";
     card.innerHTML = `
       <div class="student-info">
-        <div class="avatar">${s.avatar}</div>
+        <div class="avatar">${s.firstName[0]}${s.lastName[0]}</div>
         <div>
-          <div class="student-name">${s.name}</div>
+          <div class="student-name">${s.firstName} ${s.lastName}</div>
           <div class="student-meta">Grade ${s.grade}</div>
         </div>
       </div>
       <div class="student-actions">
-        <button class="pill-btn primary" onclick="alert('View ${s.name} details')">View</button>
-      </div>`;
+        <button class="pill-btn">Notes</button>
+        <button class="pill-btn" onclick="openUrgency()">Urgency</button>
+        <button class="pill-btn primary">Profile</button>
+      </div>
+    `;
     list.appendChild(card);
   });
 }
 
-// --- Notes ---
-function renderNotes(){
-  const allNotes = document.getElementById("allNotesList"); allNotes.innerHTML="";
-  mockData.students.sort((a,b)=>a.name.localeCompare(b.name)).forEach(s=>{
-    const group = document.createElement("div"); group.className="notes-group";
-    group.innerHTML = `<h4>${s.name}</h4>`;
-    if(s.notes.length===0) group.innerHTML += "<div>No notes.</div>";
-    else s.notes.slice().sort((a,b)=>b.timestamp-a.timestamp).forEach(n=>{
-      const ni = document.createElement("div"); ni.className="note-item";
-      ni.textContent = `${new Date(n.timestamp).toLocaleDateString()}: ${n.text} (${n.urgency})`;
-      group.appendChild(ni);
+function renderAllNotes(){
+  const container = document.getElementById("allNotesList");
+  container.innerHTML = "";
+  const sortedStudents = students.slice().sort((a,b)=>a.lastName.localeCompare(b.lastName));
+  sortedStudents.forEach(s=>{
+    const notes = (mockData.notesByStudent[s.id] || []).slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));
+    const group = document.createElement("div");
+    group.className = "notes-group";
+    group.innerHTML = `<h4>${s.lastName}, ${s.firstName} (Grade ${s.grade})</h4>`;
+    notes.forEach(n=>{
+      const note = document.createElement("div");
+      note.className = "note-item";
+      note.textContent = `${n.timestamp} — ${n.text}`;
+      group.appendChild(note);
     });
-    allNotes.appendChild(group);
+    if(notes.length === 0){
+      const note = document.createElement("div");
+      note.className = "note-item";
+      note.textContent = "No notes.";
+      group.appendChild(note);
+    }
+    container.appendChild(group);
   });
 }
 
-// --- Urgency ---
-function renderUrgency(){
-  const red = document.getElementById("urgencyRed");
-  const orange = document.getElementById("urgencyOrange");
-  const yellow = document.getElementById("urgencyYellow");
-  const green = document.getElementById("urgencyGreen");
-  [red,orange,yellow,green].forEach(c=>c.innerHTML="");
+function loadNotifications(){
+  notifications = mockData.messagesByCounselor[currentCounselor.id] || [];
+  renderUrgencySummary();
+}
 
-  mockData.students.forEach(s=>{
-    s.notes.forEach(n=>{
-      const card = document.createElement("div"); card.className="message-card";
-      card.textContent = `${s.name}: ${n.text}`;
-      if(n.urgency==="high") red.appendChild(card);
-      else if(n.urgency==="medium") orange.appendChild(card);
-      else if(n.urgency==="low") green.appendChild(card);
-      else yellow.appendChild(card);
+function renderUrgencySummary(){
+  const grid = urgencyGrid;
+  grid.innerHTML = "";
+  ["high","med","low"].forEach(level=>{
+    const card = document.createElement("div");
+    card.className = `urgency-card ${level}`;
+    card.innerHTML = `<div class="label">${level.toUpperCase()}</div>`;
+    notifications.filter(n=>n.urgency===level).forEach(n=>{
+      const item = document.createElement("div");
+      item.className="message-item";
+      item.textContent = `${n.student}: ${n.text}`;
+      card.appendChild(item);
     });
+    grid.appendChild(card);
   });
 }
 
-// --- Notifications dot ---
-function updateNotifDot(){
-  notifDot.style.display = mockData.notifications.some(n=>!n.read) ? "block" : "none";
+function openUrgency(){ urgencyOverlay.style.display = "flex"; renderUrgencyRows(); }
+function closeUrgency(){ urgencyOverlay.style.display = "none"; }
+
+function renderUrgencyRows(){
+  urgencyRed.innerHTML=""; urgencyOrange.innerHTML=""; urgencyYellow.innerHTML=""; urgencyGreen.innerHTML="";
+  notifications.forEach(n=>{
+    const card = document.createElement("div");
+    card.className="message-card";
+    card.innerHTML=`<strong>${n.student}</strong><br>${n.text}<div class="message-meta">${n.ts}</div>`;
+    const dot = document.createElement("span");
+    dot.className = n.read ? "message-read" : "message-unread";
+    card.appendChild(dot);
+    if(n.urgency==="high") urgencyRed.appendChild(card);
+    else if(n.urgency==="med") urgencyOrange.appendChild(card);
+    else if(n.urgency==="low") urgencyGreen.appendChild(card);
+    else urgencyYellow.appendChild(card);
+  });
 }
 
-// --- Calendar ---
 function renderCalendar(){
-  const cal = document.getElementById("calendarGrid");
-  cal.innerHTML="";
-  const today = new Date();
-  for(let i=1;i<=30;i++){
-    const day = document.createElement("div"); day.className="day";
-    day.textContent=i;
-    const dot = document.createElement("span"); dot.className="dot low"; day.appendChild(dot);
-    cal.appendChild(day);
+  calendarGrid.innerHTML="";
+  for(let d=1; d<=30; d++){
+    const cell=document.createElement("div");
+    cell.className="day";
+    cell.innerHTML=`<strong>${d}</strong>`;
+    if(d%7===0) cell.innerHTML+=`<div><span class="dot high"></span>Appt</div>`;
+    calendarGrid.appendChild(cell);
   }
 }
 
-// --- PWA Install ---
-window.addEventListener('beforeinstallprompt', e=>{
-  e.preventDefault();
-  deferredPrompt = e;
-  pwaInstallBtn.style.display = "block";
+/* Nav buttons */
+document.querySelectorAll(".nav button[data-view]").forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".view").forEach(v=>v.style.display="none");
+    const view = document.getElementById(btn.dataset.view+"View");
+    if(view) view.style.display="block";
+  };
 });
+document.getElementById("urgencyNavBtn").onclick = openUrgency;
 
-pwaInstallBtn.addEventListener("click", async ()=>{
-  pwaInstallBtn.style.display="none";
-  if(deferredPrompt){
-    deferredPrompt.prompt();
-    const choice = await deferredPrompt.userChoice;
-    deferredPrompt=null;
-  }
-});
+const session = localStorage.getItem("loggedInCounselor");
+if(session){
+  currentCounselor = mockData.counselors.find(c=>c.id===session);
+  if(currentCounselor) openDashboard();
+}
 </script>
+
+<script src="pwa.js"></script>
 </body>
 </html>
