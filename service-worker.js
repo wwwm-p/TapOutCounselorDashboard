@@ -2,6 +2,8 @@ const CACHE_NAME = "counselor-cache-v6";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
+  "/style.css",
+  "/pwa.js",
   "/counselor-manifest.json",
   "/icons/icon-192-counselor.png",
   "/icons/icon-512-counselor.png"
@@ -26,7 +28,7 @@ self.addEventListener("activate", e => {
       )
     )
   );
-  self.clients.claim(); // Take control immediately
+  self.clients.claim();
 });
 
 // Fetch handler
