@@ -1,4 +1,4 @@
-const API_BASE = "https://tap-out-counseor-dashboard.vercel.app/index.html";
+const API_BASE = "https://tap-out-counselor-dashboard.vercel.app";
 
 /* ---------- ELEMENTS ---------- */
 const loginForm = document.getElementById("loginForm");
@@ -11,7 +11,7 @@ const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
 
-/* ---------- LOGIN (REAL) ---------- */
+/* ---------- LOGIN ---------- */
 loginForm.onsubmit = e => {
   e.preventDefault();
   sisLogin(username.value, password.value);
@@ -21,9 +21,7 @@ async function sisLogin(email, pass) {
   try {
     const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password: pass })
     });
 
@@ -34,24 +32,25 @@ async function sisLogin(email, pass) {
       return;
     }
 
-    // store real user
     localStorage.setItem("user", JSON.stringify(data.user));
-
     showDashboard();
 
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     alert("Login failed");
   }
 }
 
+/* ---------- DASHBOARD ---------- */
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = safeGetUser();
+  if (!user) return;
 
-  profileBubble.textContent = user.name?.slice(0,2).toUpperCase() || "C";
+  profileBubble.textContent =
+    user.name?.slice(0, 2).toUpperCase() || "C";
 
   loadMessages();
   checkNotifications();
@@ -62,19 +61,32 @@ function logout() {
   location.reload();
 }
 
-/* ---------- FETCH ASSESSMENTS (REAL) ---------- */
+/* ---------- SAFE USER ---------- */
+function safeGetUser() {
+  try {
+    return JSON.parse(localStorage.getItem("user"));
+  } catch {
+    return null;
+  }
+}
+
+/* ---------- FETCH ASSESSMENTS ---------- */
 async function fetchAssessments() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = safeGetUser();
+  if (!user?.id) return [];
 
   try {
     const res = await fetch(
       `${API_BASE}/api/counselor/get-assessments?counselor_id=${user.id}`
     );
 
-    return await res.json();
+    const data = await res.json();
+
+    // supports either raw array OR {data: []}
+    return Array.isArray(data) ? data : (data.data || []);
 
   } catch (err) {
-    console.error(err);
+    console.error("Fetch assessments error:", err);
     return [];
   }
 }
@@ -83,32 +95,32 @@ async function fetchAssessments() {
 async function loadMessages() {
   const data = await fetchAssessments();
 
-  const map = {
-    "I’m in Crisis": "red-row",
-    "I’m Not Coping Well": "orange-row",
-    "Feeling a Little Off": "yellow-row",
-    "I’m Doing Fine – Just Curious": "green-row"
-  };
-
   document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
 
   data.forEach(m => {
     const answers = m.answers || {};
 
+    const urgency = answers.urgency || "Feeling a Little Off";
+
+    const map = {
+      "I’m in Crisis": "red-row",
+      "I’m Not Coping Well": "orange-row",
+      "Feeling a Little Off": "yellow-row",
+      "I’m Doing Fine – Just Curious": "green-row"
+    };
+
     const card = document.createElement("div");
     card.className = "message-card";
 
     card.innerHTML = `
-      <strong>${m.first_name} ${m.last_name}</strong><br>
-      ID: ${m.student_id}<br>
-      ${answers.reason || ""}<br>
-      ${answers.notes ? "<em>Notes:</em> " + answers.notes + "<br>" : ""}
-      <small>Sent: ${new Date(m.created_at).toLocaleString()}</small>
+      <strong>${m.first_name || ""} ${m.last_name || ""}</strong><br>
+      ID: ${m.student_id || ""}<br>
+      <div>${answers.reason || ""}</div>
+      ${answers.notes ? `<em>Notes:</em> ${answers.notes}<br>` : ""}
+      <small>${new Date(m.created_at).toLocaleString()}</small>
     `;
 
-    const urgency = answers.urgency || "Feeling a Little Off";
     const container = document.querySelector(`#${map[urgency]} .messages`);
-
     if (container) container.appendChild(card);
   });
 }
@@ -117,7 +129,9 @@ async function loadMessages() {
 async function checkNotifications() {
   const data = await fetchAssessments();
 
-  const crisis = data.filter(d => d.answers?.urgency === "I’m in Crisis");
+  const crisis = data.filter(
+    d => d.answers?.urgency === "I’m in Crisis"
+  );
 
   bellDot.style.display = crisis.length ? "block" : "none";
 
@@ -136,6 +150,7 @@ async function checkNotifications() {
   });
 }
 
+/* ---------- UI EVENTS ---------- */
 notifBell.onclick = () => {
   bellDropdown.style.display =
     bellDropdown.style.display === "flex" ? "none" : "flex";
@@ -144,8 +159,7 @@ notifBell.onclick = () => {
 
 setInterval(checkNotifications, 5000);
 
-/* ---------- INITIAL ---------- */
+/* ---------- INIT ---------- */
 window.onload = () => {
-  const user = localStorage.getItem("user");
-  if (user) showDashboard();
+  if (safeGetUser()) showDashboard();
 };
