@@ -1,3 +1,5 @@
+const API_BASE = "https://YOUR-ADMIN-APP.vercel.app";
+
 /* ---------- ELEMENTS ---------- */
 const loginForm = document.getElementById("loginForm");
 const username = document.getElementById("username");
@@ -5,67 +7,81 @@ const password = document.getElementById("password");
 const loginScreen = document.getElementById("loginScreen");
 const dashboardScreen = document.getElementById("dashboardScreen");
 const profileBubble = document.getElementById("profileBubble");
-const searchBar = document.getElementById("searchBar");
 const bellDot = document.getElementById("bellDot");
 const bellDropdown = document.getElementById("bellDropdown");
 const notifBell = document.getElementById("notifBell");
-const calendarOverlay = document.getElementById("calendarOverlay");
-const calendarGrid = document.getElementById("calendarGrid");
-const monthLabel = document.getElementById("monthLabel");
 
-/* ---------- LOGIN ---------- */
+/* ---------- LOGIN (REAL) ---------- */
 loginForm.onsubmit = e => {
   e.preventDefault();
   sisLogin(username.value, password.value);
 };
 
-async function sisLogin(user, pass) {
+async function sisLogin(email, pass) {
   try {
-    const res = await fetch("/api/login", {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: user, password: pass })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password: pass })
     });
+
     const data = await res.json();
-    if (data.success) {
-      localStorage.setItem("loggedInCounselor", user);
-      showDashboard();
-    } else {
-      alert("Invalid login");
+
+    if (!res.ok) {
+      alert(data.error || "Login failed");
+      return;
     }
+
+    // store real user
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    showDashboard();
+
   } catch (err) {
     console.error(err);
-    alert("Login failed. Check your network.");
+    alert("Login failed");
   }
 }
 
 function showDashboard() {
   loginScreen.style.display = "none";
   dashboardScreen.style.display = "block";
-  profileBubble.textContent = localStorage.getItem("loggedInCounselor")?.slice(0, 2).toUpperCase();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  profileBubble.textContent = user.name?.slice(0,2).toUpperCase() || "C";
+
   loadMessages();
   checkNotifications();
 }
 
 function logout() {
-  localStorage.removeItem("loggedInCounselor");
+  localStorage.removeItem("user");
   location.reload();
 }
 
-/* ---------- MESSAGES ---------- */
-async function fetchMessagesFromSIS(counselorId) {
+/* ---------- FETCH ASSESSMENTS (REAL) ---------- */
+async function fetchAssessments() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   try {
-    const res = await fetch(`/api/messages?counselor=${counselorId}`);
+    const res = await fetch(
+      `${API_BASE}/api/counselor/get-assessments?counselor_id=${user.id}`
+    );
+
     return await res.json();
+
   } catch (err) {
     console.error(err);
     return [];
   }
 }
 
+/* ---------- LOAD MESSAGES ---------- */
 async function loadMessages() {
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const data = await fetchMessagesFromSIS(counselor);
+  const data = await fetchAssessments();
 
   const map = {
     "I’m in Crisis": "red-row",
@@ -74,67 +90,55 @@ async function loadMessages() {
     "I’m Doing Fine – Just Curious": "green-row"
   };
 
-  document.querySelectorAll(".messages").forEach(m => m.innerHTML = ""); // clear
+  document.querySelectorAll(".messages").forEach(m => m.innerHTML = "");
 
   data.forEach(m => {
+    const answers = m.answers || {};
+
     const card = document.createElement("div");
     card.className = "message-card";
+
     card.innerHTML = `
-      <strong>${m.firstName} ${m.lastName || ""}</strong><br>
-      Grade ${m.grade}<br>
-      ${m.reason}<br>
-      ${m.notes ? "<em>Notes:</em> " + m.notes + "<br>" : ""}
-      <small>Sent: ${new Date(m.dateTime).toLocaleString()}</small>
+      <strong>${m.first_name} ${m.last_name}</strong><br>
+      ID: ${m.student_id}<br>
+      ${answers.reason || ""}<br>
+      ${answers.notes ? "<em>Notes:</em> " + answers.notes + "<br>" : ""}
+      <small>Sent: ${new Date(m.created_at).toLocaleString()}</small>
     `;
-    const container = document.querySelector(`#${map[m.urgency]} .messages`);
+
+    const urgency = answers.urgency || "Feeling a Little Off";
+    const container = document.querySelector(`#${map[urgency]} .messages`);
+
     if (container) container.appendChild(card);
   });
 }
 
 /* ---------- NOTIFICATIONS ---------- */
-async function fetchAppointmentsFromSIS() {
-  try {
-    const res = await fetch("/api/appointments");
-    return await res.json();
-  } catch (err) {
-    console.error(err);
-    return [];
-  }
-}
-
 async function checkNotifications() {
-  const counselor = localStorage.getItem("loggedInCounselor");
-  const messages = await fetchMessagesFromSIS(counselor);
-  const appointments = await fetchAppointmentsFromSIS();
+  const data = await fetchAssessments();
 
-  const crisisStudents = messages.filter(s => s.urgency === "I’m in Crisis");
-  const todayKey = new Date().toISOString().slice(0, 10);
-  const apptToday = appointments.filter(a => a.date === todayKey);
+  const crisis = data.filter(d => d.answers?.urgency === "I’m in Crisis");
 
-  bellDot.style.display = (crisisStudents.length || apptToday.length) ? "block" : "none";
+  bellDot.style.display = crisis.length ? "block" : "none";
 
   bellDropdown.innerHTML = "";
-  if (!crisisStudents.length && !apptToday.length) {
+
+  if (!crisis.length) {
     const div = document.createElement("div");
     div.textContent = "No notifications";
     bellDropdown.appendChild(div);
   }
 
-  crisisStudents.forEach(s => {
+  crisis.forEach(s => {
     const div = document.createElement("div");
-    div.textContent = `🚨 Student in Crisis: ${s.firstName} ${s.lastName || ""}`;
-    bellDropdown.appendChild(div);
-  });
-
-  apptToday.forEach(a => {
-    const div = document.createElement("div");
-    div.textContent = `📅 Appointment today`;
+    div.textContent = `🚨 Crisis: ${s.first_name} ${s.last_name}`;
     bellDropdown.appendChild(div);
   });
 }
 
 notifBell.onclick = () => {
-  bellDropdown.style.display = bellDropdown.style.display === "flex" ? "none" : "flex";
+  bellDropdown.style.display =
+    bellDropdown.style.display === "flex" ? "none" : "flex";
   bellDot.style.display = "none";
 };
 
@@ -142,5 +146,6 @@ setInterval(checkNotifications, 5000);
 
 /* ---------- INITIAL ---------- */
 window.onload = () => {
-  if (localStorage.getItem("loggedInCounselor")) showDashboard();
+  const user = localStorage.getItem("user");
+  if (user) showDashboard();
 };
