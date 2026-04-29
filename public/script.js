@@ -1,4 +1,4 @@
-const API_BASE = "https://YOUR-ADMIN-APP.vercel.app";
+const API_BASE = "https://tap-out-student-support.vercel.app/";
 
 /* ---------- ELEMENTS ---------- */
 const loginForm = document.getElementById("loginForm");
