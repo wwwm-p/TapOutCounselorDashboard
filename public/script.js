@@ -1,4 +1,4 @@
-const API_BASE = "https://tap-out-counselor-dashboard.vercel.app";
+const API_BASE = "https://sis-api-smoky.vercel.app";
 
 /* ---------- ELEMENTS ---------- */
 const loginForm = document.getElementById("loginForm");
@@ -77,12 +77,11 @@ async function fetchAssessments() {
 
   try {
     const res = await fetch(
-      `${API_BASE}/api/counselor/get-assessments?counselor_id=${user.id}`
+      `${API_BASE}/api/counselors/get-assessments?counselor_id=${user.id}`
     );
 
     const data = await res.json();
 
-    // supports either raw array OR {data: []}
     return Array.isArray(data) ? data : (data.data || []);
 
   } catch (err) {
